@@ -1,11 +1,71 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
       "type": "bundle-builder",
+      "disabled": true,
+      "settings": {}
+    },
+    "bundle_builder_yDDTBk": {
+      "type": "bundle-builder",
+      "blocks": {
+        "step_a49tpx": {
+          "type": "step",
+          "settings": {
+            "step_title": "Choose your cameras",
+            "step_collection": "spring",
+            "products_limit": 6,
+            "next_button_text": "Next: Choose your sensors"
+          }
+        },
+        "step_XMKUGp": {
+          "type": "step",
+          "settings": {
+            "step_title": "Choose your sensors",
+            "step_collection": "summer",
+            "products_limit": 6,
+            "next_button_text": "Next: Choose Accessories"
+          }
+        },
+        "step_xnBC3N": {
+          "type": "step",
+          "settings": {
+            "step_title": "Choose your accessories",
+            "step_collection": "winter",
+            "products_limit": 6,
+            "next_button_text": "Next: Add Extra Protection"
+          }
+        },
+        "step_jQbkWA": {
+          "type": "step",
+          "settings": {
+            "step_title": "Add extra protection",
+            "step_collection": "summer",
+            "products_limit": 3,
+            "next_button_text": ""
+          }
+        }
+      },
+      "block_order": [
+        "step_a49tpx",
+        "step_XMKUGp",
+        "step_xnBC3N",
+        "step_jQbkWA"
+      ],
+      "name": "Bundle Builder",
       "settings": {}
     }
   },
   "order": [
-    "main"
+    "main",
+    "bundle_builder_yDDTBk"
   ]
 }
