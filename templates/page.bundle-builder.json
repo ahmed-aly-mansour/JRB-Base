@@ -21,7 +21,7 @@
           "type": "step",
           "settings": {
             "step_title": "Choose your cameras",
-            "step_collection": "spring",
+            "step_collection": "mid-season",
             "products_limit": 6,
             "next_button_text": "Next: Choose your sensors"
           }
