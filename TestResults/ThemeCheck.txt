@@ -1,0 +1,28 @@
+╭─ error ──────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│  ENOENT: no such file or directory, open 'C:\Users\sb\Documents\EcomExperts  │
+│  \LintingRules\pipeline-rules\.theme-check.yml'                              │
+│                                                                              │
+│  To investigate the issue, examine this stack trace:                         │
+│    at async open (node:internal/fs/promises:638)                             │
+│    at readFile (node:internal/fs/promises:1242)                              │
+│    at async readYamlConfigDescription (Users/sb/AppData/Roaming/npm/node_mo  │
+│    dules/@shopify/cli/dist/index.js:26464)                                   │
+│    at async resolveConfig (Users/sb/AppData/Roaming/npm/node_modules/@shopi  │
+│    fy/cli/dist/index.js:26583)                                               │
+│    at async loadConfig2 (Users/sb/AppData/Roaming/npm/node_modules/@shopify  │
+│    /cli/dist/index.js:26862)                                                 │
+│    at async getThemeAndConfig (Users/sb/AppData/Roaming/npm/node_modules/@s  │
+│    hopify/cli/dist/index.js:27064)                                           │
+│    at async themeCheckRun2 (Users/sb/AppData/Roaming/npm/node_modules/@shop  │
+│    ify/cli/dist/index.js:27040)                                              │
+│    at run (Users/sb/AppData/Roaming/npm/node_modules/@shopify/cli/dist/inde  │
+│    x.js:144718)                                                              │
+│    at _run (Users/sb/AppData/Roaming/npm/node_modules/@shopify/cli/dist/chu  │
+│    nk-BFQFJ7IZ.js:156175)                                                    │
+│    at runCommand (Users/sb/AppData/Roaming/npm/node_modules/@shopify/cli/di  │
+│    st/chunk-BFQFJ7IZ.js:154995)                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+Theme Check checked All files. Check TestResults/ThemeCheck.txt for details.
