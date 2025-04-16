@@ -1163,17 +1163,18 @@
 
       // --- Update Card based on newVariant --- 
 
+      // Find the best image: prioritize variant image, fallback to main product image
+      const variantImage = newVariant.featured_image;
+      const productFeaturedImage = productData.featured_image;
+      const imageToShow = variantImage || productFeaturedImage; // Use variant image if it exists, else product image
+
       // 5. Update product card data attributes
       productCard.dataset.variantId = newVariant.id;
       productCard.dataset.price = newVariant.price;
       productCard.dataset.comparePrice = newVariant.compare_at_price || 0;
       productCard.dataset.variantTitle = newVariant.title; // Use the actual variant title
-      const newVariantImage = newVariant.featured_image || productData.featured_image; 
-      if (newVariantImage) {
-        productCard.dataset.imageUrl = newVariantImage.src; // Use variant image src
-      } else {
-         productCard.dataset.imageUrl = ''; 
-      }
+      // Update image URL in dataset ONLY if a valid image object was found, otherwise keep the current one
+      productCard.dataset.imageUrl = imageToShow && imageToShow.src ? imageToShow.src : productCard.dataset.imageUrl;
 
       // 6. Update displayed price
       const priceContainer = productCard.querySelector('.price');
@@ -1199,12 +1200,16 @@
       // 7. Update product image display
       const productImageEl = productCard.querySelector('.product-image');
       if (productImageEl) {
-          if (newVariantImage) {
-              productImageEl.src = productCard.dataset.imageUrl;
-              productImageEl.alt = newVariantImage.alt || newVariant.title || productData.title;
-              productImageEl.style.display = '';
+          // Use the image object determined earlier (variant or product fallback)
+          if (imageToShow && imageToShow.src) { // Check if we have a valid image object with a src
+              productImageEl.src = imageToShow.src; // Update src with the valid image source
+              productImageEl.alt = imageToShow.alt || newVariant.title || productData.title; // Update alt text
+              productImageEl.style.display = ''; // Ensure image element is visible
           } else {
-               productImageEl.style.display = 'none'; 
+              // If NO valid image (variant or product) is found, do NOT change the src.
+              // Just ensure the element is visible if it was previously hidden (e.g., by the 'unavailable' logic)
+              productImageEl.style.display = ''; 
+              console.log(`No specific image found for variant ${newVariant.id}, keeping currently displayed image.`);
           }
       }
 
