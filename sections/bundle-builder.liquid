@@ -187,13 +187,40 @@
   }
 
   /* Updated Color Swatch Styles */
-  .color-options {
+  /* .color-options {
     display: flex;
     gap: 4px;
     margin-bottom: 15px;
+  } */ /* Removed old specific style */
+
+  /* Style for the option row */
+  .product-option-row {
+    margin-bottom: 8px; /* Reduced margin */
+    display: flex;
+    align-items: flex-start; /* Align items to the top */
+    gap: 6px; /* Reduced gap */
+    flex-wrap: wrap; /* Allow wrapping if needed, esp. option name + variants */
   }
 
-  .color-swatch-button {
+  .option-name {
+    font-size: 12px; /* Smaller font */
+    font-weight: 500;
+    color: #555;
+    min-width: 40px; /* Adjust as needed */
+    padding-top: 4px; /* Align text roughly with buttons */
+    flex-shrink: 0;
+    line-height: 1.3;
+  }
+
+  .variant-options {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping */
+    gap: 4px;
+    flex: 1; /* Allow variant options to take remaining space */
+  }
+
+  /* General Variant Swatch Button Styles (replaces .color-swatch-button specifics) */
+  .variant-swatch-button {
     display: flex;
     align-items: center;
     gap: 4px;
@@ -208,26 +235,30 @@
     line-height: 1.3;
   }
 
-  .color-swatch-button:hover {
+  .variant-swatch-button:hover {
     border-color: #999;
   }
 
-  .color-swatch-button.selected {
+  .variant-swatch-button.selected {
     border-color: #00bfa5;
     background-color: #e0f2f1;
     box-shadow: none;
   }
 
-  .swatch-image {
-    width: 16px;
+  .variant-swatch-button .swatch-image {
+     width: 16px;
     height: 16px;
     object-fit: contain;
     flex-shrink: 0;
-  }
+}
 
-  .swatch-text {
-    white-space: nowrap;
-  }
+  .variant-swatch-button .swatch-text {
+   white-space: nowrap;
+}
+
+  /* .color-swatch-button { ... } */ /* Removed old specific styles */
+  /* .swatch-image { ... } */ /* Styles moved into .variant-swatch-button .swatch-image */
+  /* .swatch-text { ... } */ /* Styles moved into .variant-swatch-button .swatch-text */
 
   .quantity-price {
     display: flex;
@@ -841,8 +872,11 @@
                     data-title="{{ product.title | escape }}"
                     data-variant-title="{{ current_variant.title | escape }}"
                     data-image-url="{{ initial_image | image_url: width: 100 }}"
-                    data-product-json="{{ product | json | escape }}"
                   >
+                    <script type="application/json" data-product-json-for="{{ product.id }}">
+                      {{ product | json }}
+                    </script>
+
                     {%- if initial_image -%}
                       <img
                         src="{{ initial_image | image_url: width: 300 }}"
@@ -867,46 +901,52 @@
                         </p>
                       {%- endif -%}
 
+                      {%- comment %} Start: Display all options {%- endcomment %}
                       {%- if product.options_with_values.size > 0 -%}
-                        {%- assign first_option = product.options_by_name.Color | default: product.options_with_values[0] -%}
-                        {%- if first_option and first_option.name == 'Color' -%}
-                          <div class="color-options">
-                            {%- for value in first_option.values -%}
-                              {%- liquid
-                                assign swatch_image_url = null
-                                assign variant_for_swatch = null
-                                assign option_index_for_swatch = first_option.position | minus: 1
-
-                                for variant_loop in product.variants
-                                  if variant_loop.options[option_index_for_swatch] == value
-                                    assign variant_for_swatch = variant_loop
-                                    if variant_for_swatch.featured_image
-                                      assign swatch_image_url = variant_for_swatch.featured_image | image_url: width: 50
+                        {%- for option in product.options_with_values -%}
+                          <div class="product-option-row">
+                            <span class="option-name">{{ option.name }}:</span>
+                            <div class="variant-options" data-option-position="{{ option.position }}">
+                              {%- assign current_option_index = forloop.index0 -%}
+                              {%- assign current_option_value = current_variant.options[current_option_index] -%}
+                              {%- for value in option.values -%}
+                                {%- liquid
+                                  assign swatch_image_url = null
+                                  assign variant_for_swatch = null
+                                  for variant_loop in product.variants
+                                    if variant_loop.options[current_option_index] == value
+                                      assign variant_for_swatch = variant_loop
+                                      if variant_for_swatch.featured_image
+                                        assign swatch_image_url = variant_for_swatch.featured_image | image_url: width: 50
+                                      endif
+                                      break
                                     endif
-                                    break
-                                  endif
-                                endfor
-                              -%}
-                              <button
-                                class="color-swatch-button {% if current_variant.options[option_index_for_swatch] == value %}selected{% endif %}"
-                                aria-label="Select {{ value | escape }}"
-                              >
-                                {%- if swatch_image_url -%}
-                                  <img
-                                    src="{{ swatch_image_url }}"
-                                    alt="{{ value | escape }}"
-                                    class="swatch-image"
-                                    width="16"
-                                    height="16"
-                                    loading="lazy"
-                                  >
-                                {%- endif -%}
-                                <span class="swatch-text">{{ value }}</span>
-                              </button>
-                            {%- endfor -%}
+                                  endfor
+                                -%}
+                                <button
+                                  class="variant-swatch-button {% if value == current_option_value %}selected{% endif %}"
+                                  data-option-name="{{ option.name | escape }}"
+                                  data-option-value="{{ value | escape }}"
+                                  aria-label="Select {{ value | escape }}"
+                                >
+                                  {%- if swatch_image_url -%}
+                                    <img
+                                      src="{{ swatch_image_url }}"
+                                      alt="{{ value | escape }}"
+                                      class="swatch-image"
+                                      width="16"
+                                      height="16"
+                                      loading="lazy"
+                                    >
+                                  {%- endif -%}
+                                  <span class="swatch-text">{{ value }}</span>
+                                </button>
+                              {%- endfor -%}
+                            </div>
                           </div>
-                        {%- endif -%}
+                        {%- endfor -%}
                       {%- endif -%}
+                      {%- comment %} End: Display all options {%- endcomment %}
 
                       <div class="quantity-price">
                         <div class="quantity-selector">
@@ -1045,66 +1085,97 @@
     }
 
     handleSwatchClick(event) {
-      const clickedButton = event.target.closest('.color-swatch-button');
+      const clickedButton = event.target.closest('.variant-swatch-button');
       if (!clickedButton) return;
 
       const productCard = clickedButton.closest('.product-card');
       if (!productCard) return;
 
-      const colorOptionsContainer = clickedButton.closest('.color-options');
-      if (!colorOptionsContainer) return;
+      const optionsContainer = clickedButton.closest('.variant-options');
+      if (!optionsContainer) return;
 
-      // 1. Visually update selected swatch
-      const siblingSwatches = colorOptionsContainer.querySelectorAll('.color-swatch-button');
+      // 1. Visually update selection within the clicked option's row
+      const siblingSwatches = optionsContainer.querySelectorAll('.variant-swatch-button');
       siblingSwatches.forEach((swatch) => swatch.classList.remove('selected'));
       clickedButton.classList.add('selected');
 
-      // 2. Get product data and selected value
-      const productJsonString = productCard.dataset.productJson;
-      if (!productJsonString) {
-          console.error('Product JSON data not found on card:', productCard);
+      // 2. Get Product Data
+      const productJsonScript = productCard.querySelector(`script[data-product-json-for="${productCard.dataset.productId}"]`);
+      if (!productJsonScript || !productJsonScript.textContent) {
+        console.error("Product JSON script tag missing or empty for card:", productCard);
+        return;
+      }
+      let productData;
+      try {
+        productData = JSON.parse(productJsonScript.textContent);
+      } catch (e) {
+        console.error("Failed to parse product JSON:", e, productJsonScript.textContent);
+        return; // Stop if parsing fails completely
+      }
+      if (!productData || !productData.variants || !productData.options) {
+          console.error("Invalid product data structure:", productData);
           return;
       }
-      const productData = JSON.parse(productJsonString);
-      const selectedColor = clickedButton.querySelector('.swatch-text').textContent.trim();
 
-      // 3. Find the matching variant
-      const colorOptionName = 'Color'; // Assuming 'Color'. Make dynamic if needed.
-      let colorOptionIndex = -1;
-      if (productData.options && Array.isArray(productData.options)) {
-          colorOptionIndex = productData.options.findIndex(option => option.name === colorOptionName);
-      }
+      // 3. Gather *all* currently selected option values from the card
+      const selectedOptions = [];
+      let selectionMadeForAllOptions = true;
+      const allOptionContainers = productCard.querySelectorAll('.variant-options');
 
-      if (colorOptionIndex === -1) {
-          console.error(`'${colorOptionName}' option not found in product data. Trying option1.`, productData);
-          // Fallback to option1 if 'Color' isn't found explicitly
-          colorOptionIndex = 0;
-          if (!productData.variants[0] || typeof productData.variants[0].options[colorOptionIndex] === 'undefined') {
-             console.error("Cannot determine variant option index reliably.");
-             return;
+      productData.options.forEach((option, index) => {
+          const optionPosition = index + 1; // Option position is 1-based
+          const container = productCard.querySelector(`.variant-options[data-option-position="${optionPosition}"]`);
+          const selectedButton = container ? container.querySelector('.variant-swatch-button.selected') : null;
+          
+          if (selectedButton) {
+              selectedOptions[index] = selectedButton.dataset.optionValue;
+          } else {
+              console.warn(`No selection found for option: ${option.name} (Position ${optionPosition})`);
+              selectionMadeForAllOptions = false;
+              selectedOptions[index] = null; // Mark as not selected
           }
-      }
+      });
 
-      const newVariant = productData.variants.find(variant => variant.options[colorOptionIndex] === selectedColor);
+      // 4. Find the matching variant based on the complete selection
+      let newVariant = null;
+      if (selectionMadeForAllOptions) {
+        newVariant = productData.variants.find(variant =>
+            variant.options.every((optionValue, index) => optionValue === selectedOptions[index])
+        );
+      } else {
+          console.log("Selection incomplete, cannot determine final variant yet.");
+          // Optional: Maybe disable add to cart/quantity until all options are selected?
+          // For now, we won't update the variant ID if selection is incomplete.
+          return; 
+      }
 
       if (!newVariant) {
-          console.error(`Variant not found for ${colorOptionName}: ${selectedColor}`, productData);
-          return;
+          console.error(`Variant not found for selected options combination:`, selectedOptions);
+          // Handle unavailability: Clear quantity, remove highlight, potentially update price/image
+          const quantityValueEl = productCard.querySelector('.quantity-value');
+          if (quantityValueEl) quantityValueEl.textContent = '0';
+          productCard.classList.remove('product-card--highlighted');
+          // Consider resetting price/image or showing an 'unavailable' message
+          return; // Stop processing
       }
 
-      // 4. Update product card data attributes
+      console.log(`Found matching variant: ID ${newVariant.id}`, newVariant);
+
+      // --- Update Card based on newVariant --- 
+
+      // 5. Update product card data attributes
       productCard.dataset.variantId = newVariant.id;
       productCard.dataset.price = newVariant.price;
       productCard.dataset.comparePrice = newVariant.compare_at_price || 0;
       productCard.dataset.variantTitle = newVariant.title; // Use the actual variant title
-      const newVariantImage = newVariant.featured_image || productData.featured_image;
+      const newVariantImage = newVariant.featured_image || productData.featured_image; 
       if (newVariantImage) {
-        // Ideally, get a sized URL. Using src for now.
-         productCard.dataset.imageUrl = newVariantImage.src; // Update image URL in dataset
+        productCard.dataset.imageUrl = newVariantImage.src; // Use variant image src
+      } else {
+         productCard.dataset.imageUrl = ''; 
       }
 
-
-      // 5. Update displayed price
+      // 6. Update displayed price
       const priceContainer = productCard.querySelector('.price');
       const originalPriceEl = priceContainer.querySelector('.original-price');
       const salePriceEl = priceContainer.querySelector('.sale-price');
@@ -1121,32 +1192,34 @@
           originalPriceEl.style.display = 'none';
         }
       }
-
        if (freePriceEl) {
          freePriceEl.style.display = newVariant.price === 0 ? 'inline' : 'none';
        }
 
-
-      // 6. Update product image display
+      // 7. Update product image display
       const productImageEl = productCard.querySelector('.product-image');
-      if (productImageEl && newVariantImage) {
-          // Using potentially unsized URL from JSON. Consider optimization later.
-          productImageEl.src = newVariantImage.src;
-          productImageEl.alt = newVariantImage.alt || newVariant.title || productData.title;
+      if (productImageEl) {
+          if (newVariantImage) {
+              productImageEl.src = productCard.dataset.imageUrl;
+              productImageEl.alt = newVariantImage.alt || newVariant.title || productData.title;
+              productImageEl.style.display = '';
+          } else {
+               productImageEl.style.display = 'none'; 
+          }
       }
 
-      // 7. Update quantity display based on state for the *new* variant
+      // 8. Update quantity display based on state for the *newly selected variant*
       const quantityValueEl = productCard.querySelector('.quantity-value');
-      const existingItem = this.selectedItems[newVariant.id];
+      const existingItem = this.selectedItems[newVariant.id]; // Check state using the NEW variant ID
       if (existingItem) {
           quantityValueEl.textContent = existingItem.quantity;
-          productCard.classList.add('product-card--highlighted'); // Ensure highlight if already in cart
+          productCard.classList.add('product-card--highlighted');
       } else {
           quantityValueEl.textContent = '0';
-          productCard.classList.remove('product-card--highlighted'); // Remove highlight if not in cart
+          productCard.classList.remove('product-card--highlighted');
       }
 
-      console.log(`Swatch selected: ${selectedColor}, Updated card to variant ID: ${newVariant.id}`);
+      console.log(`Card updated for Variant ID: ${newVariant.id}`);
     }
 
     handleQuantityClick(event) {
@@ -1272,9 +1345,9 @@
 
     // Helper to add item state if missing during summary update
     addItemFromVariantId(variantId, quantity, productCardElement) {
-        const productJsonString = productCardElement.dataset.productJson;
-        if (!productJsonString) return;
-        const productData = JSON.parse(productJsonString);
+        const productJsonScript = productCardElement.querySelector(`script[data-product-json-for="${productCardElement.dataset.productId}"]`);
+        if (!productJsonScript || !productJsonScript.textContent) return;
+        const productData = JSON.parse(productJsonScript.textContent);
         const variant = productData.variants.find(v => v.id == variantId); // Use == for type flexibility if needed
 
         if (!variant) {
@@ -1305,9 +1378,9 @@
          }
          // Fallback: search through cards (less efficient)
          for (const card of this.querySelectorAll('.product-card')) {
-             const productJsonString = card.dataset.productJson;
-             if (productJsonString) {
-                 const productData = JSON.parse(productJsonString);
+             const productJsonScript = card.querySelector(`script[data-product-json-for="${card.dataset.productId}"]`);
+             if (productJsonScript && productJsonScript.textContent) {
+                 const productData = JSON.parse(productJsonScript.textContent);
                  if (productData.variants && productData.variants.some(v => v.id == variantId)) {
                      return productData.id;
                  }
