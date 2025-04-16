@@ -739,7 +739,6 @@
 </style>
 
 <bundle-builder>
-  <!-- Main Content -->
   <main class="main-content">
     <div class="product-selection">
       {%- liquid
@@ -756,77 +755,75 @@
           {%- assign next_button_text = 'View Summary' -%}
         {%- endif -%}
 
-      <div
-        class="step-container"
-          x-data="{ open: {{ forloop.first }} }"  {% comment %} Open the first step by default {% endcomment %}
-        :class="{ 'collapsed': !open }"
+        <div
+          class="step-container"
+          x-data="{ open: {{ forloop.first }} }"
+          {% comment %} Open the first step by default {% endcomment %}
+          :class="{ 'collapsed': !open }"
           {{ block.shopify_attributes }}
-      >
-        <div class="step-header" x-on:click="open = !open" style="cursor: pointer;">
+        >
+          <div class="step-header" x-on:click="open = !open" style="cursor: pointer;">
             {%- if total_steps > 0 -%}
               <span class="step-number">STEP {{ loop_index }} OF {{ total_steps }}</span>
-          <hr class="step-divider">
+              <hr class="step-divider">
             {%- endif -%}
-          <div class="step-title">
-            <div class="step-icon">
-                {% comment %} Icon can be made dynamic later if needed {% endcomment %}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                  class="feather feather-box" {% comment %} Example icon, consider making dynamic {% endcomment %}
-              >
+            <div class="step-title">
+              <div class="step-icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="feather feather-box"
+                  {% comment %} Example icon, consider making dynamic {% endcomment %}
+                >
                   <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line>
-              </svg>
-            </div>
-              <h2>{{ step_title }}</h2>
-            <div style="display: flex; align-items: center;">
-                {% comment %} Selected count needs JS logic {% endcomment %}
-                {% comment %} <span class="selected-count">0 selected</span> {% endcomment %}
-              <span class="expand-icon" x-show="!open">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="#4e2fd2"
-                  stroke="#4e2fd2"
-                  stroke-width="1"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                    <polygon points="12 18 6 6 18 6 12 18"></polygon>
                 </svg>
-              </span>
-              <span class="expand-icon" x-show="open">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="#4e2fd2"
-                  stroke="#4e2fd2"
-                  stroke-width="1"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                    <polygon points="12 6 18 18 6 18 12 6"></polygon>
-                </svg>
-              </span>
               </div>
+              <h2>{{ step_title }}</h2>
+              <div style="display: flex; align-items: center;">
+                <span class="expand-icon" x-show="!open">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="#4e2fd2"
+                    stroke="#4e2fd2"
+                    stroke-width="1"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polygon points="12 18 6 6 18 6 12 18"></polygon>
+                  </svg>
+                </span>
+                <span class="expand-icon" x-show="open">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="#4e2fd2"
+                    stroke="#4e2fd2"
+                    stroke-width="1"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polygon points="12 6 18 18 6 18 12 6"></polygon>
+                  </svg>
+                </span>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <!-- Collapsible Content Area -->
-        <div x-show="open">
+          <div x-show="open">
             {%- if collection != blank and collection.products.size > 0 -%}
-          <div class="products-grid">
+              <div class="products-grid">
                 {%- for product in collection.products limit: block.settings.products_limit -%}
                   {%- assign current_variant = product.selected_or_first_available_variant -%}
                   {%- assign collection_title = collection.title | default: 'Unknown Collection' | escape -%}
@@ -842,9 +839,6 @@
                     data-variant-title="{{ current_variant.title | escape }}"
                     data-image-url="{{ product.featured_image | image_url: width: 100 }}"
                   >
-                    {% comment %} Discount badge logic can be added here {% endcomment %}
-                    {% comment %} <div class="discount-badge">SAVE XX%</div> {% endcomment %}
-
                     {%- if product.featured_image -%}
                       <img
                         src="{{ product.featured_image | image_url: width: 300 }}"
@@ -858,160 +852,154 @@
                       {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg product-image' }}
                     {%- endif -%}
 
-              <div class="product-card__content">
+                    <div class="product-card__content">
                       <h3>{{ product.title }}</h3>
                       {%- if product.description != blank -%}
-                <p class="product-description">
+                        <p class="product-description">
                           {{ product.description | strip_html | truncatewords: 15 }}
                           {%- if product.description contains ' ' -%}
-                             <a href="{{ product.url }}" class="learn-more">Learn More</a>
+                            <a href="{{ product.url }}" class="learn-more">Learn More</a>
                           {%- endif -%}
                         </p>
                       {%- endif -%}
 
-                      {% comment %} Color Swatches - Placeholder, needs JS for variant selection {% endcomment %}
                       {%- if product.options_with_values.size > 0 -%}
-                         {% comment %} Example for first option - adapt as needed {% endcomment %}
-                         {%- assign first_option = product.options_by_name['Color'] | default: product.options_with_values[0] -%}
-                         {%- if first_option and first_option.name == 'Color' -%}
-                <div class="color-options">
-                              {%- for value in first_option.values -%}
-                                {%- liquid
-                                  assign swatch_image_url = null
-                                  for variant in product.variants
-                                    if variant[first_option.name] == value and variant.featured_image
-                                      assign swatch_image_url = variant.featured_image | image_url: width: 50
-                                      break
-                                    endif
-                                  endfor
-                                -%}
-                                <button class="color-swatch-button {% if current_variant.options contains value %}selected{% endif %}">
-                                  {%- if swatch_image_url -%}
-                                    <img
-                                      src="{{ swatch_image_url }}"
-                                      alt="{{ value | escape }}"
-                                      class="swatch-image"
-                                      width="16"
-                                      height="16"
-                                      loading="lazy"
-                                    >
-                                  {%- endif -%}
-                                  <span class="swatch-text">{{ value }}</span>
-                                </button>
-                              {%- endfor -%}
-                </div>
-                         {%- endif -%}
+                        {%- assign first_option = product.options_by_name.Color
+                          | default: product.options_with_values[0]
+                        -%}
+                        {%- if first_option and first_option.name == 'Color' -%}
+                          <div class="color-options">
+                            {%- for value in first_option.values -%}
+                              {%- liquid
+                                assign swatch_image_url = null
+                                for variant in product.variants
+                                  if variant[first_option.name] == value and variant.featured_image
+                                    assign swatch_image_url = variant.featured_image | image_url: width: 50
+                                    break
+                                  endif
+                                endfor
+                              -%}
+                              <button class="color-swatch-button {% if current_variant.options contains value %}selected{% endif %}">
+                                {%- if swatch_image_url -%}
+                                  <img
+                                    src="{{ swatch_image_url }}"
+                                    alt="{{ value | escape }}"
+                                    class="swatch-image"
+                                    width="16"
+                                    height="16"
+                                    loading="lazy"
+                                  >
+                                {%- endif -%}
+                                <span class="swatch-text">{{ value }}</span>
+                              </button>
+                            {%- endfor -%}
+                          </div>
+                        {%- endif -%}
                       {%- endif -%}
 
+                      <div class="quantity-price">
+                        <div class="quantity-selector">
+                          <button class="quantity-button quantity-down" aria-label="Decrease quantity">-</button>
+                          <span class="quantity-value">0</span>
+                          <button class="quantity-button quantity-up" aria-label="Increase quantity">+</button>
+                        </div>
 
-                <div class="quantity-price">
-                        {% comment %} Quantity Selector - Placeholder, needs JS and cart logic {% endcomment %}
-                  <div class="quantity-selector">
-                    <button class="quantity-button quantity-down" aria-label="Decrease quantity">-</button>
-                    <span class="quantity-value">0</span>
-                    <button class="quantity-button quantity-up" aria-label="Increase quantity">+</button>
+                        <div class="price">
+                          {%- if current_variant.compare_at_price > current_variant.price -%}
+                            <span class="original-price">{{ current_variant.compare_at_price | money }}</span>
+                          {%- endif -%}
+                          <span class="sale-price">{{ current_variant.price | money }}</span>
+                          {%- if current_variant.price == 0 -%}
+                            <span class="free-price">Free</span>
+                          {%- endif -%}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-
-                  <div class="price">
-                           {%- if current_variant.compare_at_price > current_variant.price -%}
-                              <span class="original-price">{{ current_variant.compare_at_price | money }}</span>
-                           {%- endif -%}
-                           <span class="sale-price">{{ current_variant.price | money }}</span>
-                           {%- if current_variant.price == 0 -%}
-                             <span class="free-price">Free</span>
-                           {%- endif -%}
-                  </div>
-                </div>
-              </div>
-            </div>
                 {%- endfor -%}
-          </div>
+              </div>
             {%- else -%}
-              <p>Please select a collection for this step in the theme editor, or add products to the selected collection ({{ collection.title | default: 'none selected' }}).</p>
+              <p>
+                Please select a collection for this step in the theme editor, or add products to the selected collection
+                ({{ collection.title | default: 'none selected' }}).
+              </p>
             {%- endif -%}
 
-            {% comment %} Next Button - Needs JS to handle step progression logic {% endcomment %}
             {%- unless forloop.last -%}
-          <div class="next-button-wrapper">
-              <button class="next-button">{{ next_button_text }}</button>
-          </div>
+              <div class="next-button-wrapper">
+                <button class="next-button">{{ next_button_text }}</button>
+              </div>
             {%- endunless -%}
-
+          </div>
         </div>
-        <!-- End Collapsible Content Area -->
-      </div>
       {%- endfor -%}
 
       {%- if section.blocks.size == 0 -%}
         <p>Please add steps (blocks) to this section in the theme editor.</p>
       {%- endif -%}
-
-            </div>
-
-    <div class="cart-summary">
-       {% comment %} --- Static Cart Summary --- {% endcomment %}
-       {% comment %} --- This part remains unchanged --- {% endcomment %}
-        <div class="summary-header">
-          <h2>YOUR BUNDLE SUMMARY</h2>
-          <h3 id="bundle-savings-headline">Save up to 22% + Free Shipping</h3> {% comment %} Added ID {% endcomment %}
-          <p id="bundle-savings-subheadline">You're saving $0.00 today!</p> {% comment %} Added ID, default text {% endcomment %}
-            </div>
-
-        <div id="summary-items-container">
-          {% comment %} Items will be dynamically inserted here by JavaScript {% endcomment %}
-          <div class="summary-section-placeholder" style="text-align: center; color: #666; padding: 20px 0;">
-              Select items to build your bundle.
-          </div>
-        </div>
-
-        <div class="badge-section">
-          <div class="badge">Bundle Savings Applied</div>
-            </div>
-
-        <div class="total-section">
-          <div class="total-row">
-            <span class="original-total" id="bundle-original-total">$0.00</span> {% comment %} Added ID {% endcomment %}
-            <span class="final-total" id="bundle-final-total">$0.00</span> {% comment %} Added ID {% endcomment %}
-                  </div>
-          <p class="savings-text" id="bundle-savings">You Save $0.00</p> {% comment %} Added ID {% endcomment %}
-          <button class="checkout-button" disabled>Checkout</button> {% comment %} Disabled by default {% endcomment %}
-          <a href="#" class="save-later">Save for later</a>
-                  </div>
-        {% comment %} --- End Static Cart Summary --- {% endcomment %}
-                </div>
-  </main>
-
-  {% comment %} Testimonials section remains static {% endcomment %}
-  <div class="testimonials">
-     <h2>Join <span class="highlight">10M+ Happy Customers</span></h2>
-     <div class="testimonials-grid">
-        <div class="testimonial-card">
-           <div class="rating">★★★★★</div>
-           <h3>A must buy!</h3>
-           <p>Easy setup, clear picture day and night. Impressed with the quality for the price. Already planning to buy more for other rooms.</p>
-           <div class="verified-customer">
-              <span class="verified-icon">✓</span> Verified Customer
-          </div>
-        </div>
-         <div class="testimonial-card">
-           <div class="rating">★★★★★</div>
-           <h3>Works as advertised</h3>
-           <p>The pan and tilt feature is fantastic for covering a wide area. Motion tracking works well. App is user-friendly.</p>
-           <div class="verified-customer">
-              <span class="verified-icon">✓</span> Verified Customer
-      </div>
-            </div>
-         <div class="testimonial-card">
-           <div class="rating">★★★★★</div>
-           <h3>Bright and clear</h3>
-           <p>Floodlight is very bright, illuminates my whole driveway. Camera quality is excellent, even in low light. Installation was straightforward.</p>
-           <div class="verified-customer">
-              <span class="verified-icon">✓</span> Verified Customer
-          </div>
-        </div>
-      </div>
     </div>
 
+    <div class="cart-summary">
+      <div class="summary-header">
+        <h2>YOUR BUNDLE SUMMARY</h2>
+        <h3 id="bundle-savings-headline">Save up to 22% + Free Shipping</h3>
+        <p id="bundle-savings-subheadline">You're saving $0.00 today!</p>
+      </div>
+
+      <div id="summary-items-container">
+        <div class="summary-section-placeholder" style="text-align: center; color: #666; padding: 20px 0;">
+          Select items to build your bundle.
+        </div>
+      </div>
+
+      <div class="badge-section">
+        <div class="badge">Bundle Savings Applied</div>
+      </div>
+
+      <div class="total-section">
+        <div class="total-row">
+          <span class="original-total" id="bundle-original-total">$0.00</span>
+          <span class="final-total" id="bundle-final-total">$0.00</span>
+        </div>
+        <p class="savings-text" id="bundle-savings">You Save $0.00</p>
+        <button class="checkout-button" disabled>Checkout</button>
+        <a href="#" class="save-later">Save for later</a>
+      </div>
+    </div>
+  </main>
+
+  <div class="testimonials">
+    <h2>Join <span class="highlight">10M+ Happy Customers</span></h2>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="rating">★★★★★</div>
+        <h3>A must buy!</h3>
+        <p>
+          Easy setup, clear picture day and night. Impressed with the quality for the price. Already planning to buy
+          more for other rooms.
+        </p>
+        <div class="verified-customer"><span class="verified-icon">✓</span> Verified Customer</div>
+      </div>
+      <div class="testimonial-card">
+        <div class="rating">★★★★★</div>
+        <h3>Works as advertised</h3>
+        <p>
+          The pan and tilt feature is fantastic for covering a wide area. Motion tracking works well. App is
+          user-friendly.
+        </p>
+        <div class="verified-customer"><span class="verified-icon">✓</span> Verified Customer</div>
+      </div>
+      <div class="testimonial-card">
+        <div class="rating">★★★★★</div>
+        <h3>Bright and clear</h3>
+        <p>
+          Floodlight is very bright, illuminates my whole driveway. Camera quality is excellent, even in low light.
+          Installation was straightforward.
+        </p>
+        <div class="verified-customer"><span class="verified-icon">✓</span> Verified Customer</div>
+      </div>
+    </div>
+  </div>
 </bundle-builder>
 
 <script>
@@ -1019,8 +1007,6 @@
     constructor() {
       super();
       this.selectedItems = {};
-
-      // DOM element references
       this.summaryContainer = this.querySelector('#summary-items-container');
       this.originalTotalEl = this.querySelector('#bundle-original-total');
       this.finalTotalEl = this.querySelector('#bundle-final-total');
@@ -1036,16 +1022,13 @@
       this.addEventListener('click', this.handleQuantityClick.bind(this));
 
       // Summary quantity button handler (uses event delegation)
-      if (this.summaryContainer) { // Add check for summary container existence
+      if (this.summaryContainer) {
         this.summaryContainer.addEventListener('click', this.handleSummaryQuantityClick.bind(this));
       }
-
-      // Add listener for next buttons
-      this.addEventListener('click', this.handleNextClick.bind(this)); // Uncommented this line
+      this.addEventListener('click', this.handleNextClick.bind(this));
     }
 
     connectedCallback() {
-      // Initial render in case of pre-filled state (optional)
       this.renderSummary();
     }
 
@@ -1060,14 +1043,12 @@
       siblingSwatches.forEach((swatch) => swatch.classList.remove('selected'));
       clickedButton.classList.add('selected');
 
-      // TODO: Add JS to update variant based on selection (e.g., update price, hidden input)
       console.log('Swatch selected:', clickedButton.querySelector('.swatch-text').textContent);
     }
 
     handleQuantityClick(event) {
       const downButton = event.target.closest('.quantity-down');
       const upButton = event.target.closest('.quantity-up');
-      // Ensure we are not capturing clicks from summary buttons here
       if ((!downButton && !upButton) || event.target.closest('.summary-item')) return;
 
       const productCard = event.target.closest('.product-card');
@@ -1088,7 +1069,6 @@
         valueEl.textContent = newVal;
         this.updateState(productCard, newVal);
 
-        // Highlight card if quantity > 0, remove if 0
         if (newVal > 0) {
           productCard.classList.add('product-card--highlighted');
         } else {
@@ -1118,19 +1098,16 @@
         }
 
         if (newQuantity !== currentQuantity) {
-            // Find the original product card to update its visual quantity too
             const originalProductCard = this.querySelector(`.product-card[data-variant-id="${variantId}"]`);
             if (originalProductCard) {
                 const valueEl = originalProductCard.querySelector('.quantity-value');
                 if (valueEl) valueEl.textContent = newQuantity;
-                 // Update highlight on original card
                 if (newQuantity > 0) {
                   originalProductCard.classList.add('product-card--highlighted');
                 } else {
                   originalProductCard.classList.remove('product-card--highlighted');
                 }
             }
-            // Update state and re-render summary
             this.updateStateFromVariantId(variantId, newQuantity);
         }
     }
@@ -1140,7 +1117,6 @@
       if (!variantId) return;
 
       if (quantity <= 0) {
-        // Remove item and associated collection if it's the last one from that collection
         delete this.selectedItems[variantId];
       } else {
         this.selectedItems[variantId] = {
@@ -1148,7 +1124,7 @@
           productId: productCardElement.dataset.productId,
           variantId: variantId,
           blockId: productCardElement.dataset.blockId,
-          collectionTitle: productCardElement.dataset.collectionTitle, // Store collection title
+          collectionTitle: productCardElement.dataset.collectionTitle,
           price: parseInt(productCardElement.dataset.price, 10),
           comparePrice: parseInt(productCardElement.dataset.comparePrice, 10),
           title: productCardElement.dataset.title,
@@ -1160,7 +1136,7 @@
       this.renderSummary();
     }
 
-     updateStateFromVariantId(variantId, quantity) {
+    updateStateFromVariantId(variantId, quantity) {
         if (!variantId) return;
 
         if (quantity <= 0) {
@@ -1169,17 +1145,14 @@
               delete this.selectedItems[variantId];
             }
         } else {
-             // Ensure item exists before updating quantity
             if (this.selectedItems[variantId]) {
                this.selectedItems[variantId].quantity = quantity;
             } else {
-               // This case shouldn't normally happen if triggered from summary,
-               // but as a fallback, try to find card data if needed.
                console.warn(`Attempted to update quantity for variant ${variantId} not in state.`);
                const productCard = this.querySelector(`.product-card[data-variant-id="${variantId}"]`);
                if (productCard) {
-                  this.updateState(productCard, quantity); // Re-initialize from card data
-                  return; // updateState calls renderSummary already
+                  this.updateState(productCard, quantity);
+                  return;
                } else {
                   console.error(`Cannot find product card for variant ${variantId} to update state.`);
                }
@@ -1197,7 +1170,7 @@
       let originalTotal = 0;
       let summaryHTML = '';
       const itemsGroupedByBlock = {};
-      const blockCollectionTitles = {}; // Store collection title per block
+      const blockCollectionTitles = {};
 
       // Clear placeholder if items exist
       const placeholder = this.summaryContainer.querySelector('.summary-section-placeholder');
@@ -1208,7 +1181,7 @@
         const item = this.selectedItems[variantId];
         if (!itemsGroupedByBlock[item.blockId]) {
           itemsGroupedByBlock[item.blockId] = [];
-          blockCollectionTitles[item.blockId] = item.collectionTitle; // Store title when block first seen
+          blockCollectionTitles[item.blockId] = item.collectionTitle;
         }
         itemsGroupedByBlock[item.blockId].push(item);
 
@@ -1221,11 +1194,10 @@
       // Generate HTML for each block section in the summary
       for (const blockId in itemsGroupedByBlock) {
         const items = itemsGroupedByBlock[blockId];
-        const collectionTitle = blockCollectionTitles[blockId] || 'Selected Items'; // Fallback title
-        const totalQuantityInBlock = items.reduce((sum, item) => sum + item.quantity, 0); // Sum quantities
+        const collectionTitle = blockCollectionTitles[blockId] || 'Selected Items';
+        const totalQuantityInBlock = items.reduce((sum, item) => sum + item.quantity, 0);
 
         summaryHTML += `<div class="summary-section" data-summary-block-id="${blockId}">`;
-        // Use collection title and total quantity for the heading
         summaryHTML += `<h4 class="collection-title">${collectionTitle} (${totalQuantityInBlock})</h4>`;
 
         items.forEach(item => {
@@ -1251,12 +1223,11 @@
             </div>
           `;
         });
-        summaryHTML += `</div>`; // End summary-section
+        summaryHTML += `</div>`;
       }
 
       // Update Summary Container
       if (Object.keys(this.selectedItems).length === 0) {
-        // Show placeholder if no items selected
         this.summaryContainer.innerHTML = `<div class="summary-section-placeholder" style="text-align: center; color: #666; padding: 20px 0;">
           Select items to build your bundle.
         </div>`;
@@ -1271,54 +1242,44 @@
       this.originalTotalEl.textContent = this.formatMoney(originalTotal);
       this.finalTotalEl.textContent = this.formatMoney(finalTotal);
       this.savingsEl.textContent = `You Save ${this.formatMoney(savings)}`;
-
-      // Update Savings Headlines (optional refinement)
-      // This could be more dynamic based on actual savings % if needed
       if (this.savingsSubheadlineEl) {
         this.savingsSubheadlineEl.textContent = `You're saving ${this.formatMoney(savings)} today!`;
       }
-
     }
 
-    // Added function to handle next button clicks
     handleNextClick(event) {
       const nextButton = event.target.closest('.next-button');
-      if (!nextButton) return; // Exit if the click wasn't on a next button
+      if (!nextButton) return;
 
       const currentStep = nextButton.closest('.step-container');
       if (!currentStep) return;
 
-      // Find the next sibling element that is also a step container
       let nextStep = currentStep.nextElementSibling;
       while (nextStep && !nextStep.classList.contains('step-container')) {
         nextStep = nextStep.nextElementSibling;
       }
 
       if (nextStep) {
-        // Use Alpine.js data context to control the open state
         const currentAlpineData = Alpine.$data(currentStep);
         const nextAlpineData = Alpine.$data(nextStep);
 
         if (currentAlpineData) {
-          currentAlpineData.open = false; // Close current step
+          currentAlpineData.open = false;
         }
         if (nextAlpineData) {
-          nextAlpineData.open = true; // Open next step
+          nextAlpineData.open = true;
         }
 
-        // Using requestAnimationFrame to ensure the element is visible after Alpine updates state
         requestAnimationFrame(() => {
-           // Scroll the top of the next step container into view
            nextStep.scrollIntoView({
                behavior: 'smooth',
-               block: 'start' // Ensure top of the element aligns with the top of the scroll container
+               block: 'start'
            });
         });
 
         console.log('Next button clicked, moving to next step');
       } else {
         console.log('Next button clicked on last available step or next step not found');
-        // Optional: Scroll to summary or trigger other actions
         const summaryEl = this.querySelector('.cart-summary');
         if (summaryEl) {
           summaryEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1335,7 +1296,6 @@
 
   setTimeout(() => {
     if (window.Alpine && !customElements.get('bundle-builder')) {
-       // Already handled by alpine:init listener
     } else if (!customElements.get('bundle-builder')){
        customElements.define('bundle-builder', BundleBuilder);
     }
