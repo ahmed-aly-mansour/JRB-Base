@@ -864,9 +864,7 @@
                       {%- endif -%}
 
                       {%- if product.options_with_values.size > 0 -%}
-                        {%- assign first_option = product.options_by_name.Color
-                          | default: product.options_with_values[0]
-                        -%}
+                        {%- assign first_option = product.options_by_name.Color | default: product.options_with_values[0] -%}
                         {%- if first_option and first_option.name == 'Color' -%}
                           <div class="color-options">
                             {%- for value in first_option.values -%}
@@ -920,8 +918,9 @@
               </div>
             {%- else -%}
               <p>
-                Please select a collection for this step in the theme editor, or add products to the selected collection
-                ({{ collection.title | default: 'none selected' }}).
+                Please select a collection for this step in the theme editor, or add products to the selected collection (
+                {{- collection.title | default: 'none selected' -}}
+                ).
               </p>
             {%- endif -%}
 
@@ -975,26 +974,22 @@
         <div class="rating">★★★★★</div>
         <h3>A must buy!</h3>
         <p>
-          Easy setup, clear picture day and night. Impressed with the quality for the price. Already planning to buy
-          more for other rooms.
+          Easy setup, clear picture day and night. Impressed with the quality for the price. Already planning to buy more for other rooms.
         </p>
         <div class="verified-customer"><span class="verified-icon">✓</span> Verified Customer</div>
       </div>
       <div class="testimonial-card">
         <div class="rating">★★★★★</div>
         <h3>Works as advertised</h3>
-        <p>
-          The pan and tilt feature is fantastic for covering a wide area. Motion tracking works well. App is
-          user-friendly.
-        </p>
+        <p>The pan and tilt feature is fantastic for covering a wide area. Motion tracking works well. App is user-friendly.</p>
         <div class="verified-customer"><span class="verified-icon">✓</span> Verified Customer</div>
       </div>
       <div class="testimonial-card">
         <div class="rating">★★★★★</div>
         <h3>Bright and clear</h3>
         <p>
-          Floodlight is very bright, illuminates my whole driveway. Camera quality is excellent, even in low light.
-          Installation was straightforward.
+          Floodlight is very bright, illuminates my whole driveway. Camera quality is excellent, even in low light. Installation was
+          straightforward.
         </p>
         <div class="verified-customer"><span class="verified-icon">✓</span> Verified Customer</div>
       </div>
@@ -1078,38 +1073,38 @@
     }
 
     handleSummaryQuantityClick(event) {
-        const downButton = event.target.closest('.quantity-down-summary');
-        const upButton = event.target.closest('.quantity-up-summary');
-        if (!downButton && !upButton) return;
+      const downButton = event.target.closest('.quantity-down-summary');
+      const upButton = event.target.closest('.quantity-up-summary');
+      if (!downButton && !upButton) return;
 
-        const summaryItem = event.target.closest('.summary-item');
-        if (!summaryItem) return;
+      const summaryItem = event.target.closest('.summary-item');
+      if (!summaryItem) return;
 
-        const variantId = summaryItem.dataset.variantId;
-        if (!variantId || !this.selectedItems[variantId]) return;
+      const variantId = summaryItem.dataset.variantId;
+      if (!variantId || !this.selectedItems[variantId]) return;
 
-        let currentQuantity = this.selectedItems[variantId].quantity;
-        let newQuantity = currentQuantity;
+      let currentQuantity = this.selectedItems[variantId].quantity;
+      let newQuantity = currentQuantity;
 
-        if (downButton && currentQuantity > 0) {
-            newQuantity--;
-        } else if (upButton) {
-            newQuantity++;
+      if (downButton && currentQuantity > 0) {
+        newQuantity--;
+      } else if (upButton) {
+        newQuantity++;
+      }
+
+      if (newQuantity !== currentQuantity) {
+        const originalProductCard = this.querySelector(`.product-card[data-variant-id="${variantId}"]`);
+        if (originalProductCard) {
+          const valueEl = originalProductCard.querySelector('.quantity-value');
+          if (valueEl) valueEl.textContent = newQuantity;
+          if (newQuantity > 0) {
+            originalProductCard.classList.add('product-card--highlighted');
+          } else {
+            originalProductCard.classList.remove('product-card--highlighted');
+          }
         }
-
-        if (newQuantity !== currentQuantity) {
-            const originalProductCard = this.querySelector(`.product-card[data-variant-id="${variantId}"]`);
-            if (originalProductCard) {
-                const valueEl = originalProductCard.querySelector('.quantity-value');
-                if (valueEl) valueEl.textContent = newQuantity;
-                if (newQuantity > 0) {
-                  originalProductCard.classList.add('product-card--highlighted');
-                } else {
-                  originalProductCard.classList.remove('product-card--highlighted');
-                }
-            }
-            this.updateStateFromVariantId(variantId, newQuantity);
-        }
+        this.updateStateFromVariantId(variantId, newQuantity);
+      }
     }
 
     updateState(productCardElement, quantity) {
@@ -1132,33 +1127,33 @@
           imageUrl: productCardElement.dataset.imageUrl,
         };
       }
-
+      console.log('Selected items:', this.selectedItems); 
       this.renderSummary();
     }
 
     updateStateFromVariantId(variantId, quantity) {
-        if (!variantId) return;
+      if (!variantId) return;
 
-        if (quantity <= 0) {
-            // Ensure item exists before deleting
-            if (this.selectedItems[variantId]) {
-              delete this.selectedItems[variantId];
-            }
-        } else {
-            if (this.selectedItems[variantId]) {
-               this.selectedItems[variantId].quantity = quantity;
-            } else {
-               console.warn(`Attempted to update quantity for variant ${variantId} not in state.`);
-               const productCard = this.querySelector(`.product-card[data-variant-id="${variantId}"]`);
-               if (productCard) {
-                  this.updateState(productCard, quantity);
-                  return;
-               } else {
-                  console.error(`Cannot find product card for variant ${variantId} to update state.`);
-               }
-            }
+      if (quantity <= 0) {
+        // Ensure item exists before deleting
+        if (this.selectedItems[variantId]) {
+          delete this.selectedItems[variantId];
         }
-        this.renderSummary();
+      } else {
+        if (this.selectedItems[variantId]) {
+          this.selectedItems[variantId].quantity = quantity;
+        } else {
+          console.warn(`Attempted to update quantity for variant ${variantId} not in state.`);
+          const productCard = this.querySelector(`.product-card[data-variant-id="${variantId}"]`);
+          if (productCard) {
+            this.updateState(productCard, quantity);
+            return;
+          } else {
+            console.error(`Cannot find product card for variant ${variantId} to update state.`);
+          }
+        }
+      }
+      this.renderSummary();
     }
 
     formatMoney(cents) {
@@ -1200,7 +1195,7 @@
         summaryHTML += `<div class="summary-section" data-summary-block-id="${blockId}">`;
         summaryHTML += `<h4 class="collection-title">${collectionTitle} (${totalQuantityInBlock})</h4>`;
 
-        items.forEach(item => {
+        items.forEach((item) => {
           // Calculate total price for this item line
           const linePrice = item.quantity * item.price;
           const lineComparePrice = item.quantity * (item.comparePrice > item.price ? item.comparePrice : item.price);
@@ -1271,10 +1266,10 @@
         }
 
         requestAnimationFrame(() => {
-           nextStep.scrollIntoView({
-               behavior: 'smooth',
-               block: 'start'
-           });
+          nextStep.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          });
         });
 
         console.log('Next button clicked, moving to next step');
@@ -1288,19 +1283,9 @@
     }
   }
 
-  document.addEventListener('alpine:init', () => {
-     if (!customElements.get('bundle-builder')) {
-        customElements.define('bundle-builder', BundleBuilder);
-     }
-  });
-
-  setTimeout(() => {
-    if (window.Alpine && !customElements.get('bundle-builder')) {
-    } else if (!customElements.get('bundle-builder')){
-       customElements.define('bundle-builder', BundleBuilder);
-    }
-  }, 0);
-
+  if (!customElements.get('bundle-builder')) {
+    customElements.define('bundle-builder', BundleBuilder);
+  }
 </script>
 
 {% schema %}
