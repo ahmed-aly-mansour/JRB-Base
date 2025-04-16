@@ -46,7 +46,9 @@
     background-color: #edf3ff;
     border-radius: 8px;
     padding: 20px;
-    height: 100%;
+    position: sticky;
+    top: 20px;
+    align-self: flex-start;
   }
 
   /* Step Container */
@@ -1127,7 +1129,7 @@
           imageUrl: productCardElement.dataset.imageUrl,
         };
       }
-      console.log('Selected items:', this.selectedItems); 
+      console.log('Selected items:', this.selectedItems);
       this.renderSummary();
     }
 
