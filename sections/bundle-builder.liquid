@@ -829,6 +829,7 @@
                 {%- for product in collection.products limit: block.settings.products_limit -%}
                   {%- assign current_variant = product.selected_or_first_available_variant -%}
                   {%- assign collection_title = collection.title | default: 'Unknown Collection' | escape -%}
+                  {%- assign initial_image = current_variant.featured_image | default: product.featured_image -%}
                   <div
                     class="product-card"
                     data-product-id="{{ product.id }}"
@@ -839,12 +840,13 @@
                     data-compare-price="{{ current_variant.compare_at_price | default: 0 }}"
                     data-title="{{ product.title | escape }}"
                     data-variant-title="{{ current_variant.title | escape }}"
-                    data-image-url="{{ product.featured_image | image_url: width: 100 }}"
+                    data-image-url="{{ initial_image | image_url: width: 100 }}"
+                    data-product-json="{{ product | json | escape }}"
                   >
-                    {%- if product.featured_image -%}
+                    {%- if initial_image -%}
                       <img
-                        src="{{ product.featured_image | image_url: width: 300 }}"
-                        alt="{{ product.featured_image.alt | escape }}"
+                        src="{{ initial_image | image_url: width: 300 }}"
+                        alt="{{ initial_image.alt | default: product.title | escape }}"
                         class="product-image"
                         width="150"
                         height="150"
@@ -872,14 +874,23 @@
                             {%- for value in first_option.values -%}
                               {%- liquid
                                 assign swatch_image_url = null
-                                for variant in product.variants
-                                  if variant[first_option.name] == value and variant.featured_image
-                                    assign swatch_image_url = variant.featured_image | image_url: width: 50
+                                assign variant_for_swatch = null
+                                assign option_index_for_swatch = first_option.position | minus: 1
+
+                                for variant_loop in product.variants
+                                  if variant_loop.options[option_index_for_swatch] == value
+                                    assign variant_for_swatch = variant_loop
+                                    if variant_for_swatch.featured_image
+                                      assign swatch_image_url = variant_for_swatch.featured_image | image_url: width: 50
+                                    endif
                                     break
                                   endif
                                 endfor
                               -%}
-                              <button class="color-swatch-button {% if current_variant.options contains value %}selected{% endif %}">
+                              <button
+                                class="color-swatch-button {% if current_variant.options[option_index_for_swatch] == value %}selected{% endif %}"
+                                aria-label="Select {{ value | escape }}"
+                              >
                                 {%- if swatch_image_url -%}
                                   <img
                                     src="{{ swatch_image_url }}"
@@ -906,12 +917,16 @@
 
                         <div class="price">
                           {%- if current_variant.compare_at_price > current_variant.price -%}
-                            <span class="original-price">{{ current_variant.compare_at_price | money }}</span>
+                            <span class="original-price" {% if current_variant.compare_at_price <= current_variant.price %}style="display: none;"{% endif %}>
+                              {{- current_variant.compare_at_price | money -}}
+                            </span>
+                          {%- else -%}
+                             <span class="original-price" style="display: none;"></span>
                           {%- endif -%}
-                          <span class="sale-price">{{ current_variant.price | money }}</span>
-                          {%- if current_variant.price == 0 -%}
-                            <span class="free-price">Free</span>
-                          {%- endif -%}
+                          <span class="sale-price" {% if current_variant.price == 0 %}style="display: none;"{% endif %}>
+                            {{- current_variant.price | money -}}
+                          </span>
+                           <span class="free-price" {% if current_variant.price != 0 %}style="display: none;"{% endif %}>Free</span>
                         </div>
                       </div>
                     </div>
@@ -1033,14 +1048,105 @@
       const clickedButton = event.target.closest('.color-swatch-button');
       if (!clickedButton) return;
 
+      const productCard = clickedButton.closest('.product-card');
+      if (!productCard) return;
+
       const colorOptionsContainer = clickedButton.closest('.color-options');
       if (!colorOptionsContainer) return;
 
+      // 1. Visually update selected swatch
       const siblingSwatches = colorOptionsContainer.querySelectorAll('.color-swatch-button');
       siblingSwatches.forEach((swatch) => swatch.classList.remove('selected'));
       clickedButton.classList.add('selected');
 
-      console.log('Swatch selected:', clickedButton.querySelector('.swatch-text').textContent);
+      // 2. Get product data and selected value
+      const productJsonString = productCard.dataset.productJson;
+      if (!productJsonString) {
+          console.error('Product JSON data not found on card:', productCard);
+          return;
+      }
+      const productData = JSON.parse(productJsonString);
+      const selectedColor = clickedButton.querySelector('.swatch-text').textContent.trim();
+
+      // 3. Find the matching variant
+      const colorOptionName = 'Color'; // Assuming 'Color'. Make dynamic if needed.
+      let colorOptionIndex = -1;
+      if (productData.options && Array.isArray(productData.options)) {
+          colorOptionIndex = productData.options.findIndex(option => option.name === colorOptionName);
+      }
+
+      if (colorOptionIndex === -1) {
+          console.error(`'${colorOptionName}' option not found in product data. Trying option1.`, productData);
+          // Fallback to option1 if 'Color' isn't found explicitly
+          colorOptionIndex = 0;
+          if (!productData.variants[0] || typeof productData.variants[0].options[colorOptionIndex] === 'undefined') {
+             console.error("Cannot determine variant option index reliably.");
+             return;
+          }
+      }
+
+      const newVariant = productData.variants.find(variant => variant.options[colorOptionIndex] === selectedColor);
+
+      if (!newVariant) {
+          console.error(`Variant not found for ${colorOptionName}: ${selectedColor}`, productData);
+          return;
+      }
+
+      // 4. Update product card data attributes
+      productCard.dataset.variantId = newVariant.id;
+      productCard.dataset.price = newVariant.price;
+      productCard.dataset.comparePrice = newVariant.compare_at_price || 0;
+      productCard.dataset.variantTitle = newVariant.title; // Use the actual variant title
+      const newVariantImage = newVariant.featured_image || productData.featured_image;
+      if (newVariantImage) {
+        // Ideally, get a sized URL. Using src for now.
+         productCard.dataset.imageUrl = newVariantImage.src; // Update image URL in dataset
+      }
+
+
+      // 5. Update displayed price
+      const priceContainer = productCard.querySelector('.price');
+      const originalPriceEl = priceContainer.querySelector('.original-price');
+      const salePriceEl = priceContainer.querySelector('.sale-price');
+      const freePriceEl = priceContainer.querySelector('.free-price');
+
+      salePriceEl.textContent = this.formatMoney(newVariant.price);
+      salePriceEl.style.display = newVariant.price === 0 ? 'none' : 'inline';
+
+      if (originalPriceEl) {
+        if (newVariant.compare_at_price && newVariant.compare_at_price > newVariant.price) {
+          originalPriceEl.textContent = this.formatMoney(newVariant.compare_at_price);
+          originalPriceEl.style.display = 'inline';
+        } else {
+          originalPriceEl.style.display = 'none';
+        }
+      }
+
+       if (freePriceEl) {
+         freePriceEl.style.display = newVariant.price === 0 ? 'inline' : 'none';
+       }
+
+
+      // 6. Update product image display
+      const productImageEl = productCard.querySelector('.product-image');
+      if (productImageEl && newVariantImage) {
+          // Using potentially unsized URL from JSON. Consider optimization later.
+          productImageEl.src = newVariantImage.src;
+          productImageEl.alt = newVariantImage.alt || newVariant.title || productData.title;
+      }
+
+      // 7. Update quantity display based on state for the *new* variant
+      const quantityValueEl = productCard.querySelector('.quantity-value');
+      const existingItem = this.selectedItems[newVariant.id];
+      if (existingItem) {
+          quantityValueEl.textContent = existingItem.quantity;
+          productCard.classList.add('product-card--highlighted'); // Ensure highlight if already in cart
+      } else {
+          quantityValueEl.textContent = '0';
+          productCard.classList.remove('product-card--highlighted'); // Remove highlight if not in cart
+      }
+
+      console.log(`Swatch selected: ${selectedColor}, Updated card to variant ID: ${newVariant.id}`);
     }
 
     handleQuantityClick(event) {
@@ -1142,21 +1248,73 @@
           delete this.selectedItems[variantId];
         }
       } else {
+        // If item exists, update its quantity
         if (this.selectedItems[variantId]) {
           this.selectedItems[variantId].quantity = quantity;
         } else {
-          console.warn(`Attempted to update quantity for variant ${variantId} not in state.`);
-          const productCard = this.querySelector(`.product-card[data-variant-id="${variantId}"]`);
+          // This case should ideally not happen if summary buttons only act on existing items
+          // But if it does, try to reconstruct the item state from a card
+          console.warn(`Attempted to update quantity via summary for variant ${variantId} not initially in state.`);
+          // Find ANY card representing this product to grab shared details
+          const productCard = this.querySelector(`.product-card[data-product-id="${this.getProductIdFromVariantId(variantId)}"]`);
           if (productCard) {
-            this.updateState(productCard, quantity);
-            return;
+             // Attempt to reconstruct the item based on the product card and the target variantId
+             // This requires getting the specific variant details (price, title, image) associated with variantId
+             this.addItemFromVariantId(variantId, quantity, productCard);
+
           } else {
-            console.error(`Cannot find product card for variant ${variantId} to update state.`);
+            console.error(`Cannot find any product card for variant ${variantId} to update state from summary.`);
           }
         }
       }
       this.renderSummary();
     }
+
+    // Helper to add item state if missing during summary update
+    addItemFromVariantId(variantId, quantity, productCardElement) {
+        const productJsonString = productCardElement.dataset.productJson;
+        if (!productJsonString) return;
+        const productData = JSON.parse(productJsonString);
+        const variant = productData.variants.find(v => v.id == variantId); // Use == for type flexibility if needed
+
+        if (!variant) {
+            console.error(`Cannot find variant details for ID ${variantId} in product JSON.`);
+            return;
+        }
+         const variantImage = variant.featured_image || productData.featured_image;
+
+         this.selectedItems[variantId] = {
+            quantity: quantity,
+            productId: productCardElement.dataset.productId,
+            variantId: variantId,
+            blockId: productCardElement.dataset.blockId,
+            collectionTitle: productCardElement.dataset.collectionTitle,
+            price: variant.price,
+            comparePrice: variant.compare_at_price || 0,
+            title: productData.title, // Use main product title
+            variantTitle: variant.title, // Use specific variant title
+            imageUrl: variantImage ? variantImage.src : '', // Use variant image or fallback
+         };
+         console.log('Reconstructed and added item:', this.selectedItems[variantId]);
+    }
+
+     // Helper function (optional) to find product ID if only variant ID is known
+     getProductIdFromVariantId(variantId) {
+         if (this.selectedItems[variantId]) {
+             return this.selectedItems[variantId].productId;
+         }
+         // Fallback: search through cards (less efficient)
+         for (const card of this.querySelectorAll('.product-card')) {
+             const productJsonString = card.dataset.productJson;
+             if (productJsonString) {
+                 const productData = JSON.parse(productJsonString);
+                 if (productData.variants && productData.variants.some(v => v.id == variantId)) {
+                     return productData.id;
+                 }
+             }
+         }
+         return null;
+     }
 
     formatMoney(cents) {
       return '$' + (cents / 100).toFixed(2);
@@ -1206,7 +1364,7 @@
             <div class="summary-item" data-variant-id="${item.variantId}">
               <img src="${item.imageUrl}" alt="${item.title}" class="summary-image" width="40" height="40">
               <div class="item-details">
-                <span class="item-name">${item.title}${item.variantTitle !== 'Default Title' ? ` - ${item.variantTitle}` : ''}</span>
+                <span class="item-name">${item.title}${item.variantTitle && item.variantTitle !== 'Default Title' ? ` - ${item.variantTitle}` : ''}</span>
               </div>
               <div class="item-quantity">
                 <button class="quantity-button quantity-down-summary" aria-label="Decrease quantity">-</button>
@@ -1242,6 +1400,9 @@
       if (this.savingsSubheadlineEl) {
         this.savingsSubheadlineEl.textContent = `You're saving ${this.formatMoney(savings)} today!`;
       }
+
+      // Enable/disable checkout button based on selection
+       this.checkoutButton.disabled = Object.keys(this.selectedItems).length === 0;
     }
 
     handleNextClick(event) {
