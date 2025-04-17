@@ -48,7 +48,7 @@
           "type": "step",
           "settings": {
             "step_title": "Add extra protection",
-            "step_collection": "summer",
+            "step_collection": "luxury-pret",
             "products_limit": 3,
             "next_button_text": ""
           }
