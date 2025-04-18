@@ -1234,27 +1234,36 @@
       // Update quantity display
       this.updateQuantityDisplay(productCard, variant.id);
 
-      // ---- Handle Sold Out State ----
+      // Handle sold out state
+      this.updateSoldOutState(productCard, variant);
+    }
+
+    // Update sold out state for a product card
+    updateSoldOutState(productCard, variant) {
       const isAvailable = variant.available;
       const soldOutMessageEl = productCard.querySelector('.sold-out-message');
       const quantityUpButton = productCard.querySelector('.quantity-up');
       const quantityDownButton = productCard.querySelector('.quantity-down');
 
+      // Update visual indicators
       productCard.classList.toggle('product-card--unavailable', !isAvailable);
-
+      
       if (soldOutMessageEl) {
         soldOutMessageEl.style.display = isAvailable ? 'none' : 'block';
       }
+      
+      // Update button states
       if (quantityUpButton) {
         quantityUpButton.disabled = !isAvailable;
       }
+      
       // Keep down button enabled unless quantity is 0
       if (quantityDownButton) {
         const currentQuantity = parseInt(productCard.querySelector('.quantity-value').textContent, 10);
         quantityDownButton.disabled = currentQuantity <= 0;
       }
 
-      // Reset quantity to 0 if selected variant is unavailable and was previously added
+      // Reset quantity if variant is unavailable but was previously selected
       if (!isAvailable && this.selectedItems[variant.id]) {
         console.log(`Variant ${variant.id} is sold out, removing from selection.`);
         const quantityValueEl = productCard.querySelector('.quantity-value');
@@ -1262,8 +1271,6 @@
         this.updateState(productCard, 0);
         this.updateProductCardHighlight(productCard, 0);
       }
-
-      console.log(`Card updated for Variant ID: ${variant.id}, Available: ${isAvailable}`);
     }
 
     // Update product card data attributes
