@@ -9,11 +9,6 @@
  */
 {
   "sections": {
-    "main": {
-      "type": "bundle-builder",
-      "disabled": true,
-      "settings": {}
-    },
     "bundle_builder_yDDTBk": {
       "type": "bundle-builder",
       "blocks": {
@@ -60,12 +55,10 @@
         "step_xnBC3N",
         "step_jQbkWA"
       ],
-      "name": "Bundle Builder",
       "settings": {}
     }
   },
   "order": [
-    "main",
     "bundle_builder_yDDTBk"
   ]
 }
