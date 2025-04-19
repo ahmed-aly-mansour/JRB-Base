@@ -47,6 +47,7 @@
     position: sticky;
     top: 20px;
     align-self: flex-start;
+    width: 100%;
   }
 
   .step-container {
@@ -138,7 +139,7 @@
   }
 
   .product-card {
-    border: 1px solid #e0e0e0;
+    border: 1px solid transparent;
     border-radius: 8px;
     padding: 15px;
     position: relative;
@@ -148,6 +149,32 @@
 
   .product-card.free-product {
     background-color: transparent;
+    border-color: #B8C4FF;
+    margin: 0 14px;
+    padding: 10px;
+  }
+
+  .bundle-plan__plus-icon {
+    margin: 6px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .free-product-wrapper {
+    margin-bottom: 0;
+  }
+
+  .product-cta-wrapper {
+    display: flex;
+    align-items: flex-end;
+    gap: 18px;
+  }
+
+  @media (max-width: 480px) {
+    .product-card.free-product img {
+      width: 28%;
+    }
   }
 
   .product-card--highlighted {
@@ -182,8 +209,12 @@
 
   .product-description {
     font-size: 14px;
-    color: #666;
     margin-bottom: 15px;
+    color: #1F1F1FBF;
+    margin-bottom: 15px;
+    letter-spacing: 0.6px;
+    font-weight: 500;
+    opacity: 0.75;
   }
 
   .learn-more {
@@ -323,7 +354,7 @@
   .free-price {
     font-weight: 600;
     font-size: 16px;
-    color: #00c853;
+    color: #4E2FD2;
   }
 
   .next-button-wrapper {
@@ -696,6 +727,10 @@
       flex: 1;
     }
 
+    .product-description {
+      margin-bottom: 10px; 
+    }
+
     .main-content {
       padding-left: 0;
       padding-right: 0;
@@ -752,76 +787,129 @@
   }
 
   /* Styles for Static 'Choose Plan' Step */
+
+  .bundle-plan__offer-text-wrapper,
+  .bundle-plan__offer-text-wrapper span {
+    display: flex;
+    align-items: center;
+  }
+
+  .bundle-plan__offer-text-wrapper p {
+    color: #1F1F1F;
+    margin-left: 6px;
+    font-size: 16px;
+    line-height: 20px;
+  }
+
   .bundle-plan__offer-wrapper {
     background-color: #f0f4fa;
-    padding: 15px;
+    padding: 6px 0;
     border-radius: 8px;
-    margin-bottom: 20px;
     text-align: center;
   }
 
   .bundle-plan__offer-content {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
     background-color: black;
     color: white;
-    padding: 10px 20px;
+    padding: 0;
     border-radius: 6px;
   }
 
   .bundle-plan__offer-text {
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: 600;
     text-align: left;
+    border-left: 2px dashed #1DF0BB;
+    padding: 14px 20px;
+    line-height: 20px;
   }
 
   .bundle-plan__offer-text span {
     color: #1DF0BB;
   }
 
-  /* Grid specifically for the required hub item */
+  .product-card__content .bundle-plan__title {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+  }
+
+  .product-card__content .bundle-plan__title span {
+    color: #4E2FD2;
+    margin-left: 6px;
+  }
+
+  .product-card__content .bundle-plan__title .bundle-plan__icon {
+    display: flex;
+    align-items: center;
+    margin-right: 8px;
+  }
+
   .bundle-plan__required-item-grid {
     grid-template-columns: 1fr;
   }
 
   .bundle-plan__required-badge {
-    background-color: #00c853;
+    background-color: #0AA288;
     color: white;
-    font-size: 10px;
+    font-size: 12px;
     padding: 2px 6px;
-    border-radius: 4px;
-    font-weight: bold;
+    border-radius: 3px;
+    font-weight: 400;
     display: inline-block;
+    margin-bottom: 0;
+  }
+
+  .bundle-plan__recommended {
+    background-color: #0AA288;
+    color: white;
+    font-size: 12px;
+    padding: 2px 10px;
+    border-radius: 100px;
+    font-weight: 400;
+    display: inline-block;
+    margin-bottom: 0;
+    position: absolute;
+    top: 20px;
+    right: 11px;
+  }
+
+  .product-card__price-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 8px;
   }
 
-  /* Price container alignment for the required item */
+  .quantity-price.bundle-plan__price-container {
+    margin-top: 0;
+  }
+
   .bundle-plan__price-container {
     justify-content: flex-end;
   }
 
-  /* Price display override for the required item */
   .bundle-plan__free-price {
-    display: inline !important; /* Use important if needed */
+    display: inline !important;
   }
 
-  /* Add layout grid specifically for plans */
   .plans-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 15px;
       margin-top: 30px;
   }
 
-  /* Keep responsive stacking */
   @media (max-width: 990px) { 
      .plans-grid {
         grid-template-columns: 1fr;
      }
   }
 
-  /* Additional styles for plan-specific elements WITHIN product-card */
   .plan-card__recommend-badge {
     position: absolute;
     top: 10px;
@@ -835,7 +923,7 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    z-index: 2; /* Ensure it's above other content */
+    z-index: 2;
   }
    .plan-card__recommend-badge .badge-icon {
        background-color: rgba(0,0,0,0.5);
@@ -852,9 +940,9 @@
   }
 
   .plan-card__connection-info {
-    background-color: #f0f4fa;
+    background-color: #F0F0F0;
     color: #555;
-    font-size: 11px; /* Smaller */
+    font-size: 12px;
     padding: 3px 6px;
     border-radius: 4px;
     display: inline-block;
@@ -863,35 +951,33 @@
   }
 
   .plan-card__savings {
-    font-size: 13px; /* Slightly smaller */
-    color: #00c853;
+    font-size: 12px;
+    color: #08846F;
     font-weight: 600;
-    margin-top: 10px; /* Add some space above */
-    margin-bottom: 15px;
+    margin-bottom: 10px;
   }
 
   .plan-card__action-button {
-      background-color: #4e2fd2;
-      color: white;
-      padding: 10px 15px;
-      border-radius: 6px;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      transition: background-color 0.3s;
-      width: 100%; /* Make button full width */
-      text-align: center;
-      margin-top: 15px; /* Space above button */
+    background-color: #4E2FD2;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 7px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
   }
   .plan-card__action-button:hover {
       background-color: #4527a0;
   }
 
   .plan-card__price-area {
-      margin-top: 15px; /* Move pricing below description/savings */
       text-align: right;
       line-height: 1.2;
-      width: 100%; /* Take full width */
+      width: 100%;
   }
   .plan-card__price {
       display: flex;
@@ -902,11 +988,11 @@
   }
   .plan-card__price .original-price {
       font-size: 18px;
-      color: #dc3545;
+      color: #D8392B;
       text-decoration: line-through;
   }
   .plan-card__price .sale-price {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 700;
       color: #4e2fd2;
   }
@@ -916,43 +1002,42 @@
       color: #555;
   }
   .plan-card__price-term {
-      font-size: 12px;
-      color: #666;
+    font-size: 10px;
+    color: #1F1F1F;
+    font-weight: 400;
   }
 
-  /* Styles for Features/Stats Section */
   .bundle-features-section {
-    background-color: #f0f4fa; /* Light background for the whole section */
-    padding: 40px 20px; /* Vertical and horizontal padding */
-    margin-top: 40px; /* Space above the section */
+    background-color: #f0f4fa;
+    margin-top: 10px;
   }
 
   .bundle-features__container {
-    max-width: 1200px; /* Match main content width */
-    margin: 0 auto; /* Center the content */
+    max-width: 1200px;
+    margin: 0 auto;
   }
 
   .bundle-features__grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 columns */
-    gap: 20px; /* Gap between icons */
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
     text-align: center;
-    margin-bottom: 40px; /* Space between icon grid and stats grid */
+    margin-bottom: 16px;
   }
 
   .bundle-features__item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px; /* Gap between icon and label */
+    gap: 8px;
   }
 
   .bundle-features__icon {
-    color: #4E2FD2; /* Icon color */
+    color: #4E2FD2;
     margin-bottom: 5px;
   }
   .bundle-features__icon svg {
-     width: 48px; /* Icon size */
+     width: 48px;
      height: 48px;
   }
 
@@ -964,19 +1049,18 @@
 
   .bundle-stats__grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 columns */
-    gap: 20px;
+    gap: 16px;
+    grid-template-columns: repeat(2, 1fr);
+    background: #E5EFFF;
+    margin: 0 -20px;
+    padding: 20px 24px;
     text-align: center;
   }
 
-  .bundle-stats__item {
-    /* No extra styling needed unless desired */
-  }
-
   .bundle-stats__number {
-    font-size: 28px; /* Large number */
-    font-weight: 700;
-    color: #4E2FD2; /* Purple color */
+    font-size: 28px;
+    font-weight: 600;
+    color: #4E2FD2;
     margin-bottom: 5px;
     line-height: 1.2;
   }
@@ -987,18 +1071,16 @@
     line-height: 1.4;
   }
 
-  /* Responsive adjustments for Features/Stats */
   @media (max-width: 768px) {
     .bundle-features__grid {
-      grid-template-columns: repeat(2, 1fr); /* 2 columns on smaller screens */
-      gap: 30px; /* Increase gap slightly */
+      grid-template-columns: repeat(4, 1fr);
+      gap: 40px;
     }
     .bundle-stats__grid {
-        grid-template-columns: 1fr; /* Stack stats on smallest screens */
-        gap: 30px;
-    }
-    .bundle-features-section {
-      padding: 30px 15px;
+        gap: 16px;
+        background: #E5EFFF;
+        margin: 0 -15px;
+        padding: 20px 24px;
     }
   }
 
@@ -1027,6 +1109,7 @@
           {% comment %} Open the first step by default {% endcomment %}
           :class="{ 'collapsed': !open }"
           data-block-id="{{ block.id }}"
+          data-block-type="{{ block.type }}"
           {{ block.shopify_attributes }}
         >
           <div class="step-header" x-on:click="open = !open" style="cursor: pointer;">
@@ -1036,28 +1119,55 @@
             {%- endif -%}
             <div class="step-title">
               <div class="step-icon">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="feather feather-box"
-                  {% comment %} Example icon, consider making dynamic {% endcomment %}
-                >
-                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line>
-                </svg>
+                {%- if block.type == 'plan_step' -%}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="feather feather-shield"
+                  >
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                  </svg>
+                {%- else -%}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="feather feather-box"
+                  >
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line>
+                  </svg>
+                {%- endif -%}
               </div>
               <h2>{{ step_title }}</h2>
               <div style="display: flex; align-items: center; gap: 8px;">
-                <div class="step-selected-wrapper">
-                  <span class="step-selected-quantity" data-quantity-block-id="{{ block.id }}">0</span>
-                  <span>Selected</span>
-                </div>
+                {%- if block.type == 'plan_step' -%}
+                  {%- assign plan_selected = false -%}
+                  <span class="step-selected-wrapper">
+                    {%- if plan_selected -%}
+                      <span>1</span> Selected
+                    {%- else -%}
+                      <span>0</span> Selected
+                    {%- endif -%}
+                  </span>
+                {%- else -%}
+                  <div class="step-selected-wrapper">
+                    <span class="step-selected-quantity" data-quantity-block-id="{{ block.id }}">0</span>
+                    <span>Selected</span>
+                  </div>
+                {%- endif -%}
                 <span class="expand-icon" x-show="!open">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -1093,36 +1203,233 @@
           </div>
 
           <div x-show="open">
-            {%- if collection != blank and collection.products.size > 0 -%}
-              <div class="products-grid">
-                {%- for product in collection.products limit: block.settings.products_limit -%}
-                  {%- assign current_variant = product.selected_or_first_available_variant -%}
-                  {%- assign collection_title = collection.title | default: 'Unknown Collection' | escape -%}
-                  {%- assign initial_image = current_variant.featured_image | default: product.featured_image -%}
-                  <div
-                    class="product-card {% unless current_variant.available %}product-card--unavailable{% endunless %}"
-                    data-product-id="{{ product.id }}"
-                    data-variant-id="{{ current_variant.id }}"
-                    data-block-id="{{ block.id }}"
-                    data-collection-title="{{ collection_title }}"
-                    data-price="{{ current_variant.price }}"
-                    data-compare-price="{{ current_variant.compare_at_price | default: 0 }}"
-                    data-title="{{ product.title | escape }}"
-                    data-variant-title="{{ current_variant.title | escape }}"
-                    data-image-url="{{ initial_image | image_url: width: 100 }}"
-                    data-available="{{ current_variant.available }}"
-                    {%- for option in product.options_with_values -%}
-                      data-option{{ forloop.index }}-name="{{ option.name | escape }}"
-                    {%- endfor -%}
-                  >
-                    <script type="application/json" data-product-json-for="{{ product.id }}">
-                      {{ product | json }}
-                    </script>
+            {%- if block.type == 'step' -%}
+              {%- if collection != blank and collection.products.size > 0 -%}
+                <div class="products-grid">
+                  {%- for product in collection.products limit: block.settings.products_limit -%}
+                    {%- assign current_variant = product.selected_or_first_available_variant -%}
+                    {%- assign collection_title = collection.title | default: 'Unknown Collection' | escape -%}
+                    {%- assign initial_image = current_variant.featured_image | default: product.featured_image -%}
+                    <div
+                      class="product-card {% unless current_variant.available %}product-card--unavailable{% endunless %}"
+                      data-product-id="{{ product.id }}"
+                      data-variant-id="{{ current_variant.id }}"
+                      data-block-id="{{ block.id }}"
+                      data-collection-title="{{ collection_title }}"
+                      data-price="{{ current_variant.price }}"
+                      data-compare-price="{{ current_variant.compare_at_price | default: 0 }}"
+                      data-title="{{ product.title | escape }}"
+                      data-variant-title="{{ current_variant.title | escape }}"
+                      data-image-url="{{ initial_image | image_url: width: 100 }}"
+                      data-available="{{ current_variant.available }}"
+                      {%- for option in product.options_with_values -%}
+                        data-option{{ forloop.index }}-name="{{ option.name | escape }}"
+                      {%- endfor -%}
+                    >
+                      <script type="application/json" data-product-json-for="{{ product.id }}">
+                        {{ product | json }}
+                      </script>
 
-                    {%- if initial_image -%}
+                      {%- if initial_image -%}
+                        <img
+                          src="{{ initial_image | image_url: width: 300 }}"
+                          alt="{{ initial_image.alt | default: product.title | escape }}"
+                          class="product-image"
+                          width="150"
+                          height="150"
+                          loading="lazy"
+                        >
+                      {%- else -%}
+                        {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg product-image' }}
+                      {%- endif -%}
+
+                      <div class="product-card__content">
+                        <h3>{{ product.title }}</h3>
+                        {%- if product.description != blank -%}
+                          <p class="product-description">
+                            {{ product.description | strip_html | truncatewords: 15 }}
+                            {%- if product.description contains ' ' -%}
+                              <a href="{{ product.url }}" class="learn-more">Learn More</a>
+                            {%- endif -%}
+                          </p>
+                        {%- endif -%}
+
+                        {%- if product.options_with_values.size > 0 -%}
+                          {%- for option in product.options_with_values -%}
+                            <div class="product-option-row">
+                              <span class="option-name">{{ option.name }}:</span>
+                              <div class="variant-options" data-option-position="{{ option.position }}">
+                                {%- assign current_option_index = forloop.index0 -%}
+                                {%- assign current_option_value = current_variant.options[current_option_index] -%}
+                                {%- for value in option.values -%}
+                                  {%- liquid
+                                    assign swatch_image_url = null
+                                    assign variant_for_swatch = null
+                                    for variant_loop in product.variants
+                                      if variant_loop.options[current_option_index] == value
+                                        assign variant_for_swatch = variant_loop
+                                        if variant_for_swatch.featured_image
+                                          assign swatch_image_url = variant_for_swatch.featured_image | image_url: width: 50
+                                        endif
+                                        break
+                                      endif
+                                    endfor
+                                  -%}
+                                  <button
+                                    class="variant-swatch-button {% if value == current_option_value %}selected{% endif %}"
+                                    data-option-name="{{ option.name | escape }}"
+                                    data-option-value="{{ value | escape }}"
+                                    aria-label="Select {{ value | escape }}"
+                                  >
+                                    {%- if swatch_image_url -%}
+                                      <img
+                                        src="{{ swatch_image_url }}"
+                                        alt="{{ value | escape }}"
+                                        class="swatch-image"
+                                        width="16"
+                                        height="16"
+                                        loading="lazy"
+                                      >
+                                    {%- endif -%}
+                                    <span class="swatch-text">{{ value }}</span>
+                                  </button>
+                                {%- endfor -%}
+                              </div>
+                            </div>
+                          {%- endfor -%}
+                        {%- endif -%}
+
+                        <div
+                          class="sold-out-message"
+                          {% unless current_variant.available %}
+                            style="display: block; color: red; font-size: 12px; margin-bottom: 5px;"
+                          {% else %}
+                            style="display: none; color: red; font-size: 12px; margin-bottom: 5px;"
+                          {% endunless %}
+                        >
+                          This item is sold out
+                        </div>
+
+                        <div class="quantity-price">
+                          <div class="quantity-selector">
+                            <button
+                              class="quantity-button quantity-down"
+                              aria-label="Decrease quantity"
+                              {% unless current_variant.available %}
+                                disabled
+                              {% endunless %}
+                            >
+                              -
+                            </button>
+                            <span class="quantity-value">0</span>
+                            <button
+                              class="quantity-button quantity-up"
+                              aria-label="Increase quantity"
+                              {% unless current_variant.available %}
+                                disabled
+                              {% endunless %}
+                            >
+                              +
+                            </button>
+                          </div>
+
+                          <div class="price">
+                            {%- if current_variant.compare_at_price > current_variant.price -%}
+                              <span
+                                class="original-price"
+                                {% if current_variant.compare_at_price <= current_variant.price %}
+                                  style="display: none;"
+                                {% endif %}
+                              >
+                                {{- current_variant.compare_at_price | money -}}
+                              </span>
+                            {%- else -%}
+                              <span class="original-price" style="display: none;"></span>
+                            {%- endif -%}
+                            <span
+                              class="sale-price"
+                              {% if current_variant.price == 0 %}
+                                style="display: none;"
+                              {% endif %}
+                            >
+                              {{- current_variant.price | money -}}
+                            </span>
+                            <span
+                              class="free-price"
+                              {% if current_variant.price != 0 %}
+                                style="display: none;"
+                              {% endif %}
+                            >
+                              Free
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  {%- endfor -%}
+                </div>
+              {%- else -%}
+                <p>
+                  Please select a collection for this step in the theme editor, or add products to the selected collection
+                  (
+                  {{- collection.title | default: 'none selected' -}}
+                  ).
+                </p>
+              {%- endif -%}
+
+              {%- unless forloop.last -%}
+                <div class="next-button-wrapper">
+                  <button class="next-button">{{ next_button_text }}</button>
+                </div>
+              {%- endunless -%}
+
+            {%- elsif block.type == 'plan_step' -%}
+              {%- assign required_product = block.settings.required_product -%}
+              {%- assign plan_collection = block.settings.plan_collection -%}
+
+              <div class="bundle-plan__offer-text-wrapper">
+                <span>
+                  <svg width="22" height="17" viewBox="0 0 22 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 10.8732V13.9843C21 14.338 20.8595 14.6771 20.6095 14.9272C20.3594 15.1772 20.0203 15.3177 19.6667 15.3177H2.33333C1.97971 15.3177 1.64057 15.1772 1.39052 14.9272C1.14048 14.6771 1 14.338 1 13.9843V10.8732C1.70724 10.8732 2.38552 10.5923 2.88562 10.0922C3.38572 9.59209 3.66667 8.91381 3.66667 8.20657C3.66667 7.49933 3.38572 6.82105 2.88562 6.32095C2.38552 5.82085 1.70724 5.5399 1 5.5399V2.42879C1 2.07517 1.14048 1.73603 1.39052 1.48598C1.64057 1.23593 1.97971 1.09546 2.33333 1.09546H19.6667C20.0203 1.09546 20.3594 1.23593 20.6095 1.48598C20.8595 1.73603 21 2.07517 21 2.42879V5.5399C20.2928 5.5399 19.6145 5.82085 19.1144 6.32095C18.6143 6.82105 18.3333 7.49933 18.3333 8.20657C18.3333 8.91381 18.6143 9.59209 19.1144 10.0922C19.6145 10.5923 20.2928 10.8732 21 10.8732Z" stroke="#1DF0BB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8.11009 6.87358C8.84647 6.87358 9.44342 6.27662 9.44342 5.54024C9.44342 4.80386 8.84647 4.20691 8.11009 4.20691C7.37371 4.20691 6.77676 4.80386 6.77676 5.54024C6.77676 6.27662 7.37371 6.87358 8.11009 6.87358Z" stroke="#1DF0BB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M14.5554 12.2071C15.2918 12.2071 15.8887 11.6101 15.8887 10.8737C15.8887 10.1374 15.2918 9.54041 14.5554 9.54041C13.819 9.54041 13.2221 10.1374 13.2221 10.8737C13.2221 11.6101 13.819 12.2071 14.5554 12.2071Z" stroke="#1DF0BB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M14.3311 4.87341L7.66445 11.5401" stroke="#1DF0BB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                <p>Exclusive Web-Only Offer</p>
+              </div>
+              <div class="bundle-plan__offer-wrapper">
+                <div class="bundle-plan__offer-content">
+                  <div class="bundle-plan__offer-content__icon">
+                    <svg width="88" height="50" viewBox="0 0 88 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M54.2314 50.0001C53.2245 49.7705 52.1813 49.6408 51.218 49.2926C46.1594 47.4659 43.0236 43.9221 42.1564 38.5877C41.3928 33.8922 42.8327 29.8156 46.3291 26.6138C50.1162 23.1461 54.6233 22.1067 59.4997 23.7151C65.0711 25.5531 68.3192 29.5598 68.8208 35.4071C69.3062 41.0721 66.8168 45.3932 61.9454 48.3044C60.5116 49.1604 58.9194 49.6395 57.2599 49.8729C57.0777 49.8978 56.9017 49.9565 56.7221 50.0001H54.2314ZM56.4987 31.8034C57.2037 31.8034 57.91 31.8184 58.615 31.7997C59.4148 31.7784 60.0574 31.1184 60.0899 30.321C60.1298 29.314 59.4448 28.7026 58.2631 28.6914C57.4728 28.6839 57.0249 28.2979 56.9192 27.5334C56.8132 26.7648 56.2866 26.212 55.5678 26.1146C54.9028 26.0248 54.2227 26.3842 53.9694 27.043C53.8484 27.3587 53.8359 27.7293 53.8346 28.075C53.8321 28.5154 53.6462 28.7076 53.227 28.8698C52.5419 29.1343 51.8032 29.4051 51.2629 29.8768C48.912 31.9257 49.5509 35.7302 52.4196 36.9731C53.8633 37.5982 55.3382 38.1535 56.777 38.7899C57.1051 38.9346 57.4608 39.2341 57.5968 39.551C57.9499 40.3733 57.3073 41.152 56.3003 41.1769C55.0575 41.2081 53.8134 41.2081 52.5706 41.2181C51.4763 41.2268 50.7937 41.812 50.7775 42.7641C50.7625 43.67 51.485 44.2827 52.5856 44.2952C52.7728 44.2977 52.9599 44.3052 53.1459 44.2952C53.6899 44.2652 53.9345 44.5061 53.9657 45.0601C53.9844 45.3982 54.0617 45.7688 54.2314 46.0546C54.5858 46.6485 55.2883 46.8806 55.9035 46.6947C56.6185 46.4776 57.0839 45.9173 57.0465 45.1112C57.0141 44.4075 57.2511 44.113 57.9399 43.9034C60.0624 43.2595 61.2953 41.1195 60.8286 38.9758C60.5179 37.5458 59.6557 36.5226 58.3043 35.9486C56.9317 35.3659 55.5441 34.8206 54.1678 34.2466C53.3754 33.9159 53.0685 33.4418 53.1945 32.7966C53.3193 32.1565 53.8122 31.8134 54.6345 31.8071C55.2571 31.8021 55.8798 31.8071 56.5024 31.8059L56.4987 31.8034Z" fill="#1DF0BB"/>
+                      <path d="M19.1195 28.4641C19.4564 26.424 20.7541 25.0114 22.1591 23.6164C29.2691 16.5563 36.3567 9.47251 43.4205 2.36626C44.9029 0.875129 46.6036 0.171366 48.7024 0.191331C53.3904 0.236252 58.0809 0.200066 62.769 0.207552C65.0225 0.211296 66.611 1.41792 67.0901 3.48429C67.1737 3.84241 67.1887 4.22424 67.1899 4.59484C67.1962 9.48998 67.1874 14.3851 67.1974 19.2815C67.2012 20.8463 66.6883 22.1976 65.6601 23.3706C65.3457 23.7287 65.0761 23.8148 64.6594 23.5091C63.9257 22.9713 63.1545 22.4809 62.3971 21.9755C61.8343 21.5999 61.7932 21.3242 62.2973 20.8537C62.8363 20.3521 63.0634 19.7432 63.0622 19.022C63.0597 14.6035 63.0622 10.185 63.0584 5.76653C63.0584 4.71587 62.6766 4.33654 61.6384 4.33529C57.2399 4.3328 52.8414 4.33904 48.4429 4.32905C47.6917 4.32781 47.0828 4.56863 46.55 5.10269C39.0432 12.617 31.5264 20.1225 24.0171 27.6343C22.9951 28.6563 22.9864 29.8479 24.0071 30.8674C27.2065 34.063 30.4196 37.2449 33.6227 40.4356C34.5598 41.3689 35.4932 42.3073 36.4141 43.2569C37.1203 43.9856 37.9152 44.3599 38.9246 43.9556C39.3177 43.7984 39.5323 43.9694 39.7382 44.2875C40.2211 45.035 40.7252 45.7687 41.2293 46.5024C41.57 46.9978 41.4964 47.316 40.9598 47.6017C38.7999 48.7534 35.9361 48.4315 34.1056 46.7582C32.9127 45.6676 31.7897 44.4997 30.6442 43.3567C27.8092 40.5291 25.0016 37.6742 22.1392 34.8741C20.7092 33.4766 19.4264 32.0266 19.1195 29.9577V28.4641H19.1195Z" fill="#1DF0BB"/>
+                      <path d="M57.8512 12.7341C57.8201 14.4199 56.4013 15.7825 54.7018 15.76C53.0197 15.7376 51.621 14.3126 51.6372 12.6368C51.6534 10.9473 53.1171 9.51603 54.7991 9.54348C56.5124 9.57218 57.8837 11.0059 57.8512 12.7341Z" fill="#1DF0BB"/>
+                    </svg>
+                  </div>
+                  <span class="bundle-plan__offer-text">
+                    This discounted rate is only available on this page and
+                    <span>won't be available in your app</span>
+                  </span>
+                </div>
+              </div>
+
+              <div class="bundle-plan__plus-icon">
+                <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect y="0.095459" width="24" height="24" rx="12" fill="white"/>
+                  <path d="M17.25 11.3455H12.75V6.84546C12.75 6.39546 12.45 6.09546 12 6.09546C11.55 6.09546 11.25 6.39546 11.25 6.84546V11.3455H6.75C6.3 11.3455 6 11.6455 6 12.0955C6 12.5455 6.3 12.8455 6.75 12.8455H11.25V17.3455C11.25 17.7955 11.55 18.0955 12 18.0955C12.45 18.0955 12.75 17.7955 12.75 17.3455V12.8455H17.25C17.7 12.8455 18 12.5455 18 12.0955C18 11.6455 17.7 11.3455 17.25 11.3455Z" fill="#6F7882"/>
+                </svg>
+              </div>
+
+              {%- if required_product != blank -%}
+                <div class="products-grid bundle-plan__required-item-grid free-product-wrapper">
+                  {%- assign req_variant = required_product.selected_or_first_available_variant -%}
+                  <div class="product-card free-product product-card--highlighted">
+                    {%- assign req_image = req_variant.featured_image | default: required_product.featured_image -%}
+                    {%- if req_image -%}
                       <img
-                        src="{{ initial_image | image_url: width: 300 }}"
-                        alt="{{ initial_image.alt | default: product.title | escape }}"
+                        src="{{ req_image | image_url: width: 300 }}"
+                        alt="{{ req_image.alt | default: required_product.title | escape }}"
                         class="product-image"
                         width="150"
                         height="150"
@@ -1131,451 +1438,219 @@
                     {%- else -%}
                       {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg product-image' }}
                     {%- endif -%}
-
                     <div class="product-card__content">
-                      <h3>{{ product.title }}</h3>
-                      {%- if product.description != blank -%}
+                      <h3>{{ required_product.title }}</h3>
+                      <div class="product-card__price-wrapper">
+                        <span class="bundle-plan__required-badge">Required</span>
+                        
+                        <div class="quantity-price bundle-plan__price-container">
+                          <div class="price">
+                            {%- if req_variant.compare_at_price > 0 -%}
+                              <span class="original-price">{{ req_variant.compare_at_price | money }}</span>
+                            {%- endif -%}
+                            <span class="original-price">$29.92</span>
+                            <span class="free-price bundle-plan__free-price">FREE</span>
+                          </div>
+                        </div>
+                      </div>
+                      {%- if required_product.description != blank -%}
                         <p class="product-description">
-                          {{ product.description | strip_html | truncatewords: 15 }}
-                          {%- if product.description contains ' ' -%}
-                            <a href="{{ product.url }}" class="learn-more">Learn More</a>
-                          {%- endif -%}
+                          {{ required_product.description | strip_html | truncatewords: 15 }}
+                          <a href="{{ required_product.url }}" class="learn-more">Learn More</a>
                         </p>
                       {%- endif -%}
+                    </div>
+                  </div>
+                </div>
+              {%- else -%}
+                <p>Please select the required free product in the theme editor.</p>
+              {%- endif -%}
 
-                      {%- comment %} Start: Display all options {%- endcomment %}
-                      {%- if product.options_with_values.size > 0 -%}
-                        {%- for option in product.options_with_values -%}
-                          <div class="product-option-row">
-                            <span class="option-name">{{ option.name }}:</span>
-                            <div class="variant-options" data-option-position="{{ option.position }}">
-                              {%- assign current_option_index = forloop.index0 -%}
-                              {%- assign current_option_value = current_variant.options[current_option_index] -%}
-                              {%- for value in option.values -%}
-                                {%- liquid
-                                  assign swatch_image_url = null
-                                  assign variant_for_swatch = null
-                                  for variant_loop in product.variants
-                                    if variant_loop.options[current_option_index] == value
-                                      assign variant_for_swatch = variant_loop
-                                      if variant_for_swatch.featured_image
-                                        assign swatch_image_url = variant_for_swatch.featured_image | image_url: width: 50
-                                      endif
-                                      break
-                                    endif
-                                  endfor
-                                -%}
-                                <button
-                                  class="variant-swatch-button {% if value == current_option_value %}selected{% endif %}"
-                                  data-option-name="{{ option.name | escape }}"
-                                  data-option-value="{{ value | escape }}"
-                                  aria-label="Select {{ value | escape }}"
-                                >
-                                  {%- if swatch_image_url -%}
-                                    <img
-                                      src="{{ swatch_image_url }}"
-                                      alt="{{ value | escape }}"
-                                      class="swatch-image"
-                                      width="16"
-                                      height="16"
-                                      loading="lazy"
-                                    >
-                                  {%- endif -%}
-                                  <span class="swatch-text">{{ value }}</span>
-                                </button>
-                              {%- endfor -%}
-                            </div>
-                          </div>
-                        {%- endfor -%}
-                      {%- endif -%}
-                      {%- comment %} End: Display all options {%- endcomment %}
+              {%- if plan_collection != blank and plan_collection.products.size > 0 -%}
+                <div class="plans-grid">
+                  {%- for plan_product in plan_collection.products -%}
+                    {%- assign plan_variant = plan_product.selected_or_first_available_variant -%}
+                    <div
+                      class="product-card {% if forloop.first %}product-card--highlighted{% endif %}"
+                      data-product-id="{{ plan_product.id }}"
+                      data-variant-id="{{ plan_variant.id }}"
+                      data-block-id="{{ block.id }}"
+                    >
+                      <div class="product-card__content">
+                        <h3 class="bundle-plan__title">
+                          <span class="bundle-plan__icon">
+                            {%- if plan_product.metafields.custom.product_icon.value != blank -%}
+                              {%- assign icon_image = plan_product.metafields.custom.product_icon.value -%}
+                              <img src="{{ icon_image | image_url: width: 24 }}" alt="{{ plan_product.title }} icon" width="24" height="24" loading="lazy">
+                            {%- endif -%}
+                          </span>
+                          {%- assign title_parts = plan_product.title | split: 'Cam ' -%}
+                          {%- if title_parts.size > 1 -%}
+                            Cam <span> {{ title_parts[1] }}</span>
+                          {%- else -%}
+                            {{ plan_product.title }}
+                          {%- endif -%}
+                        </h3>
 
-                      <div
-                        class="sold-out-message"
-                        {% unless current_variant.available %}
-                          style="display: block; color: red; font-size: 12px; margin-bottom: 5px;"
-                        {% else %}
-                          style="display: none; color: red; font-size: 12px; margin-bottom: 5px;"
-                        {% endunless %}
-                      >
-                        This item is sold out
-                      </div>
+                        {%- if plan_product.metafields.custom.is_recommended.value == true -%}
+                          <span class="bundle-plan__recommended">Recommended</span>
+                        {%- endif -%}
 
-                      <div class="quantity-price">
-                        <div class="quantity-selector">
-                          <button
-                            class="quantity-button quantity-down"
-                            aria-label="Decrease quantity"
-                            {% unless current_variant.available %}
-                              disabled
-                            {% endunless %}
-                          >
-                            -
-                          </button>
-                          <span class="quantity-value">0</span>
-                          <button
-                            class="quantity-button quantity-up"
-                            aria-label="Increase quantity"
-                            {% unless current_variant.available %}
-                              disabled
-                            {% endunless %}
-                          >
-                            +
-                          </button>
+                        <div class="plan-card__connection-info">
+                          {{ plan_product.metafields.custom.product_subtitle | default: 'Product Subtitle not set' }}
                         </div>
 
-                        <div class="price">
-                          {%- if current_variant.compare_at_price > current_variant.price -%}
-                            <span
-                              class="original-price"
-                              {% if current_variant.compare_at_price <= current_variant.price %}
-                                style="display: none;"
-                              {% endif %}
-                            >
-                              {{- current_variant.compare_at_price | money -}}
-                            </span>
-                          {%- else -%}
-                            <span class="original-price" style="display: none;"></span>
-                          {%- endif -%}
-                          <span
-                            class="sale-price"
-                            {% if current_variant.price == 0 %}
-                              style="display: none;"
-                            {% endif %}
-                          >
-                            {{- current_variant.price | money -}}
-                          </span>
-                          <span
-                            class="free-price"
-                            {% if current_variant.price != 0 %}
-                              style="display: none;"
-                            {% endif %}
-                          >
-                            Free
-                          </span>
+                        {%- if plan_product.description != blank -%}
+                          <p class="product-description">
+                            {{ plan_product.description | strip_html | truncatewords: 25 }}
+                            <a href="{{ plan_product.url }}" class="learn-more">Learn More</a>
+                          </p>
+                        {%- endif -%}
+                        <div class="plan-card__savings">You're saving $36.00 yearly!</div>
+
+                        <div class="product-cta-wrapper">
+                          <button class="plan-card__action-button">Get {{ plan_product.title }}</button>
+                          <div class="plan-card__price-area">
+                            <div class="plan-card__price">
+                              {%- if plan_variant.compare_at_price > plan_variant.price -%}
+                                <span class="original-price">{{ plan_variant.compare_at_price | money }}</span>
+                              {%- endif -%}
+                              <span class="sale-price">
+                                {{- plan_variant.price | money -}}
+                                <span>/mo</span>
+                              </span>
+                            </div>
+                            <div class="plan-card__price-term">
+                              for all cameras
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                {%- endfor -%}
-              </div>
-            {%- else -%}
-              <p>
-                Please select a collection for this step in the theme editor, or add products to the selected collection
-                (
-                {{- collection.title | default: 'none selected' -}}
-                ).
-              </p>
-            {%- endif -%}
+                  {%- endfor -%}
+                </div>
+              {%- else -%}
+                <p>Please select the plan collection or add plan products to it.</p>
+              {%- endif -%}
 
-            {%- unless forloop.last -%}
-              <div class="next-button-wrapper">
-                <button class="next-button">{{ next_button_text }}</button>
+              <div class="bundle-features-section">
+                <div class="bundle-features__container">
+                  <div class="bundle-features__grid">
+                    <div class="bundle-features__item">
+                      <div class="bundle-features__icon">
+                        <svg
+                          width="42"
+                          height="44"
+                          viewBox="0 0 42 44"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M21.02 27.5404C27.57 27.5404 32.9 22.2104 32.9 15.6604V12.2004C32.9 5.65043 27.57 0.320435 21.02 0.320435C14.47 0.320435 9.14 5.65043 9.14 12.2004V15.6604C9.14 22.2104 14.47 27.5404 21.02 27.5404ZM21.02 2.32043C26.08 2.32043 30.25 6.14043 30.82 11.0404C27.19 10.3304 25.51 7.58043 25.44 7.46043C25.26 7.14043 24.96 6.94043 24.55 6.96043C24.18 6.96043 23.85 7.18043 23.69 7.50043C21.41 11.9804 13.79 11.5804 11.19 11.3104C11.64 6.27043 15.87 2.31043 21.02 2.31043V2.32043ZM11.14 13.3304C11.86 13.4004 12.86 13.4804 14.01 13.4804C17.41 13.4804 22.11 12.8404 24.64 9.70043C25.72 10.9004 27.76 12.6004 30.9 13.0804V15.6604C30.9 21.1104 26.47 25.5404 21.02 25.5404C15.57 25.5404 11.14 21.1104 11.14 15.6604V13.3304ZM39.02 33.1904C36.04 31.6204 29.75 28.9904 21.01 28.9904C12.27 28.9904 5.98 31.6204 3 33.1904C1.16 34.1604 0.0100021 36.0704 0.0100021 38.1504V42.8704C0.0100021 43.4204 0.460002 43.8704 1.01 43.8704C1.56 43.8704 2.01 43.4204 2.01 42.8704V38.1504C2.01 36.8104 2.75 35.5804 3.93 34.9604C5.76 33.9904 8.94 32.6104 13.21 31.7504C14.39 35.0004 17.47 37.2004 21 37.2004C24.53 37.2004 27.61 34.9904 28.79 31.7504C33.07 32.6004 36.24 33.9904 38.07 34.9604C39.26 35.5804 39.99 36.8104 39.99 38.1504V42.8704C39.99 43.4204 40.44 43.8704 40.99 43.8704C41.54 43.8704 41.99 43.4204 41.99 42.8704V38.1504C41.99 36.0604 40.84 34.1604 39 33.1904H39.02ZM21.01 35.2004C18.45 35.2004 16.2 33.6804 15.23 31.4004C17 31.1404 18.93 30.9904 21.01 30.9904C23.09 30.9904 25.01 31.1504 26.78 31.4004C25.8 33.6804 23.55 35.2004 21.01 35.2004Z" fill="#4E2FD2"/>
+                        </svg>
+                      </div>
+                      <div class="bundle-features__label">Person<br>Detection</div>
+                    </div>
+                    <div class="bundle-features__item">
+                      <div class="bundle-features__icon">
+                        <svg
+                          width="60"
+                          height="30"
+                          viewBox="0 0 60 30"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <g clip-path="url(#clip0_74_19303)">
+                            <path d="M48.58 11.0355C43.77 4.31552 36.63 0.905518 27.33 0.905518C26.06 0.905518 24.86 0.975518 23.7 1.07552C23.68 1.07552 23.65 1.07552 23.63 1.07552C14.15 1.89552 8.31 5.60552 7.14 6.41552C5.08 6.61552 3.05999 7.15552 0.969995 8.08552C0.609995 8.24552 0.369995 8.60552 0.369995 8.99552V16.2255C0.369995 20.6655 3.52 24.5355 7.86 25.4455C8.85999 27.7055 11.12 29.2855 13.75 29.2855C16.38 29.2855 18.5 27.7955 19.55 25.6455H35.32C36.37 27.7955 38.57 29.2855 41.11 29.2855C43.65 29.2855 45.86 27.7955 46.9 25.6455H55.46C55.96 25.6455 56.43 25.4655 56.8 25.1455C57.64 24.4155 59.6 22.4055 59.6 19.4955C59.6 15.6555 55.53 12.6955 48.56 11.0355H48.58ZM45.56 10.4355C42.21 9.87552 38.34 9.58552 34.06 9.58552C31.69 9.58552 29.57 9.45552 27.61 9.25552L25.1 2.97552C25.82 2.93552 26.56 2.91552 27.33 2.91552C35.08 2.91552 41.2 5.44552 45.56 10.4455V10.4355ZM23.01 3.13552L25.35 8.97552C22.59 8.59552 20.17 8.07552 17.91 7.59552C15.53 7.08552 13.36 6.62552 11.21 6.42552C13.75 5.20552 17.77 3.70552 23.01 3.13552ZM13.76 27.2855C11.31 27.2855 9.31 25.2955 9.31 22.8355C9.31 20.3755 11.3 18.3855 13.76 18.3855C16.22 18.3855 18.21 20.3855 18.21 22.8355C18.21 25.2855 16.21 27.2855 13.76 27.2855ZM41.12 27.2855C38.67 27.2855 36.67 25.2955 36.67 22.8355C36.67 20.3755 38.66 18.3855 41.12 18.3855C43.58 18.3855 45.57 20.3855 45.57 22.8355C45.57 25.2855 43.58 27.2855 41.12 27.2855ZM55.48 23.6455H47.51C47.54 23.3855 47.57 23.1155 47.57 22.8355C47.57 19.2855 44.68 16.3855 41.12 16.3855C39.24 16.3855 37.55 17.2055 36.37 18.4855H28.85C27.1 18.4855 25.54 17.4355 24.89 15.8055L24.59 15.0555C24.38 14.5455 23.8 14.2955 23.29 14.4955C22.78 14.7055 22.53 15.2855 22.73 15.7955L23.03 16.5455C23.99 18.9355 26.27 20.4855 28.84 20.4855H35.11C34.83 21.2155 34.66 22.0055 34.66 22.8255C34.66 23.0955 34.68 23.3655 34.72 23.6355H20.15C20.18 23.3755 20.21 23.1055 20.21 22.8255C20.21 19.2755 17.32 16.3755 13.76 16.3755C10.2 16.3755 7.31 19.2655 7.31 22.8255C7.31 22.9555 7.31999 23.0755 7.33 23.2055C4.41 22.1755 2.38 19.3855 2.38 16.2155V13.2855H6.46C7.01 13.2855 7.46 12.8355 7.46 12.2855C7.46 11.7355 7.01 11.2855 6.46 11.2855H2.38V9.64552C4.14 8.92552 5.85999 8.50552 7.6 8.35552C10.76 8.09552 13.88 8.76552 17.49 9.53552C21.71 10.4355 26.96 11.5655 34.06 11.5655C48.27 11.5655 56.23 14.9255 57.44 18.5255C57.37 18.5155 57.31 18.4855 57.23 18.4855H53.2C52.65 18.4855 52.2 18.9355 52.2 19.4855C52.2 20.0355 52.65 20.4855 53.2 20.4855H57.23C57.33 20.4855 57.41 20.4555 57.5 20.4355C57.15 22.0255 56.03 23.1655 55.47 23.6355L55.48 23.6455Z" fill="#4E2FD2"/>
+                          </g>
+                          <defs>
+                            <clipPath id="clip0_74_19303">
+                              <rect
+                                width="59.24"
+                                height="28.38"
+                                fill="white"
+                                transform="translate(0.37999 0.905518)"
+                              />
+                            </clipPath>
+                          </defs>
+                        </svg>
+                      </div>
+                      <div class="bundle-features__label">Vehicle<br>Detection</div>
+                    </div>
+                    <div class="bundle-features__item">
+                      <div class="bundle-features__icon">
+                        <svg
+                          width="60"
+                          height="61"
+                          viewBox="0 0 60 61"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <g clip-path="url(#clip0_74_19307)">
+                            <path d="M53.0399 16.8154L30.4099 6.67545C30.1499 6.55545 29.8499 6.55545 29.5899 6.67545L6.95987 16.8154C6.59987 16.9754 6.36987 17.3354 6.36987 17.7254V42.4554C6.36987 42.8454 6.59987 43.2054 6.95987 43.3654L29.5899 53.5154C29.7099 53.5654 29.8499 53.6054 29.9899 53.6054C30.1299 53.6054 30.2699 53.5755 30.3899 53.5154L53.0199 43.3654C53.3799 43.2054 53.6099 42.8454 53.6099 42.4554V17.7354C53.6099 17.3454 53.3799 16.9854 53.0199 16.8254L53.0399 16.8154ZM29.9999 8.68545L50.9999 18.1054L41.9199 22.1754L20.9199 12.7554L29.9999 8.68545ZM29.9999 27.5154L8.99987 18.0954L18.5099 13.8354C18.5099 13.8354 18.5899 13.9054 18.6499 13.9354L39.4799 23.2754L29.9999 27.5254V27.5154ZM8.36987 20.0054L28.9999 29.2554V51.0555L8.36987 41.8154V20.0054ZM30.9999 51.0555V29.2554L51.6299 20.0054V41.8055L30.9999 51.0555ZM24.2399 31.2654L12.6799 26.0854C12.3699 25.9454 12.0099 25.9754 11.7299 26.1554C11.4499 26.3354 11.2699 26.6554 11.2699 26.9954V37.3154C11.2699 37.7054 11.4999 38.0654 11.8599 38.2254L23.4199 43.4054C23.5499 43.4655 23.6899 43.4954 23.8299 43.4954C24.0199 43.4954 24.2099 43.4454 24.3699 43.3354C24.6499 43.1554 24.8299 42.8354 24.8299 42.4954V32.1754C24.8299 31.7854 24.5999 31.4254 24.2399 31.2654ZM22.8299 40.9554L13.2699 36.6654V28.5354L22.8299 32.8254V40.9554Z" fill="#4E2FD2"/>
+                          </g>
+                          <defs>
+                            <clipPath id="clip0_74_19307">
+                              <rect
+                                width="47.26"
+                                height="47.02"
+                                fill="white"
+                                transform="translate(6.36987 6.58545)"
+                              />
+                            </clipPath>
+                          </defs>
+                        </svg>
+                      </div>
+                      <div class="bundle-features__label">Package<br>Detection</div>
+                    </div>
+                    <div class="bundle-features__item">
+                      <div class="bundle-features__icon">
+                        <svg
+                          width="60"
+                          height="61"
+                          viewBox="0 0 60 61"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <g clip-path="url(#clip0_74_19312)">
+                            <path d="M55.5199 37.0305L38.0299 22.9205C37.8799 20.8905 36.7899 13.1105 29.0499 8.90049C28.4099 8.55049 27.6499 8.57049 27.0299 8.94049C26.3999 9.32049 26.0199 9.98049 26.0199 10.7205V16.8705H17.7499C14.8599 16.8705 12.4999 19.2205 12.4999 22.1205V25.7205H8.29986C5.98986 25.7205 4.10986 27.6005 4.10986 29.9105V33.4005C4.10986 37.4705 7.41986 40.7705 11.4799 40.7705H20.2099L28.3099 51.1805C28.4899 51.4105 28.7599 51.5505 29.0499 51.5605C29.0699 51.5605 29.0799 51.5605 29.0999 51.5605C29.3699 51.5605 29.6299 51.4505 29.8199 51.2505L46.8999 33.4305C47.0499 33.2705 47.1399 33.0705 47.1699 32.8705L54.2599 38.5905C54.6899 38.9405 55.3199 38.8705 55.6699 38.4405C56.0199 38.0105 55.9499 37.3805 55.5199 37.0305ZM20.7099 38.7605H11.4799C8.51986 38.7605 6.10986 36.3505 6.10986 33.3905V29.9005C6.10986 28.6905 7.08986 27.7105 8.29986 27.7105H13.5099C14.0599 27.7105 14.5099 27.2605 14.5099 26.7105V22.1105C14.5099 20.3205 15.9699 18.8605 17.7599 18.8605H27.0099C27.5599 18.8605 28.0099 18.4105 28.0099 17.8605V10.7105L28.0899 10.6505C35.8099 14.8505 36.0499 23.0805 36.0499 23.4305C36.0499 23.7305 36.1899 24.0105 36.4199 24.1905L41.0499 27.9305L25.4399 44.2205L21.4899 39.1505C21.2999 38.9105 21.0099 38.7605 20.6999 38.7605H20.7099ZM45.4599 32.0405L29.1799 49.0205L26.6799 45.8105L42.6099 29.1905L45.8399 31.7905C45.6999 31.8405 45.5699 31.9205 45.4599 32.0405ZM20.9399 24.8405C20.9399 25.8405 20.1299 26.6505 19.1299 26.6505C18.1299 26.6505 17.3199 25.8405 17.3199 24.8405C17.3199 23.8405 18.1299 23.0305 19.1299 23.0305C20.1299 23.0305 20.9399 23.8405 20.9399 24.8405Z" fill="#4E2FD2"/>
+                          </g>
+                          <defs>
+                            <clipPath id="clip0_74_19312">
+                              <rect
+                                width="51.78"
+                                height="42.91"
+                                fill="white"
+                                transform="translate(4.10986 8.6405)"
+                              />
+                            </clipPath>
+                          </defs>
+                        </svg>
+                      </div>
+                      <div class="bundle-features__label">Pet<br>Detection</div>
+                    </div>
+                  </div>
+                  <div class="bundle-stats__grid">
+                    <div class="bundle-stats__item">
+                      <div class="bundle-stats__number">300,000+</div>
+                      <div class="bundle-stats__description">Wyze users have signed up already!</div>
+                    </div>
+                    <div class="bundle-stats__item">
+                      <div class="bundle-stats__number">1 million+</div>
+                      <div class="bundle-stats__description">Detects millions of people every day.</div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            {%- endunless -%}
+
+              {%- unless forloop.last -%}
+                <div class="next-button-wrapper">
+                  <button class="next-button">{{ default_next_button_text }}</button>
+                </div>
+              {%- endunless -%}
+            {%- endif -%}
           </div>
         </div>
       {%- endfor -%}
-
-      {% comment %} Choose your Plan step {% endcomment %}
-
-      <div class="step-container" x-data="{ open: true }" :class="{ 'collapsed': !open }">
-        <div class="step-header" x-on:click="open = !open" style="cursor: pointer;">
-          <span class="step-number">STEP 2 OF 4</span>
-          <hr class="step-divider">
-          <div class="step-title">
-            <div class="step-icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="feather feather-shield"
-              >
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-              </svg>
-            </div>
-            <h2>Choose your plan</h2>
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span class="step-selected-wrapper"><span>1</span> Selected</span>
-              <span class="expand-icon" x-show="!open">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="#4e2fd2"
-                  stroke="#4e2fd2"
-                  stroke-width="1"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <polygon points="12 18 6 6 18 6 12 18"></polygon>
-                </svg>
-              </span>
-              <span class="expand-icon" x-show="open">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="#4e2fd2"
-                  stroke="#4e2fd2"
-                  stroke-width="1"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <polygon points="12 6 18 18 6 18 12 6"></polygon>
-                </svg>
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div x-show="open">
-          <div class="bundle-plan__offer-wrapper">
-            <div class="bundle-plan__offer-content">
-              <svg width="88" height="50" viewBox="0 0 88 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M54.2314 50.0001C53.2245 49.7705 52.1813 49.6408 51.218 49.2926C46.1594 47.4659 43.0236 43.9221 42.1564 38.5877C41.3928 33.8922 42.8327 29.8156 46.3291 26.6138C50.1162 23.1461 54.6233 22.1067 59.4997 23.7151C65.0711 25.5531 68.3192 29.5598 68.8208 35.4071C69.3062 41.0721 66.8168 45.3932 61.9454 48.3044C60.5116 49.1604 58.9194 49.6395 57.2599 49.8729C57.0777 49.8978 56.9017 49.9565 56.7221 50.0001H54.2314ZM56.4987 31.8034C57.2037 31.8034 57.91 31.8184 58.615 31.7997C59.4148 31.7784 60.0574 31.1184 60.0899 30.321C60.1298 29.314 59.4448 28.7026 58.2631 28.6914C57.4728 28.6839 57.0249 28.2979 56.9192 27.5334C56.8132 26.7648 56.2866 26.212 55.5678 26.1146C54.9028 26.0248 54.2227 26.3842 53.9694 27.043C53.8484 27.3587 53.8359 27.7293 53.8346 28.075C53.8321 28.5154 53.6462 28.7076 53.227 28.8698C52.5419 29.1343 51.8032 29.4051 51.2629 29.8768C48.912 31.9257 49.5509 35.7302 52.4196 36.9731C53.8633 37.5982 55.3382 38.1535 56.777 38.7899C57.1051 38.9346 57.4608 39.2341 57.5968 39.551C57.9499 40.3733 57.3073 41.152 56.3003 41.1769C55.0575 41.2081 53.8134 41.2081 52.5706 41.2181C51.4763 41.2268 50.7937 41.812 50.7775 42.7641C50.7625 43.67 51.485 44.2827 52.5856 44.2952C52.7728 44.2977 52.9599 44.3052 53.1459 44.2952C53.6899 44.2652 53.9345 44.5061 53.9657 45.0601C53.9844 45.3982 54.0617 45.7688 54.2314 46.0546C54.5858 46.6485 55.2883 46.8806 55.9035 46.6947C56.6185 46.4776 57.0839 45.9173 57.0465 45.1112C57.0141 44.4075 57.2511 44.113 57.9399 43.9034C60.0624 43.2595 61.2953 41.1195 60.8286 38.9758C60.5179 37.5458 59.6557 36.5226 58.3043 35.9486C56.9317 35.3659 55.5441 34.8206 54.1678 34.2466C53.3754 33.9159 53.0685 33.4418 53.1945 32.7966C53.3193 32.1565 53.8122 31.8134 54.6345 31.8071C55.2571 31.8021 55.8798 31.8071 56.5024 31.8059L56.4987 31.8034Z" fill="#1DF0BB"/>
-                <path d="M19.1195 28.4641C19.4564 26.424 20.7541 25.0114 22.1591 23.6164C29.2691 16.5563 36.3567 9.47251 43.4205 2.36626C44.9029 0.875129 46.6036 0.171366 48.7024 0.191331C53.3904 0.236252 58.0809 0.200066 62.769 0.207552C65.0225 0.211296 66.611 1.41792 67.0901 3.48429C67.1737 3.84241 67.1887 4.22424 67.1899 4.59484C67.1962 9.48998 67.1874 14.3851 67.1974 19.2815C67.2012 20.8463 66.6883 22.1976 65.6601 23.3706C65.3457 23.7287 65.0761 23.8148 64.6594 23.5091C63.9257 22.9713 63.1545 22.4809 62.3971 21.9755C61.8343 21.5999 61.7932 21.3242 62.2973 20.8537C62.8363 20.3521 63.0634 19.7432 63.0622 19.022C63.0597 14.6035 63.0622 10.185 63.0584 5.76653C63.0584 4.71587 62.6766 4.33654 61.6384 4.33529C57.2399 4.3328 52.8414 4.33904 48.4429 4.32905C47.6917 4.32781 47.0828 4.56863 46.55 5.10269C39.0432 12.617 31.5264 20.1225 24.0171 27.6343C22.9951 28.6563 22.9864 29.8479 24.0071 30.8674C27.2065 34.063 30.4196 37.2449 33.6227 40.4356C34.5598 41.3689 35.4932 42.3073 36.4141 43.2569C37.1203 43.9856 37.9152 44.3599 38.9246 43.9556C39.3177 43.7984 39.5323 43.9694 39.7382 44.2875C40.2211 45.035 40.7252 45.7687 41.2293 46.5024C41.57 46.9978 41.4964 47.316 40.9598 47.6017C38.7999 48.7534 35.9361 48.4315 34.1056 46.7582C32.9127 45.6676 31.7897 44.4997 30.6442 43.3567C27.8092 40.5291 25.0016 37.6742 22.1392 34.8741C20.7092 33.4766 19.4264 32.0266 19.1195 29.9577V28.4641H19.1195Z" fill="#1DF0BB"/>
-                <path d="M57.8512 12.7341C57.8201 14.4199 56.4013 15.7825 54.7018 15.76C53.0197 15.7376 51.621 14.3126 51.6372 12.6368C51.6534 10.9473 53.1171 9.51603 54.7991 9.54348C56.5124 9.57218 57.8837 11.0059 57.8512 12.7341Z" fill="#1DF0BB"/>
-              </svg>
-
-              <span class="bundle-plan__offer-text"
-                >This discounted rate is only available on this page and
-                <span>won't be available in your app</span></span
-              >
-            </div>
-          </div>
-
-          <div class="products-grid bundle-plan__required-item-grid">
-            <div class="product-card free-product product-card--highlighted">
-              <img
-                src="https://placehold.co/150x150/e1e4e8/777?text=Sense+Hub"
-                alt="Wyze Sense Hub"
-                class="product-image"
-                width="150"
-                height="150"
-                loading="lazy"
-              >
-              <div class="product-card__content">
-                <h3>Wyze Sense Hub</h3>
-                <span class="bundle-plan__required-badge">Required</span>
-                <p class="product-description">
-                  The brains behind the brawn. It connects each of the monitoring components and sends alerts.
-                  <a href="#" class="learn-more">Learn More</a>
-                </p>
-                <div class="quantity-price bundle-plan__price-container">
-                  <div class="price">
-                    <span class="original-price">$29.92</span>
-                    <span class="free-price bundle-plan__free-price">FREE</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {% comment %} Plans here {% endcomment %}
-          <div class="plans-grid">
-            <div class="product-card product-card--highlighted">
-              <div class="product-card__content">
-                <h3 style="display: flex; align-items: center; gap: 8px;">
-                  <span class="bundle-plan__icon">
-                    <svg width="24" height="30" viewBox="0 0 24 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <g clip-path="url(#clip0_74_19217)">
-                      <path d="M1.60983 4.44088C1.60983 4.44088 0 4.73231 0 6.08582V15.9489C0 21.2205 7.76697 27.0878 10.403 28.8364C10.9289 29.1861 11.6088 29.1861 12.1347 28.8364C14.7771 27.0943 22.5377 21.2269 22.5377 15.9489V6.08582C22.5377 4.73231 20.9278 4.44088 20.9278 4.44088L12.2245 1.70797C11.6024 1.51369 10.9353 1.51369 10.3132 1.70797L1.60983 4.44088Z" fill="#E7EFFD"/>
-                      <path d="M3.56601 3.28823C3.56601 3.28823 3.61732 3.27527 3.64938 3.2688L12.3528 0.535881C12.8402 0.380455 13.3661 0.380455 13.8536 0.535881L22.5569 3.2688C22.5569 3.2688 22.6082 3.28175 22.6403 3.28823C22.6403 3.28823 22.6531 3.28823 22.6724 3.2947C22.7044 3.30118 22.7493 3.31413 22.8071 3.33356C22.9225 3.37242 23.07 3.4307 23.2175 3.51489C23.4997 3.68327 23.6857 3.90346 23.6857 4.24021V14.1033C23.6857 15.2496 23.2624 16.4801 22.5249 17.7429C21.7937 18.9993 20.7803 20.2362 19.6708 21.3825C17.4452 23.6815 14.8862 25.5531 13.597 26.4014C13.302 26.5957 12.9236 26.5957 12.6285 26.4014C11.333 25.5466 8.78033 23.675 6.55478 21.376C5.44522 20.2297 4.43185 18.9928 3.70069 17.7364C2.96953 16.4801 2.53982 15.2496 2.53982 14.0968V4.24021C2.53982 3.90346 2.7194 3.68327 3.00802 3.51489C3.14912 3.4307 3.29663 3.37242 3.41849 3.33356C3.47622 3.31413 3.52111 3.30118 3.55318 3.2947C3.56601 3.2947 3.57883 3.2947 3.58525 3.28823H3.56601Z" stroke="#0046C7"/>
-                      <path d="M7.51684 10.25H6.86905L7.51684 11.7913L6.94602 13.1254L5.72742 10.25H5.07964L6.74719 14.2134H7.15126L7.84393 12.5814L8.53661 14.2134H8.94067L10.6082 10.25H9.96045L8.74185 13.1513L7.52325 10.25H7.51684Z" fill="#0046C7"/>
-                      <path d="M13.6868 10.25L12.5708 12.2446L11.4548 10.25H10.7622L12.2886 12.9505V14.1939H12.8787V12.9505L14.3795 10.25H13.6868Z" fill="#0046C7"/>
-                      <path d="M18.016 14.2133H21.101V13.5333H18.016V14.2133Z" fill="#0046C7"/>
-                      <path d="M18.016 10.93H21.101V10.25H18.016V10.93Z" fill="#0046C7"/>
-                      <path d="M18.016 12.5619H21.101V11.882H18.016V12.5619Z" fill="#0046C7"/>
-                      <path d="M14.5591 10.25V10.9106H16.5922L14.3153 14.2199H17.6248V13.5658H15.5339L17.83 10.2565H14.5591V10.25Z" fill="#0046C7"/>
-                      </g>
-                      <defs>
-                      <clipPath id="clip0_74_19217">
-                      <rect width="24" height="29" fill="white" transform="translate(0 0.095459)"/>
-                      </clipPath>
-                      </defs>
-                    </svg>
-                  </span>
-                  Cam <span>Unlimited</span>
-                </h3>
-                <div class="plan-card__connection-info">Connect to UNLIMITED cameras</div>
-                <p class="product-description">
-                  Everything in Cam Plus. Plus Facial Recognition and 24/7 professional monitoring when you arm your
-                  Wyze Cam.
-                  <a href="#" class="learn-more">Learn More</a>
-                </p>
-                <div class="plan-card__savings">You're saving $36.00 yearly!</div>
-
-                <div class="plan-card__price-area">
-                  <div class="plan-card__price">
-                    <span class="original-price">$12.99</span>
-                    <span class="sale-price">$9.99<span>/mo</span></span>
-                  </div>
-                  <div class="plan-card__price-term">for all cameras</div>
-                </div>
-
-                <button class="plan-card__action-button">Get Cam Unlimited</button>
-              </div>
-            </div>
-
-            <div class="product-card">
-              <div class="product-card__content">
-                <h3 style="display: flex; align-items: center; gap: 8px;">
-                  <span class="bundle-plan__icon">
-                    <svg width="24" height="30" viewBox="0 0 24 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <g clip-path="url(#clip0_74_19217)">
-                      <path d="M1.60983 4.44088C1.60983 4.44088 0 4.73231 0 6.08582V15.9489C0 21.2205 7.76697 27.0878 10.403 28.8364C10.9289 29.1861 11.6088 29.1861 12.1347 28.8364C14.7771 27.0943 22.5377 21.2269 22.5377 15.9489V6.08582C22.5377 4.73231 20.9278 4.44088 20.9278 4.44088L12.2245 1.70797C11.6024 1.51369 10.9353 1.51369 10.3132 1.70797L1.60983 4.44088Z" fill="#E7EFFD"/>
-                      <path d="M3.56601 3.28823C3.56601 3.28823 3.61732 3.27527 3.64938 3.2688L12.3528 0.535881C12.8402 0.380455 13.3661 0.380455 13.8536 0.535881L22.5569 3.2688C22.5569 3.2688 22.6082 3.28175 22.6403 3.28823C22.6403 3.28823 22.6531 3.28823 22.6724 3.2947C22.7044 3.30118 22.7493 3.31413 22.8071 3.33356C22.9225 3.37242 23.07 3.4307 23.2175 3.51489C23.4997 3.68327 23.6857 3.90346 23.6857 4.24021V14.1033C23.6857 15.2496 23.2624 16.4801 22.5249 17.7429C21.7937 18.9993 20.7803 20.2362 19.6708 21.3825C17.4452 23.6815 14.8862 25.5531 13.597 26.4014C13.302 26.5957 12.9236 26.5957 12.6285 26.4014C11.333 25.5466 8.78033 23.675 6.55478 21.376C5.44522 20.2297 4.43185 18.9928 3.70069 17.7364C2.96953 16.4801 2.53982 15.2496 2.53982 14.0968V4.24021C2.53982 3.90346 2.7194 3.68327 3.00802 3.51489C3.14912 3.4307 3.29663 3.37242 3.41849 3.33356C3.47622 3.31413 3.52111 3.30118 3.55318 3.2947C3.56601 3.2947 3.57883 3.2947 3.58525 3.28823H3.56601Z" stroke="#0046C7"/>
-                      <path d="M7.51684 10.25H6.86905L7.51684 11.7913L6.94602 13.1254L5.72742 10.25H5.07964L6.74719 14.2134H7.15126L7.84393 12.5814L8.53661 14.2134H8.94067L10.6082 10.25H9.96045L8.74185 13.1513L7.52325 10.25H7.51684Z" fill="#0046C7"/>
-                      <path d="M13.6868 10.25L12.5708 12.2446L11.4548 10.25H10.7622L12.2886 12.9505V14.1939H12.8787V12.9505L14.3795 10.25H13.6868Z" fill="#0046C7"/>
-                      <path d="M18.016 14.2133H21.101V13.5333H18.016V14.2133Z" fill="#0046C7"/>
-                      <path d="M18.016 10.93H21.101V10.25H18.016V10.93Z" fill="#0046C7"/>
-                      <path d="M18.016 12.5619H21.101V11.882H18.016V12.5619Z" fill="#0046C7"/>
-                      <path d="M14.5591 10.25V10.9106H16.5922L14.3153 14.2199H17.6248V13.5658H15.5339L17.83 10.2565H14.5591V10.25Z" fill="#0046C7"/>
-                      </g>
-                      <defs>
-                      <clipPath id="clip0_74_19217">
-                      <rect width="24" height="29" fill="white" transform="translate(0 0.095459)"/>
-                      </clipPath>
-                      </defs>
-                    </svg>
-                  </span>
-                  Cam <span>Unlimited Pro</span>
-                </h3>
-                <div class="plan-card__connection-info">Connect to UNLIMITED cameras</div>
-                <p class="product-description">
-                  Everything in Cam Unlimited. Plus Descriptive Alerts, AI Video Search, 60-Day cloud backup, and 24/7
-                  Emergency Dispatch when you need help.
-                  <a href="#" class="learn-more">Learn More</a>
-                </p>
-                <div class="plan-card__savings">You're saving $60 yearly!</div>
-
-                <div class="plan-card__price-area">
-                  <div class="plan-card__price">
-                    <span class="original-price">$24.99</span>
-                    <span class="sale-price">$19.99<span>/mo</span></span>
-                  </div>
-                  <div class="plan-card__price-term">for all cameras</div>
-                </div>
-
-                <button class="plan-card__action-button">Get Cam Unlimited Pro</button>
-              </div>
-            </div>
-
-            <div class="product-card">
-              <div class="product-card__content">
-                <h3 style="display: flex; align-items: center; gap: 8px;">
-                  <span class="bundle-plan__icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M22.3397 12.7553C22.3397 18.9055 17.3367 23.8928 11.1671 23.8928C4.99741 23.8928 0 18.9055 0 12.7553C0 6.60509 5.00302 1.62341 11.1727 1.62341C17.3423 1.62341 22.3453 6.61069 22.3453 12.7609L22.3397 12.7553Z" fill="#E6EAFF"/>
-                      <path d="M12.7545 22.1147C6.71942 22.1147 1.81175 17.2225 1.81175 11.2065C1.81175 5.19044 6.71942 0.298218 12.7545 0.298218C13.1415 0.298218 13.4556 0.61132 13.4556 0.997107C13.4556 1.38289 13.1415 1.696 12.7545 1.696C7.49343 1.696 3.21394 5.96202 3.21394 11.2065C3.21394 16.4509 7.49343 20.717 12.7545 20.717C13.1415 20.717 13.4556 21.0301 13.4556 21.4159C13.4556 21.8016 13.1415 22.1147 12.7545 22.1147Z" fill="#4E2FD2"/>
-                      <path d="M23.2989 10.1665H16.7927V3.68082C16.7927 3.29504 16.4786 2.98193 16.0916 2.98193C15.7046 2.98193 15.3905 3.29504 15.3905 3.68082V10.1665H8.88435C8.49735 10.1665 8.18326 10.4796 8.18326 10.8654C8.18326 11.2512 8.49735 11.5643 8.88435 11.5643H15.3905V18.05C15.3905 18.4358 15.7046 18.7489 16.0916 18.7489C16.4786 18.7489 16.7927 18.4358 16.7927 18.05V11.5643H23.2989C23.6859 11.5643 24 11.2512 24 10.8654C24 10.4796 23.6859 10.1665 23.2989 10.1665Z" fill="#4E2FD2"/>
-                    </svg>
-                  </span>
-                  Cam <span>Plus</span>
-                </h3>
-                <div class="plan-card__connection-info">For a single camera</div>
-                <p class="product-description">
-                  Unlimited 14-day cloud storage with Person, Pet, Package, and Vehicle Detection.
-                  <a href="#" class="learn-more">Learn More</a>
-                </p>
-                <div class="plan-card__savings">You're saving $12 yearly per camera!</div>
-
-                <div class="plan-card__price-area">
-                  <div class="plan-card__price">
-                    <span class="original-price">$2.99</span>
-                    <span class="sale-price">$1.99<span>/mo</span></span>
-                  </div>
-                  <div class="plan-card__price-term">per camera</div>
-                </div>
-
-                <button class="plan-card__action-button">Get Cam Plus</button>
-              </div>
-            </div>
-          </div>
-
-          {% comment %} Features section {% endcomment %}
-          <div class="bundle-features-section">
-            <div class="bundle-features__container">
-              <div class="bundle-features__grid">
-                <div class="bundle-features__item">
-                  <div class="bundle-features__icon">
-                    <svg width="42" height="44" viewBox="0 0 42 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M21.02 27.5404C27.57 27.5404 32.9 22.2104 32.9 15.6604V12.2004C32.9 5.65043 27.57 0.320435 21.02 0.320435C14.47 0.320435 9.14 5.65043 9.14 12.2004V15.6604C9.14 22.2104 14.47 27.5404 21.02 27.5404ZM21.02 2.32043C26.08 2.32043 30.25 6.14043 30.82 11.0404C27.19 10.3304 25.51 7.58043 25.44 7.46043C25.26 7.14043 24.96 6.94043 24.55 6.96043C24.18 6.96043 23.85 7.18043 23.69 7.50043C21.41 11.9804 13.79 11.5804 11.19 11.3104C11.64 6.27043 15.87 2.31043 21.02 2.31043V2.32043ZM11.14 13.3304C11.86 13.4004 12.86 13.4804 14.01 13.4804C17.41 13.4804 22.11 12.8404 24.64 9.70043C25.72 10.9004 27.76 12.6004 30.9 13.0804V15.6604C30.9 21.1104 26.47 25.5404 21.02 25.5404C15.57 25.5404 11.14 21.1104 11.14 15.6604V13.3304ZM39.02 33.1904C36.04 31.6204 29.75 28.9904 21.01 28.9904C12.27 28.9904 5.98 31.6204 3 33.1904C1.16 34.1604 0.0100021 36.0704 0.0100021 38.1504V42.8704C0.0100021 43.4204 0.460002 43.8704 1.01 43.8704C1.56 43.8704 2.01 43.4204 2.01 42.8704V38.1504C2.01 36.8104 2.75 35.5804 3.93 34.9604C5.76 33.9904 8.94 32.6104 13.21 31.7504C14.39 35.0004 17.47 37.2004 21 37.2004C24.53 37.2004 27.61 34.9904 28.79 31.7504C33.07 32.6004 36.24 33.9904 38.07 34.9604C39.26 35.5804 39.99 36.8104 39.99 38.1504V42.8704C39.99 43.4204 40.44 43.8704 40.99 43.8704C41.54 43.8704 41.99 43.4204 41.99 42.8704V38.1504C41.99 36.0604 40.84 34.1604 39 33.1904H39.02ZM21.01 35.2004C18.45 35.2004 16.2 33.6804 15.23 31.4004C17 31.1404 18.93 30.9904 21.01 30.9904C23.09 30.9904 25.01 31.1504 26.78 31.4004C25.8 33.6804 23.55 35.2004 21.01 35.2004Z" fill="#4E2FD2"/>
-                    </svg>
-                  </div>
-                  <div class="bundle-features__label">Person<br>Detection</div>
-                </div>
-                <div class="bundle-features__item">
-                  <div class="bundle-features__icon">
-                    <svg width="60" height="30" viewBox="0 0 60 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <g clip-path="url(#clip0_74_19303)">
-                      <path d="M48.58 11.0355C43.77 4.31552 36.63 0.905518 27.33 0.905518C26.06 0.905518 24.86 0.975518 23.7 1.07552C23.68 1.07552 23.65 1.07552 23.63 1.07552C14.15 1.89552 8.31 5.60552 7.14 6.41552C5.08 6.61552 3.05999 7.15552 0.969995 8.08552C0.609995 8.24552 0.369995 8.60552 0.369995 8.99552V16.2255C0.369995 20.6655 3.52 24.5355 7.86 25.4455C8.85999 27.7055 11.12 29.2855 13.75 29.2855C16.38 29.2855 18.5 27.7955 19.55 25.6455H35.32C36.37 27.7955 38.57 29.2855 41.11 29.2855C43.65 29.2855 45.86 27.7955 46.9 25.6455H55.46C55.96 25.6455 56.43 25.4655 56.8 25.1455C57.64 24.4155 59.6 22.4055 59.6 19.4955C59.6 15.6555 55.53 12.6955 48.56 11.0355H48.58ZM45.56 10.4355C42.21 9.87552 38.34 9.58552 34.06 9.58552C31.69 9.58552 29.57 9.45552 27.61 9.25552L25.1 2.97552C25.82 2.93552 26.56 2.91552 27.33 2.91552C35.08 2.91552 41.2 5.44552 45.56 10.4455V10.4355ZM23.01 3.13552L25.35 8.97552C22.59 8.59552 20.17 8.07552 17.91 7.59552C15.53 7.08552 13.36 6.62552 11.21 6.42552C13.75 5.20552 17.77 3.70552 23.01 3.13552ZM13.76 27.2855C11.31 27.2855 9.31 25.2955 9.31 22.8355C9.31 20.3755 11.3 18.3855 13.76 18.3855C16.22 18.3855 18.21 20.3855 18.21 22.8355C18.21 25.2855 16.21 27.2855 13.76 27.2855ZM41.12 27.2855C38.67 27.2855 36.67 25.2955 36.67 22.8355C36.67 20.3755 38.66 18.3855 41.12 18.3855C43.58 18.3855 45.57 20.3855 45.57 22.8355C45.57 25.2855 43.58 27.2855 41.12 27.2855ZM55.48 23.6455H47.51C47.54 23.3855 47.57 23.1155 47.57 22.8355C47.57 19.2855 44.68 16.3855 41.12 16.3855C39.24 16.3855 37.55 17.2055 36.37 18.4855H28.85C27.1 18.4855 25.54 17.4355 24.89 15.8055L24.59 15.0555C24.38 14.5455 23.8 14.2955 23.29 14.4955C22.78 14.7055 22.53 15.2855 22.73 15.7955L23.03 16.5455C23.99 18.9355 26.27 20.4855 28.84 20.4855H35.11C34.83 21.2155 34.66 22.0055 34.66 22.8255C34.66 23.0955 34.68 23.3655 34.72 23.6355H20.15C20.18 23.3755 20.21 23.1055 20.21 22.8255C20.21 19.2755 17.32 16.3755 13.76 16.3755C10.2 16.3755 7.31 19.2655 7.31 22.8255C7.31 22.9555 7.31999 23.0755 7.33 23.2055C4.41 22.1755 2.38 19.3855 2.38 16.2155V13.2855H6.46C7.01 13.2855 7.46 12.8355 7.46 12.2855C7.46 11.7355 7.01 11.2855 6.46 11.2855H2.38V9.64552C4.14 8.92552 5.85999 8.50552 7.6 8.35552C10.76 8.09552 13.88 8.76552 17.49 9.53552C21.71 10.4355 26.96 11.5655 34.06 11.5655C48.27 11.5655 56.23 14.9255 57.44 18.5255C57.37 18.5155 57.31 18.4855 57.23 18.4855H53.2C52.65 18.4855 52.2 18.9355 52.2 19.4855C52.2 20.0355 52.65 20.4855 53.2 20.4855H57.23C57.33 20.4855 57.41 20.4555 57.5 20.4355C57.15 22.0255 56.03 23.1655 55.47 23.6355L55.48 23.6455Z" fill="#4E2FD2"/>
-                      </g>
-                      <defs>
-                      <clipPath id="clip0_74_19303">
-                      <rect width="59.24" height="28.38" fill="white" transform="translate(0.37999 0.905518)"/>
-                      </clipPath>
-                      </defs>
-                    </svg>
-
-                  </div>
-                  <div class="bundle-features__label">Vehicle<br>Detection</div>
-                </div>
-                <div class="bundle-features__item">
-                  <div class="bundle-features__icon">
-                    <svg width="60" height="61" viewBox="0 0 60 61" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <g clip-path="url(#clip0_74_19307)">
-                        <path d="M53.0399 16.8154L30.4099 6.67545C30.1499 6.55545 29.8499 6.55545 29.5899 6.67545L6.95987 16.8154C6.59987 16.9754 6.36987 17.3354 6.36987 17.7254V42.4554C6.36987 42.8454 6.59987 43.2054 6.95987 43.3654L29.5899 53.5154C29.7099 53.5654 29.8499 53.6054 29.9899 53.6054C30.1299 53.6054 30.2699 53.5755 30.3899 53.5154L53.0199 43.3654C53.3799 43.2054 53.6099 42.8454 53.6099 42.4554V17.7354C53.6099 17.3454 53.3799 16.9854 53.0199 16.8254L53.0399 16.8154ZM29.9999 8.68545L50.9999 18.1054L41.9199 22.1754L20.9199 12.7554L29.9999 8.68545ZM29.9999 27.5154L8.99987 18.0954L18.5099 13.8354C18.5099 13.8354 18.5899 13.9054 18.6499 13.9354L39.4799 23.2754L29.9999 27.5254V27.5154ZM8.36987 20.0054L28.9999 29.2554V51.0555L8.36987 41.8154V20.0054ZM30.9999 51.0555V29.2554L51.6299 20.0054V41.8055L30.9999 51.0555ZM24.2399 31.2654L12.6799 26.0854C12.3699 25.9454 12.0099 25.9754 11.7299 26.1554C11.4499 26.3354 11.2699 26.6554 11.2699 26.9954V37.3154C11.2699 37.7054 11.4999 38.0654 11.8599 38.2254L23.4199 43.4054C23.5499 43.4655 23.6899 43.4954 23.8299 43.4954C24.0199 43.4954 24.2099 43.4454 24.3699 43.3354C24.6499 43.1554 24.8299 42.8354 24.8299 42.4954V32.1754C24.8299 31.7854 24.5999 31.4254 24.2399 31.2654ZM22.8299 40.9554L13.2699 36.6654V28.5354L22.8299 32.8254V40.9554Z" fill="#4E2FD2"/>
-                        </g>
-                        <defs>
-                        <clipPath id="clip0_74_19307">
-                        <rect width="47.26" height="47.02" fill="white" transform="translate(6.36987 6.58545)"/>
-                        </clipPath>
-                        </defs>
-                    </svg>
-
-                  </div>
-                  <div class="bundle-features__label">Package<br>Detection</div>
-                </div>
-                <div class="bundle-features__item">
-                  <div class="bundle-features__icon">
-                    <svg width="60" height="61" viewBox="0 0 60 61" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <g clip-path="url(#clip0_74_19312)">
-                      <path d="M55.5199 37.0305L38.0299 22.9205C37.8799 20.8905 36.7899 13.1105 29.0499 8.90049C28.4099 8.55049 27.6499 8.57049 27.0299 8.94049C26.3999 9.32049 26.0199 9.98049 26.0199 10.7205V16.8705H17.7499C14.8599 16.8705 12.4999 19.2205 12.4999 22.1205V25.7205H8.29986C5.98986 25.7205 4.10986 27.6005 4.10986 29.9105V33.4005C4.10986 37.4705 7.41986 40.7705 11.4799 40.7705H20.2099L28.3099 51.1805C28.4899 51.4105 28.7599 51.5505 29.0499 51.5605C29.0699 51.5605 29.0799 51.5605 29.0999 51.5605C29.3699 51.5605 29.6299 51.4505 29.8199 51.2505L46.8999 33.4305C47.0499 33.2705 47.1399 33.0705 47.1699 32.8705L54.2599 38.5905C54.6899 38.9405 55.3199 38.8705 55.6699 38.4405C56.0199 38.0105 55.9499 37.3805 55.5199 37.0305ZM20.7099 38.7605H11.4799C8.51986 38.7605 6.10986 36.3505 6.10986 33.3905V29.9005C6.10986 28.6905 7.08986 27.7105 8.29986 27.7105H13.5099C14.0599 27.7105 14.5099 27.2605 14.5099 26.7105V22.1105C14.5099 20.3205 15.9699 18.8605 17.7599 18.8605H27.0099C27.5599 18.8605 28.0099 18.4105 28.0099 17.8605V10.7105L28.0899 10.6505C35.8099 14.8505 36.0499 23.0805 36.0499 23.4305C36.0499 23.7305 36.1899 24.0105 36.4199 24.1905L41.0499 27.9305L25.4399 44.2205L21.4899 39.1505C21.2999 38.9105 21.0099 38.7605 20.6999 38.7605H20.7099ZM45.4599 32.0405L29.1799 49.0205L26.6799 45.8105L42.6099 29.1905L45.8399 31.7905C45.6999 31.8405 45.5699 31.9205 45.4599 32.0405ZM20.9399 24.8405C20.9399 25.8405 20.1299 26.6505 19.1299 26.6505C18.1299 26.6505 17.3199 25.8405 17.3199 24.8405C17.3199 23.8405 18.1299 23.0305 19.1299 23.0305C20.1299 23.0305 20.9399 23.8405 20.9399 24.8405Z" fill="#4E2FD2"/>
-                      </g>
-                      <defs>
-                      <clipPath id="clip0_74_19312">
-                      <rect width="51.78" height="42.91" fill="white" transform="translate(4.10986 8.6405)"/>
-                      </clipPath>
-                      </defs>
-                    </svg>
-                  </div>
-                  <div class="bundle-features__label">Pet<br>Detection</div>
-                </div>
-              </div>
-              <div class="bundle-stats__grid">
-                <div class="bundle-stats__item">
-                  <div class="bundle-stats__number">300,000+</div>
-                  <div class="bundle-stats__description">Wyze users have signed up already!</div>
-                </div>
-                <div class="bundle-stats__item">
-                  <div class="bundle-stats__number">1 million+</div>
-                  <div class="bundle-stats__description">Detects millions of people every day.</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
 
     <div class="cart-summary">
@@ -2434,6 +2509,37 @@
           "info": "Leave blank on the last step to show 'View Summary' or define custom text."
         }
       ]
+    },
+    {
+      "type": "plan_step",
+      "name": "Plan Step",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "step_title",
+          "label": "Step Title",
+          "default": "Choose your Plan"
+        },
+        {
+          "type": "product",
+          "id": "required_product",
+          "label": "Required Free Product",
+          "info": "Select the 'hub' or required product included for free with plans."
+        },
+        {
+          "type": "collection",
+          "id": "plan_collection",
+          "label": "Plan Product Collection",
+          "info": "Collection containing the different subscription plan products."
+        },
+        {
+          "type": "text",
+          "id": "next_button_text",
+          "label": "Next Button Text",
+          "info": "Leave blank on the last step to show 'View Summary' or define custom text."
+        }
+      ]
     }
   ],
   "presets": [
@@ -2446,6 +2552,13 @@
             "step_title": "Choose your cameras",
             "products_limit": 6,
             "next_button_text": "Next: Choose your sensors"
+          }
+        },
+        {
+          "type": "plan_step", // Example usage of the new block
+          "settings": {
+            "step_title": "Choose your plan"
+            // Configure required_product and plan_collection in the editor
           }
         },
         {
