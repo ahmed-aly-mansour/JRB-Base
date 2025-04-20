@@ -21,6 +21,15 @@
             "next_button_text": "Next: Choose your sensors"
           }
         },
+        "plan_step_kNqk76": {
+          "type": "plan_step",
+          "settings": {
+            "step_title": "Choose your Plan",
+            "required_product": "wyze-sense-hub",
+            "plan_collection": "cam-plans",
+            "next_button_text": "Select your sensors"
+          }
+        },
         "step_XMKUGp": {
           "type": "step",
           "settings": {
@@ -51,6 +60,7 @@
       },
       "block_order": [
         "step_a49tpx",
+        "plan_step_kNqk76",
         "step_XMKUGp",
         "step_xnBC3N",
         "step_jQbkWA"
