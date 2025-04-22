@@ -2,6 +2,8 @@ class BundleBuilder extends HTMLElement {
   constructor() {
     super();
     this.selectedItems = {};
+    this.currentFirstStepQuantity = 0;
+    this.previousFirstStepQuantity = 0;
     this.initializeElements();
     this.attachEventListeners();
   }
@@ -17,6 +19,8 @@ class BundleBuilder extends HTMLElement {
     this.checkoutButton = this.querySelector('.checkout-button');
     this.announcementBar = document.querySelector('.shopify-section-group-header-group');
     this.headerElement = document.querySelector('.shopify-section-group-header-group.section-header');
+    // Find the block ID of the first 'step' type block
+    this.firstStepBlockId = this.querySelector('.step-container[data-block-type="step"]')?.dataset.blockId;
 
     if (this.announcementBar && this.headerElement && this.announcementBar === this.headerElement) {
       this.announcementBar = null;
@@ -25,9 +29,17 @@ class BundleBuilder extends HTMLElement {
 
   // Set up event listeners
   attachEventListeners() {
-    this.addEventListener('click', this.handleSwatchClick.bind(this));
-    this.addEventListener('click', this.handleQuantityClick.bind(this));
-    this.addEventListener('click', this.handleNextClick.bind(this));
+    this.addEventListener('click', (event) => {
+      if (event.target.closest('.variant-swatch-button')) {
+        this.handleSwatchClick(event);
+      } else if (event.target.closest('.quantity-button') && !event.target.closest('.summary-item')) {
+        this.handleQuantityClick(event);
+      } else if (event.target.closest('.next-button')) {
+        this.handleNextClick(event);
+      } else if (event.target.closest('.plan-card__action-button')) {
+        this.handlePlanSelectionClick(event);
+      }
+    });
 
     if (this.summaryContainer) {
       this.summaryContainer.addEventListener('click', this.handleSummaryQuantityClick.bind(this));
@@ -40,6 +52,9 @@ class BundleBuilder extends HTMLElement {
   }
 
   connectedCallback() {
+    this.querySelectorAll('.plan-card__action-button').forEach(button => {
+      button.dataset.originalText = button.textContent;
+    });
     this.renderSummary();
   }
 
@@ -346,6 +361,13 @@ class BundleBuilder extends HTMLElement {
     const productId = productCardElement.dataset.productId;
     if (!variantId || !productId) return;
 
+    const blockType = productCardElement.closest('.step-container')?.dataset.blockType;
+    if (blockType === 'plan_step' && !productCardElement.classList.contains('product-card--highlighted')) {
+       const quantityValueEl = productCardElement.querySelector('.quantity-value');
+       if (quantityValueEl) quantityValueEl.textContent = '0';
+      return;
+    }
+
     if (quantity <= 0) {
       delete this.selectedItems[variantId];
     } else {
@@ -363,6 +385,7 @@ class BundleBuilder extends HTMLElement {
         variantTitle: productCardElement.dataset.variantTitle,
         imageUrl: productCardElement.dataset.imageUrl,
         optionsMap: optionsMap,
+        isPlan: blockType === 'plan_step'
       };
     }
 
@@ -399,6 +422,13 @@ class BundleBuilder extends HTMLElement {
   // Update state from variant ID
   updateStateFromVariantId(variantId, quantity) {
     if (!variantId) return;
+
+    const item = this.selectedItems[variantId];
+
+    if (item && item.isPlan) {
+      console.log("Cannot change plan quantity from summary.");
+      return;
+    }
 
     if (quantity <= 0) {
       if (this.selectedItems[variantId]) {
@@ -470,11 +500,50 @@ class BundleBuilder extends HTMLElement {
 
   // Render summary section
   renderSummary() {
-    const { finalTotal, originalTotal, itemsGroupedByBlock, blockCollectionTitles, blockQuantities } = this.calculateSummaryData();
+    // 1. Calculate initial summary data
+    let { finalTotal, originalTotal, itemsGroupedByBlock, blockCollectionTitles, blockQuantities } = this.calculateSummaryData();
+    const firstStepQuantity = blockQuantities[this.firstStepBlockId] || 0;
+    this.currentFirstStepQuantity = firstStepQuantity;
+
+    const planStepContainer = this.querySelector('.step-container[data-block-type="plan_step"]');
+    const planBlockId = planStepContainer?.dataset.blockId;
+    let planWasReset = false;
+
+    if (this.previousFirstStepQuantity === 1 && firstStepQuantity > 1 && planBlockId) {
+        console.log("Quantity changed from 1 to >1, resetting plan selection.");
+        planWasReset = true;
+    } else if (this.previousFirstStepQuantity > 1 && firstStepQuantity === 1 && planBlockId) {
+        // *** Add check for the >1 to 1 transition ***
+        console.log("Quantity changed from >1 to 1, resetting plan selection.");
+        planWasReset = true;
+    }
+
+    if (planWasReset) {
+        let itemsToRemove = [];
+        for (const key in this.selectedItems) {
+            if (this.selectedItems[key].blockId === planBlockId) {
+                itemsToRemove.push(key);
+            }
+        }
+        itemsToRemove.forEach(key => delete this.selectedItems[key]);
+
+        const allPlanCards = planStepContainer.querySelectorAll('.plans-grid .product-card');
+        allPlanCards.forEach(card => {
+             card.classList.remove('product-card--highlighted');
+             const button = card.querySelector('.plan-card__action-button');
+             if (button && button.dataset.originalText) {
+                 button.textContent = button.dataset.originalText;
+             }
+        });
+
+        ({ finalTotal, originalTotal, itemsGroupedByBlock, blockCollectionTitles, blockQuantities } = this.calculateSummaryData());
+    }
 
     this.updateStepCounters(blockQuantities);
     this.updateSummaryHTML(finalTotal, originalTotal, itemsGroupedByBlock, blockCollectionTitles);
     this.updateTotals(finalTotal, originalTotal);
+    this.filterPlanStep(firstStepQuantity);
+    this.previousFirstStepQuantity = firstStepQuantity;
   }
 
   // Calculate summary data
@@ -513,10 +582,20 @@ class BundleBuilder extends HTMLElement {
     const stepContainers = this.querySelectorAll('.step-container[data-block-id]');
     stepContainers.forEach((container) => {
       const blockId = container.dataset.blockId;
-      const countSpan = container.querySelector(`.step-selected-quantity[data-quantity-block-id="${blockId}"]`);
-      if (countSpan) {
-        const totalQuantity = blockQuantities[blockId] || 0;
-        countSpan.textContent = totalQuantity;
+      const blockType = container.dataset.blockType;
+      const countSpan = container.querySelector(`.step-selected-wrapper span:first-child`); // More robust selector
+      const wrapper = container.querySelector('.step-selected-wrapper');
+
+      if (wrapper && countSpan) {
+        if (blockType === 'plan_step') {
+          const planIsSelected = Object.values(this.selectedItems).some(item => item.blockId === blockId && item.isPlan);
+          countSpan.textContent = planIsSelected ? '1' : '0';
+        } else {
+          const totalQuantity = blockQuantities[blockId] || 0;
+          countSpan.textContent = totalQuantity;
+        }
+      } else {
+         console.warn("Could not find count span or wrapper for step:", blockId);
       }
     });
   }
@@ -549,8 +628,16 @@ class BundleBuilder extends HTMLElement {
   generateBlockSummaryHTML(blockId, items, collectionTitle) {
     const totalQuantityInBlock = items.reduce((total, item) => total + item.quantity, 0);
 
+    const blockElement = this.querySelector(`.step-container[data-block-id="${blockId}"]`);
+    const blockType = blockElement ? blockElement.dataset.blockType : null;
+
     let blockHTML = `<div class="summary-section" data-summary-block-id="${blockId}">`;
-    blockHTML += `<h4 class="collection-title">${collectionTitle || 'Selected Items'} (${totalQuantityInBlock})</h4>`;
+
+    if (blockType === 'plan_step') {
+      blockHTML += `<h4 class="collection-title">${collectionTitle || 'Selected Plan'}</h4>`;
+    } else {
+      blockHTML += `<h4 class="collection-title">${collectionTitle || 'Selected Items'} (${totalQuantityInBlock})</h4>`;
+    }
 
     items.forEach((item) => {
       blockHTML += this.generateItemSummaryHTML(item);
@@ -565,14 +652,35 @@ class BundleBuilder extends HTMLElement {
     const linePrice = item.quantity * item.price;
     const lineComparePrice = item.quantity * (item.comparePrice > item.price ? item.comparePrice : item.price);
 
-    // Build details string
     let detailsHTML = `<div class="item-name-title">${item.title}</div>`;
-    if (item.optionsMap) {
+    if (item.optionsMap && Object.keys(item.optionsMap).length > 0) {
       for (const optionName in item.optionsMap) {
         detailsHTML += `<div class="item-option">${optionName}: ${item.optionsMap[optionName]}</div>`;
       }
     } else if (item.variantTitle && item.variantTitle !== 'Default Title') {
       detailsHTML += `<div class="item-option">Variant: ${item.variantTitle}</div>`;
+    }
+
+    // Determine if quantity buttons should be shown
+    const showQuantityButtons = !item.isPlan && !item.isFreeRequired;
+    
+    let quantityDisplayHTML = `<span class="quantity-value">${item.quantity}</span>`;
+    if (showQuantityButtons) {
+      quantityDisplayHTML = `
+        <button class="quantity-button quantity-down-summary" aria-label="Decrease quantity">-</button>
+        ${quantityDisplayHTML} 
+        <button class="quantity-button quantity-up-summary" aria-label="Increase quantity">+</button>
+      `;
+    }
+
+    // Determine price display (show FREE for free item)
+    let priceDisplayHTML = '';
+    if (item.isFreeRequired) {
+        priceDisplayHTML = `<span class="free-price">${lineComparePrice > 0 ? `<span class="original-price">${this.formatMoney(lineComparePrice)}</span>` : ''} FREE</span>`;
+    } else {
+        const originalPriceSpan = lineComparePrice > linePrice ? `<span class="original-price">${this.formatMoney(lineComparePrice)}</span>` : '';
+        const salePriceSpan = `<span class="sale-price">${this.formatMoney(linePrice)}</span>`;
+        priceDisplayHTML = `${originalPriceSpan} ${salePriceSpan}`.trim();
     }
 
     return `
@@ -582,13 +690,10 @@ class BundleBuilder extends HTMLElement {
             ${detailsHTML}
           </div>
           <div class="item-quantity">
-            <button class="quantity-button quantity-down-summary" aria-label="Decrease quantity">-</button>
-            <span class="quantity-value">${item.quantity}</span>
-            <button class="quantity-button quantity-up-summary" aria-label="Increase quantity">+</button>
+            ${quantityDisplayHTML}
           </div>
           <div class="item-price">
-            ${lineComparePrice > linePrice ? `<span class="original-price">${this.formatMoney(lineComparePrice)}</span>` : ''}
-            <span class="sale-price">${this.formatMoney(linePrice)}</span>
+            ${priceDisplayHTML}
           </div>
         </div>
       `;
@@ -679,22 +784,65 @@ class BundleBuilder extends HTMLElement {
       return;
     }
 
-    // Store original text in a data attribute if not already stored
     if (!this.checkoutButton.dataset.originalText) {
       this.checkoutButton.dataset.originalText = this.checkoutButton.textContent;
     }
     const originalButtonText = this.checkoutButton.dataset.originalText;
 
-    // Prepare items array for the Shopify Cart API
-    const itemsToAdd = Object.values(this.selectedItems).map((item) => ({
+    const itemsToAdd = [];
+    let planSelected = false;
+
+    // Add regular items first
+    Object.values(this.selectedItems).forEach((item) => {
+       if (!item.isPlan) {
+         itemsToAdd.push({
       id: item.variantId,
       quantity: item.quantity,
-    }));
+         });
+       } else {
+         planSelected = true;
+         itemsToAdd.push({
+            id: item.variantId,
+            quantity: 1
+         });
+       }
+    });
+
+    // If a plan was selected, find and add the required free product
+    if (planSelected) {
+        const planStepContainer = this.querySelector('.step-container[data-block-type="plan_step"]');
+        const freeProductCard = planStepContainer?.querySelector('.bundle-plan__required-item-grid .product-card');
+        if (freeProductCard) {
+            const freeVariantId = freeProductCard.dataset.variantId;
+            if (freeVariantId && !itemsToAdd.some(item => item.id == freeVariantId)) { 
+                 const requiredProductJsonScript = freeProductCard.querySelector(`script[data-product-json-for="${freeProductCard.dataset.productId}"]`);
+                 if (requiredProductJsonScript) {
+                     try {
+                        const requiredProductData = JSON.parse(requiredProductJsonScript.textContent);
+                        const freeVariant = requiredProductData.variants.find(v => v.price === 0) || requiredProductData.selected_or_first_available_variant;
+                        if (freeVariant) {
+                           console.log(`Adding free required product variant: ${freeVariant.id}`);
+                            itemsToAdd.push({
+                                id: freeVariant.id,
+                                quantity: 1
+                            });
+                        }
+                     } catch(e) {
+                        console.error("Error parsing JSON for free required product:", e);
+                     }
+                 }
+            }
+        } else {
+           console.warn("Could not find the free required product card to add to cart.");
+        }
+    }
 
     if (itemsToAdd.length === 0) {
       console.warn('Add to Cart clicked with no items selected.');
       return;
     }
+
+     console.log("Items being added to cart:", itemsToAdd);
 
     this.checkoutButton.textContent = 'Adding...';
     this.checkoutButton.disabled = true;
@@ -710,35 +858,216 @@ class BundleBuilder extends HTMLElement {
         body: JSON.stringify({ items: itemsToAdd }),
       });
 
-      const cartData = await response.json();
+      const contentType = response.headers.get("content-type");
+      let cartData;
+      if (contentType && contentType.indexOf("application/json") !== -1) {
+        cartData = await response.json();
+      } else {
+        cartData = await response.text();
+         console.error("Non-JSON response from cart/add.js:", cartData);
+      }
 
       if (response.ok) {
-        console.log('Items added to cart:', cartData);
+        console.log('Items added to cart response:', cartData);
 
-        // Dispatch event for theme's cart handling (e.g., update icon, drawer)
+         if (typeof cartData === 'object' && cartData !== null) {
         document.dispatchEvent(new CustomEvent('cart:updated', { bubbles: true, detail: cartData }));
+         } else {
+             document.dispatchEvent(new CustomEvent('cart:refresh', { bubbles: true }));
+         }
 
-        // Redirect to cart page
         window.location.href = '/cart';
 
-        // Text change might not be visible due to redirect, but set anyway
         this.checkoutButton.textContent = 'Redirecting...';
       } else {
-        // Handle Shopify API errors (e.g., item not available)
-        console.error('Error adding items to cart:', cartData.description || cartData.message || 'Unknown error');
+         const errorMessage = (typeof cartData === 'object' && cartData !== null) ? (cartData.description || cartData.message) : cartData;
+        console.error('Error adding items to cart:', errorMessage || 'Unknown error');
         this.checkoutButton.textContent = 'Error';
-        alert(`Error adding items: ${cartData.description || cartData.message}`);
+        alert(`Error adding items: ${errorMessage || 'Please try again.'}`);
       }
     } catch (error) {
       console.error('Network error adding items to cart:', error);
       this.checkoutButton.textContent = 'Error';
       alert('Could not add items to cart. Please check your connection.');
     } finally {
-      // Update the finally block to use the stored original text
       if (this.checkoutButton.textContent !== 'Redirecting...' && this.checkoutButton.textContent !== 'Added!') {
+          setTimeout(() => {
         this.checkoutButton.textContent = originalButtonText;
-        this.checkoutButton.disabled = Object.keys(this.selectedItems).length === 0;
+             this.checkoutButton.disabled = Object.keys(this.selectedItems).length === 0;
         this.checkoutButton.classList.remove('loading');
+          }, 1500);
+      }
+    }
+  }
+
+  // Handle clicks on plan selection buttons
+  handlePlanSelectionClick(event) {
+    const clickedButton = event.target.closest('.plan-card__action-button');
+    if (!clickedButton) return;
+
+    const clickedCard = clickedButton.closest('.product-card');
+    if (!clickedCard) return;
+
+    const variantId = clickedCard.dataset.variantId;
+    const blockId = clickedCard.dataset.blockId;
+    const planStepContainer = clickedCard.closest('.step-container[data-block-type="plan_step"]');
+
+    if (!variantId || !blockId || !planStepContainer) {
+      console.error('Missing data attributes or container on plan card:', clickedCard);
+      return;
+    }
+
+    const isCurrentlySelected = this.selectedItems[variantId] && this.selectedItems[variantId].isPlan;
+
+    let itemsToRemove = [];
+    for (const key in this.selectedItems) {
+        if (this.selectedItems[key].blockId === blockId) {
+            itemsToRemove.push(key);
+        }
+    }
+    itemsToRemove.forEach(key => {
+        delete this.selectedItems[key];
+    });
+
+    const allPlanCards = planStepContainer.querySelectorAll('.plans-grid .product-card');
+    allPlanCards.forEach(card => {
+      card.classList.remove('product-card--highlighted');
+      const button = card.querySelector('.plan-card__action-button');
+      if (button && button.dataset.originalText) {
+        button.textContent = button.dataset.originalText;
+      }
+    });
+
+    // 2. If the clicked plan was NOT the one already selected, add it (and potentially the free item)
+    if (!isCurrentlySelected) {
+        this.addPlanToState(clickedCard);
+        if (this.currentFirstStepQuantity > 1) {
+            const freeProductCard = planStepContainer.querySelector('.bundle-plan__required-item-grid .product-card');
+            if (freeProductCard) {
+                this.addFreeProductToState(freeProductCard, blockId);
+            } else {
+                console.warn("Could not find free product card to add to state.");
+            }
+        } 
+
+        clickedCard.classList.add('product-card--highlighted');
+        clickedButton.textContent = 'Remove';
+    }
+
+    // 3. Re-render the summary
+    this.renderSummary();
+  }
+
+  // Helper to add free product data to state
+  addFreeProductToState(freeProductCard, planBlockId) {
+      const productId = freeProductCard.dataset.productId;
+      const variantId = freeProductCard.dataset.variantId;
+
+      if (!productId || !variantId) {
+         console.error("Could not get product/variant ID from free product card.");
+         return;
+      }
+      if (this.selectedItems[variantId]) return;
+
+      const title = freeProductCard.querySelector('h3')?.innerText || 'Free Item';
+      const imageEl = freeProductCard.querySelector('.product-image');
+      const comparePriceEl = freeProductCard.querySelector('.price .original-price');
+      let comparePrice = 0;
+      if (comparePriceEl && comparePriceEl.offsetParent !== null && comparePriceEl.textContent) {
+          try {
+              const priceString = comparePriceEl.textContent.replace(/[^\d.]/g, '');
+              comparePrice = Math.round(parseFloat(priceString) * 100);
+          } catch (e) { console.error("Could not parse free product compare price:", comparePriceEl.textContent); }
+      }
+
+      this.selectedItems[variantId] = {
+          quantity: 1,
+          productId: productId,
+          variantId: variantId,
+          blockId: planBlockId,
+          collectionTitle: '',
+          price: 0,
+          comparePrice: comparePrice,
+          title: title,
+          variantTitle: '',
+          imageUrl: imageEl ? imageEl.src : '',
+          optionsMap: {},
+          isPlan: false,
+          isFreeRequired: true
+      };
+  }
+
+  addPlanToState(planCardElement) {
+    const variantId = planCardElement.dataset.variantId;
+    const productId = planCardElement.dataset.productId;
+    const blockId = planCardElement.dataset.blockId;
+    const collectionTitle = planCardElement.closest('.step-container')?.querySelector('h2')?.textContent || 'Plan'; // Get title from step header
+
+
+    if (!variantId || !productId || !blockId) return;
+
+    const priceEl = planCardElement.querySelector('.plan-card__price .sale-price');
+    const comparePriceEl = planCardElement.querySelector('.plan-card__price .original-price');
+    const titleEl = planCardElement.querySelector('.bundle-plan__title');
+    const imageEl = planCardElement.querySelector('.bundle-plan__icon img');
+
+    let price = 0;
+    if (priceEl && priceEl.textContent) {
+      try {
+        price = parseInt(priceEl.textContent.replace(/[^0-9]/g, ''), 10);
+      } catch (e) { console.error("Could not parse plan price:", priceEl.textContent); }
+    }
+
+    let comparePrice = 0;
+    if (comparePriceEl && comparePriceEl.offsetParent !== null && comparePriceEl.textContent) {
+        try {
+            comparePrice = parseInt(comparePriceEl.textContent.replace(/[^0-9]/g, ''), 10);
+        } catch (e) { console.error("Could not parse plan compare price:", comparePriceEl.textContent); }
+    }
+    if (comparePrice <= price) comparePrice = 0;
+
+
+    this.selectedItems[variantId] = {
+      quantity: 1,
+      productId: productId,
+      variantId: variantId,
+      blockId: blockId,
+      collectionTitle: collectionTitle,
+      price: price,
+      comparePrice: comparePrice,
+      title: titleEl ? titleEl.innerText.replace(/\s+/g, ' ').trim() : 'Selected Plan',
+      variantTitle: '',
+      imageUrl: imageEl ? imageEl.src : '',
+      optionsMap: {}, 
+      isPlan: true
+    };
+  }
+
+  // Filter plans based on first step quantity (Visual only)
+  filterPlanStep(firstStepQuantity) {
+    const planStepContainer = this.querySelector('.step-container[data-block-type="plan_step"]');
+    if (!planStepContainer) {
+      return;
+    }
+
+    const planCards = planStepContainer.querySelectorAll('.plans-grid .product-card');
+    const freeProductContainer = planStepContainer.querySelector('.bundle-plan__required-item-grid');
+
+    // Logic to hide/show based on quantity (no state changes here)
+    if (firstStepQuantity === 1 || firstStepQuantity === 0) {
+      if (freeProductContainer) freeProductContainer.style.display = 'none';
+      if (planCards) {
+        planCards.forEach(card => {
+          const isCamPlus = card.dataset.isCamPlus === 'true';
+          card.style.display = isCamPlus ? '' : 'none';
+        });
+      }
+    } else { 
+      if (freeProductContainer) freeProductContainer.style.display = '';
+      if (planCards) {
+        planCards.forEach(card => {
+          card.style.display = '';
+        });
       }
     }
   }
@@ -746,4 +1075,4 @@ class BundleBuilder extends HTMLElement {
 
 if (!customElements.get('bundle-builder')) {
   customElements.define('bundle-builder', BundleBuilder);
-} 
+}
