@@ -146,24 +146,22 @@ class BundleBuilder extends HTMLElement {
 
   // Update product card UI with selected variant
   updateProductCardWithVariant(productCard, productData, variant) {
+    // Get image to display
+    const imageToShow = this.getVariantImage(variant, productData);
+
+    // Update card data and UI elements in sequence
+    this.updateProductCardDataAttributes(productCard, variant, imageToShow);
+    this.updatePriceDisplay(productCard, variant);
+    this.updateProductImage(productCard, imageToShow, variant, productData);
+    this.updateQuantityDisplay(productCard, variant.id);
+    this.updateSoldOutState(productCard, variant);
+  }
+
+  // Get variant image to display
+  getVariantImage(variant, productData) {
     const variantImage = variant.featured_image;
     const productFeaturedImage = productData.featured_image;
-    const imageToShow = variantImage || productFeaturedImage;
-
-    // Update data attributes (including availability)
-    this.updateProductCardDataAttributes(productCard, variant, imageToShow);
-
-    // Update price display
-    this.updatePriceDisplay(productCard, variant);
-
-    // Update product image
-    this.updateProductImage(productCard, imageToShow, variant, productData);
-
-    // Update quantity display
-    this.updateQuantityDisplay(productCard, variant.id);
-
-    // Handle sold out state
-    this.updateSoldOutState(productCard, variant);
+    return variantImage || productFeaturedImage;
   }
 
   // Update sold out state for a product card
@@ -505,6 +503,27 @@ class BundleBuilder extends HTMLElement {
     const firstStepQuantity = blockQuantities[this.firstStepBlockId] || 0;
     this.currentFirstStepQuantity = firstStepQuantity;
 
+    // 2. Check if plan selection should be reset based on first step quantity change
+    const { planWasReset, planBlockId, planStepContainer } = this.checkPlanSelectionReset(firstStepQuantity);
+
+    // 3. Reset plan if needed and recalculate data
+    if (planWasReset) {
+      this.resetPlanSelection(planBlockId, planStepContainer);
+      ({ finalTotal, originalTotal, itemsGroupedByBlock, blockCollectionTitles, blockQuantities } = this.calculateSummaryData());
+    }
+
+    // 4. Update UI components with calculated data
+    this.updateStepCounters(blockQuantities);
+    this.updateSummaryHTML(finalTotal, originalTotal, itemsGroupedByBlock, blockCollectionTitles);
+    this.updateTotals(finalTotal, originalTotal);
+    this.filterPlanStep(firstStepQuantity);
+    
+    // 5. Store current quantity for future comparisons
+    this.previousFirstStepQuantity = firstStepQuantity;
+  }
+
+  // Check if plan selection should be reset based on first step quantity change
+  checkPlanSelectionReset(firstStepQuantity) {
     const planStepContainer = this.querySelector('.step-container[data-block-type="plan_step"]');
     const planBlockId = planStepContainer?.dataset.blockId;
     let planWasReset = false;
@@ -513,37 +532,35 @@ class BundleBuilder extends HTMLElement {
       console.log("Quantity changed from 1 to >1, resetting plan selection.");
       planWasReset = true;
     } else if (this.previousFirstStepQuantity > 1 && firstStepQuantity === 1 && planBlockId) {
-      // *** Add check for the >1 to 1 transition ***
       console.log("Quantity changed from >1 to 1, resetting plan selection.");
       planWasReset = true;
     }
 
-    if (planWasReset) {
-      let itemsToRemove = [];
-      for (const key in this.selectedItems) {
-        if (this.selectedItems[key].blockId === planBlockId) {
-          itemsToRemove.push(key);
-        }
+    return { planWasReset, planBlockId, planStepContainer };
+  }
+
+  // Reset plan selection when needed
+  resetPlanSelection(planBlockId, planStepContainer) {
+    if (!planBlockId || !planStepContainer) return;
+
+    // Remove plan items from state
+    let itemsToRemove = [];
+    for (const key in this.selectedItems) {
+      if (this.selectedItems[key].blockId === planBlockId) {
+        itemsToRemove.push(key);
       }
-      itemsToRemove.forEach(key => delete this.selectedItems[key]);
-
-      const allPlanCards = planStepContainer.querySelectorAll('.plans-grid .product-card');
-      allPlanCards.forEach(card => {
-        card.classList.remove('product-card--highlighted');
-        const button = card.querySelector('.plan-card__action-button');
-        if (button && button.dataset.originalText) {
-          button.textContent = button.dataset.originalText;
-        }
-      });
-
-      ({ finalTotal, originalTotal, itemsGroupedByBlock, blockCollectionTitles, blockQuantities } = this.calculateSummaryData());
     }
+    itemsToRemove.forEach(key => delete this.selectedItems[key]);
 
-    this.updateStepCounters(blockQuantities);
-    this.updateSummaryHTML(finalTotal, originalTotal, itemsGroupedByBlock, blockCollectionTitles);
-    this.updateTotals(finalTotal, originalTotal);
-    this.filterPlanStep(firstStepQuantity);
-    this.previousFirstStepQuantity = firstStepQuantity;
+    // Reset plan card UI
+    const allPlanCards = planStepContainer.querySelectorAll('.plans-grid .product-card');
+    allPlanCards.forEach(card => {
+      card.classList.remove('product-card--highlighted');
+      const button = card.querySelector('.plan-card__action-button');
+      if (button && button.dataset.originalText) {
+        button.textContent = button.dataset.originalText;
+      }
+    });
   }
 
   // Calculate summary data
@@ -789,6 +806,33 @@ class BundleBuilder extends HTMLElement {
     }
     const originalButtonText = this.checkoutButton.dataset.originalText;
 
+    // Prepare items and update button state
+    const itemsToAdd = this.prepareItemsForCart();
+    if (itemsToAdd.length === 0) {
+      console.warn('Add to Cart clicked with no items selected.');
+      return;
+    }
+
+    this.updateButtonState('Adding...', true);
+
+    try {
+      const response = await this.sendAddToCartRequest(itemsToAdd);
+      const cartData = await this.processCartResponse(response);
+      
+      if (response.ok) {
+        this.handleSuccessfulCartAdd(cartData);
+      } else {
+        this.handleFailedCartAdd(cartData);
+      }
+    } catch (error) {
+      this.handleCartError(error);
+    } finally {
+      this.resetButtonStateAfterDelay(originalButtonText);
+    }
+  }
+
+  // Prepare items to be added to cart
+  prepareItemsForCart() {
     const itemsToAdd = [];
     let planSelected = false;
 
@@ -808,95 +852,122 @@ class BundleBuilder extends HTMLElement {
       }
     });
 
-    // If a plan was selected, find and add the required free product
+    // If a plan was selected, add the required free product if needed
     if (planSelected) {
-      const planStepContainer = this.querySelector('.step-container[data-block-type="plan_step"]');
-      const freeProductCard = planStepContainer?.querySelector('.bundle-plan__required-item-grid .product-card');
-      if (freeProductCard) {
-        const freeVariantId = freeProductCard.dataset.variantId;
-        if (freeVariantId && !itemsToAdd.some(item => item.id == freeVariantId)) {
-          const requiredProductJsonScript = freeProductCard.querySelector(`script[data-product-json-for="${freeProductCard.dataset.productId}"]`);
-          if (requiredProductJsonScript) {
-            try {
-              const requiredProductData = JSON.parse(requiredProductJsonScript.textContent);
-              const freeVariant = requiredProductData.variants.find(v => v.price === 0) || requiredProductData.selected_or_first_available_variant;
-              if (freeVariant) {
-                console.log(`Adding free required product variant: ${freeVariant.id}`);
-                itemsToAdd.push({
-                  id: freeVariant.id,
-                  quantity: 1
-                });
-              }
-            } catch (e) {
-              console.error("Error parsing JSON for free required product:", e);
-            }
-          }
+      this.addFreeProductToCart(itemsToAdd);
+    }
+
+    return itemsToAdd;
+  }
+
+  // Add free product to cart if a plan was selected
+  addFreeProductToCart(itemsToAdd) {
+    const planStepContainer = this.querySelector('.step-container[data-block-type="plan_step"]');
+    const freeProductCard = planStepContainer?.querySelector('.bundle-plan__required-item-grid .product-card');
+    
+    if (freeProductCard) {
+      const freeVariantId = freeProductCard.dataset.variantId;
+      if (freeVariantId && !itemsToAdd.some(item => item.id == freeVariantId)) {
+        this.addFreeVariantToCart(freeProductCard, itemsToAdd);
+      }
+    } else {
+      console.warn("Could not find the free required product card to add to cart.");
+    }
+  }
+
+  // Add the free variant to cart items
+  addFreeVariantToCart(freeProductCard, itemsToAdd) {
+    const requiredProductJsonScript = freeProductCard.querySelector(`script[data-product-json-for="${freeProductCard.dataset.productId}"]`);
+    if (requiredProductJsonScript) {
+      try {
+        const requiredProductData = JSON.parse(requiredProductJsonScript.textContent);
+        const freeVariant = requiredProductData.variants.find(v => v.price === 0) || requiredProductData.selected_or_first_available_variant;
+        if (freeVariant) {
+          console.log(`Adding free required product variant: ${freeVariant.id}`);
+          itemsToAdd.push({
+            id: freeVariant.id,
+            quantity: 1
+          });
         }
-      } else {
-        console.warn("Could not find the free required product card to add to cart.");
+      } catch (e) {
+        console.error("Error parsing JSON for free required product:", e);
       }
     }
+  }
 
-    if (itemsToAdd.length === 0) {
-      console.warn('Add to Cart clicked with no items selected.');
-      return;
+  // Update button state
+  updateButtonState(text, isDisabled) {
+    this.checkoutButton.textContent = text;
+    this.checkoutButton.disabled = isDisabled;
+    if (isDisabled) {
+      this.checkoutButton.classList.add('loading');
+    } else {
+      this.checkoutButton.classList.remove('loading');
     }
+  }
 
+  // Send items to cart endpoint
+  async sendAddToCartRequest(itemsToAdd) {
     console.log("Items being added to cart:", itemsToAdd);
+    return await fetch('/cart/add.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({ items: itemsToAdd }),
+    });
+  }
 
-    this.checkoutButton.textContent = 'Adding...';
-    this.checkoutButton.disabled = true;
-    this.checkoutButton.classList.add('loading');
+  // Process cart response
+  async processCartResponse(response) {
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.indexOf("application/json") !== -1) {
+      return await response.json();
+    } else {
+      const textData = await response.text();
+      console.error("Non-JSON response from cart/add.js:", textData);
+      return textData;
+    }
+  }
 
-    try {
-      const response = await fetch('/cart/add.js', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({ items: itemsToAdd }),
-      });
+  // Handle successful cart add
+  handleSuccessfulCartAdd(cartData) {
+    console.log('Items added to cart response:', cartData);
 
-      const contentType = response.headers.get("content-type");
-      let cartData;
-      if (contentType && contentType.indexOf("application/json") !== -1) {
-        cartData = await response.json();
-      } else {
-        cartData = await response.text();
-        console.error("Non-JSON response from cart/add.js:", cartData);
-      }
+    if (typeof cartData === 'object' && cartData !== null) {
+      document.dispatchEvent(new CustomEvent('cart:updated', { bubbles: true, detail: cartData }));
+    } else {
+      document.dispatchEvent(new CustomEvent('cart:refresh', { bubbles: true }));
+    }
 
-      if (response.ok) {
-        console.log('Items added to cart response:', cartData);
+    window.location.href = '/cart';
+    this.checkoutButton.textContent = 'Redirecting...';
+  }
 
-        if (typeof cartData === 'object' && cartData !== null) {
-          document.dispatchEvent(new CustomEvent('cart:updated', { bubbles: true, detail: cartData }));
-        } else {
-          document.dispatchEvent(new CustomEvent('cart:refresh', { bubbles: true }));
-        }
+  // Handle failed cart add
+  handleFailedCartAdd(cartData) {
+    const errorMessage = (typeof cartData === 'object' && cartData !== null) ? (cartData.description || cartData.message) : cartData;
+    console.error('Error adding items to cart:', errorMessage || 'Unknown error');
+    this.checkoutButton.textContent = 'Error';
+    alert(`Error adding items: ${errorMessage || 'Please try again.'}`);
+  }
 
-        window.location.href = '/cart';
+  // Handle cart error
+  handleCartError(error) {
+    console.error('Network error adding items to cart:', error);
+    this.checkoutButton.textContent = 'Error';
+    alert('Could not add items to cart. Please check your connection.');
+  }
 
-        this.checkoutButton.textContent = 'Redirecting...';
-      } else {
-        const errorMessage = (typeof cartData === 'object' && cartData !== null) ? (cartData.description || cartData.message) : cartData;
-        console.error('Error adding items to cart:', errorMessage || 'Unknown error');
-        this.checkoutButton.textContent = 'Error';
-        alert(`Error adding items: ${errorMessage || 'Please try again.'}`);
-      }
-    } catch (error) {
-      console.error('Network error adding items to cart:', error);
-      this.checkoutButton.textContent = 'Error';
-      alert('Could not add items to cart. Please check your connection.');
-    } finally {
-      if (this.checkoutButton.textContent !== 'Redirecting...' && this.checkoutButton.textContent !== 'Added!') {
-        setTimeout(() => {
-          this.checkoutButton.textContent = originalButtonText;
-          this.checkoutButton.disabled = Object.keys(this.selectedItems).length === 0;
-          this.checkoutButton.classList.remove('loading');
-        }, 1500);
-      }
+  // Reset button state after delay
+  resetButtonStateAfterDelay(originalButtonText) {
+    if (this.checkoutButton.textContent !== 'Redirecting...' && this.checkoutButton.textContent !== 'Added!') {
+      setTimeout(() => {
+        this.checkoutButton.textContent = originalButtonText;
+        this.checkoutButton.disabled = Object.keys(this.selectedItems).length === 0;
+        this.checkoutButton.classList.remove('loading');
+      }, 1500);
     }
   }
 
@@ -919,6 +990,21 @@ class BundleBuilder extends HTMLElement {
 
     const isCurrentlySelected = this.selectedItems[variantId] && this.selectedItems[variantId].isPlan;
 
+    // Clear all selected plans
+    this.clearSelectedPlans(blockId, planStepContainer);
+
+    // Add new plan if not already selected
+    if (!isCurrentlySelected) {
+      this.selectNewPlan(clickedCard, clickedButton);
+    }
+
+    // Re-render the summary
+    this.renderSummary();
+  }
+
+  // Extract selected plans from state and reset plan cards UI
+  clearSelectedPlans(blockId, planStepContainer) {
+    // Remove all plan items with this blockId from state
     let itemsToRemove = [];
     for (const key in this.selectedItems) {
       if (this.selectedItems[key].blockId === blockId) {
@@ -929,6 +1015,7 @@ class BundleBuilder extends HTMLElement {
       delete this.selectedItems[key];
     });
 
+    // Reset all plan cards UI
     const allPlanCards = planStepContainer.querySelectorAll('.plans-grid .product-card');
     allPlanCards.forEach(card => {
       card.classList.remove('product-card--highlighted');
@@ -937,25 +1024,33 @@ class BundleBuilder extends HTMLElement {
         button.textContent = button.dataset.originalText;
       }
     });
+  }
 
-    // 2. If the clicked plan was NOT the one already selected, add it (and potentially the free item)
-    if (!isCurrentlySelected) {
-      this.addPlanToState(clickedCard);
-      if (this.currentFirstStepQuantity > 1) {
-        const freeProductCard = planStepContainer.querySelector('.bundle-plan__required-item-grid .product-card');
-        if (freeProductCard) {
-          this.addFreeProductToState(freeProductCard, blockId);
-        } else {
-          console.warn("Could not find free product card to add to state.");
-        }
-      }
-
-      clickedCard.classList.add('product-card--highlighted');
-      clickedButton.textContent = 'Remove';
+  // Add the new plan to state and update UI
+  selectNewPlan(clickedCard, clickedButton) {
+    this.addPlanToState(clickedCard);
+    
+    // Add free product if there are multiple items in the first step
+    if (this.currentFirstStepQuantity > 1) {
+      this.addFreeProductIfNeeded(clickedCard);
     }
 
-    // 3. Re-render the summary
-    this.renderSummary();
+    // Update UI for selected plan
+    clickedCard.classList.add('product-card--highlighted');
+    clickedButton.textContent = 'Remove';
+  }
+
+  // Add free product to state if needed
+  addFreeProductIfNeeded(clickedCard) {
+    const planStepContainer = clickedCard.closest('.step-container[data-block-type="plan_step"]');
+    const blockId = clickedCard.dataset.blockId;
+    const freeProductCard = planStepContainer.querySelector('.bundle-plan__required-item-grid .product-card');
+    
+    if (freeProductCard) {
+      this.addFreeProductToState(freeProductCard, blockId);
+    } else {
+      console.warn("Could not find free product card to add to state.");
+    }
   }
 
   // Helper to add free product data to state
