@@ -1,3 +1,5 @@
+const STORAGE_KEY = 'bundleBuilderSelectedItems';
+
 class BundleBuilder extends HTMLElement {
   constructor() {
     super();
@@ -6,6 +8,7 @@ class BundleBuilder extends HTMLElement {
     this.previousFirstStepQuantity = 0;
     this.initializeElements();
     this.attachEventListeners();
+    this.loadState();
   }
 
   // Initialize element references
@@ -52,10 +55,13 @@ class BundleBuilder extends HTMLElement {
   }
 
   connectedCallback() {
+    // Store original button text on initial load
     this.querySelectorAll('.plan-card__action-button').forEach(button => {
       button.dataset.originalText = button.textContent;
     });
-    this.renderSummary();
+    // Initialize UI based on potentially loaded state *before* first render
+    this.initializeUIFromState(); 
+    this.renderSummary(); // First render reflects loaded or initial state
   }
 
   // Handle clicks on variant swatches
@@ -387,6 +393,7 @@ class BundleBuilder extends HTMLElement {
       };
     }
 
+    this.saveState();
     this.renderSummary();
   }
 
@@ -446,6 +453,7 @@ class BundleBuilder extends HTMLElement {
       }
     }
 
+    this.saveState();
     this.renderSummary();
   }
 
@@ -561,6 +569,8 @@ class BundleBuilder extends HTMLElement {
         button.textContent = button.dataset.originalText;
       }
     });
+
+    this.saveState();
   }
 
   // Calculate summary data
@@ -999,6 +1009,7 @@ class BundleBuilder extends HTMLElement {
     }
 
     // Re-render the summary
+    this.saveState();
     this.renderSummary();
   }
 
@@ -1024,6 +1035,8 @@ class BundleBuilder extends HTMLElement {
         button.textContent = button.dataset.originalText;
       }
     });
+
+    this.saveState();
   }
 
   // Add the new plan to state and update UI
@@ -1038,6 +1051,8 @@ class BundleBuilder extends HTMLElement {
     // Update UI for selected plan
     clickedCard.classList.add('product-card--highlighted');
     clickedButton.textContent = 'Remove';
+
+    this.saveState();
   }
 
   // Add free product to state if needed
@@ -1051,6 +1066,8 @@ class BundleBuilder extends HTMLElement {
     } else {
       console.warn("Could not find free product card to add to state.");
     }
+
+    this.saveState();
   }
 
   // Helper to add free product data to state
@@ -1090,6 +1107,8 @@ class BundleBuilder extends HTMLElement {
       isPlan: false,
       isFreeRequired: true
     };
+
+    this.saveState();
   }
 
   addPlanToState(planCardElement) {
@@ -1136,6 +1155,8 @@ class BundleBuilder extends HTMLElement {
       optionsMap: {},
       isPlan: true
     };
+
+    this.saveState();
   }
 
   // Filter plans based on first step quantity (Visual only)
@@ -1165,6 +1186,64 @@ class BundleBuilder extends HTMLElement {
         });
       }
     }
+  }
+
+  //Local Storage Functions
+  saveState() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.selectedItems));
+    } catch (e) {
+      console.error("Error saving state to localStorage:", e);
+    }
+  }
+
+  loadState() {
+    try {
+      const savedState = localStorage.getItem(STORAGE_KEY);
+      if (savedState) {
+        this.selectedItems = JSON.parse(savedState);
+      } else {
+        this.selectedItems = {};
+      }
+    } catch (e) {
+      console.error("Error loading state from localStorage:", e);
+      this.selectedItems = {};
+    }
+  }
+
+  // Initialize UI elements based on the current state
+  initializeUIFromState() {
+    this.querySelectorAll('.product-card').forEach(card => {
+      const qtyEl = card.querySelector('.quantity-value');
+      if (qtyEl) qtyEl.textContent = '0';
+      card.classList.remove('product-card--highlighted');
+      const planButton = card.querySelector('.plan-card__action-button');
+      if (planButton && planButton.dataset.originalText) {
+          planButton.textContent = planButton.dataset.originalText;
+      }
+    });
+
+    // Apply state to UI
+    for (const variantId in this.selectedItems) {
+      const item = this.selectedItems[variantId];
+      const cardElement = this.querySelector(`.product-card[data-variant-id="${variantId}"]`); 
+      
+      if (cardElement) {
+         cardElement.classList.add('product-card--highlighted');
+         if (item.isPlan) {
+             const button = cardElement.querySelector('.plan-card__action-button');
+             if (button) button.textContent = 'Remove'; 
+         } else if (!item.isFreeRequired) { 
+             const qtyEl = cardElement.querySelector('.quantity-value');
+             if (qtyEl) qtyEl.textContent = item.quantity;
+             const downButton = cardElement.querySelector('.quantity-down');
+             if(downButton) downButton.disabled = item.quantity <= 0;
+         }
+      }
+    }
+     const { blockQuantities } = this.calculateSummaryData();
+     this.currentFirstStepQuantity = blockQuantities[this.firstStepBlockId] || 0;
+     this.previousFirstStepQuantity = this.currentFirstStepQuantity;
   }
 }
 
