@@ -1169,6 +1169,7 @@ button {
 .product-pricing {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 8px;
 }
 
 .product-pricing .total-savings-msg {
@@ -1181,6 +1182,24 @@ button {
   font-size: 20px;
   font-weight: 600;
   color: #BC3131;
+}
+
+.selected-product-item-wrapper {
+  position: relative;
+}
+
+.remove-selected-product-btn {
+  background-color: #444444;
+  color: #fff;
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  top: -5px;
+  right: -3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .discount-low-badge {

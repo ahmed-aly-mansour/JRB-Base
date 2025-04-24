@@ -52,6 +52,12 @@ class BundleBuilder extends HTMLElement {
     if (this.checkoutButton) {
       this.checkoutButton.addEventListener('click', this.handleAddToCart.bind(this));
     }
+
+    // Add listener for removing selected products from the progress bar display
+    const selectedProductsContainer = this.querySelector('.progress-wrapper .selected-products');
+    if (selectedProductsContainer) {
+        selectedProductsContainer.addEventListener('click', this.handleRemoveSelectedProductClick.bind(this));
+    }
   }
 
   connectedCallback() {
@@ -1292,6 +1298,41 @@ class BundleBuilder extends HTMLElement {
 
   }
 
+  // Handle clicks on the remove 'X' icon in the selected products display
+  handleRemoveSelectedProductClick(event) {
+      const removeButton = event.target.closest('.remove-selected-product-btn');
+      if (!removeButton) return;
+
+      const productIdToRemove = removeButton.dataset.productId;
+      if (!productIdToRemove) {
+          console.error("Remove button clicked, but no product ID found.");
+          return;
+      }
+
+      const variantIdsToRemove = Object.keys(this.selectedItems).filter(variantId =>
+          this.selectedItems[variantId].productId == productIdToRemove && !this.selectedItems[variantId].isPlan && !this.selectedItems[variantId].isFreeRequired
+      );
+
+      if (variantIdsToRemove.length > 0) {
+          variantIdsToRemove.forEach(variantId => {
+              delete this.selectedItems[variantId];
+              const productCard = this.querySelector(`.product-card[data-variant-id="${variantId}"]`);
+              if (productCard) {
+                  const quantityValueEl = productCard.querySelector('.quantity-value');
+                  if (quantityValueEl) quantityValueEl.textContent = '0';
+                  productCard.classList.remove('product-card--highlighted');
+                  const quantityDownButton = productCard.querySelector('.quantity-down');
+                  if (quantityDownButton) quantityDownButton.disabled = true;
+              }
+          });
+
+          this.saveState();
+          this.renderSummary();
+      } else {
+          console.warn(`No selected items found for product ID: ${productIdToRemove} to remove.`);
+      }
+  }
+
   // Update the display of selected product images in the progress bar area
   updateSelectedProductDisplay(finalTotal) {
     const container = this.querySelector('.progress-wrapper .selected-products');
@@ -1303,23 +1344,24 @@ class BundleBuilder extends HTMLElement {
     const shippingThreshold = 10000;
     const sdCardThreshold = 18000;
 
+    // Add free required item first if it exists
     const freeRequiredItem = Object.values(this.selectedItems).find(item => item.isFreeRequired);
     if (freeRequiredItem) {
-        freeGiftItems.push({ 
-            type: 'free-gift', 
-            src: freeRequiredItem.imageUrl, 
-            alt: freeRequiredItem.title, 
-            title: freeRequiredItem.title 
+        freeGiftItems.push({
+            type: 'free-gift',
+            src: freeRequiredItem.imageUrl,
+            alt: freeRequiredItem.title,
+            title: freeRequiredItem.title
         });
     }
 
-    //Check for free shipping
+    // Check for free shipping
     if (finalTotal >= shippingThreshold) {
       const shippingSvgEncoded = encodeURIComponent('<svg width="33" height="34" viewBox="0 0 33 34" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.125 16.5955H16.5V18.658H4.125V16.5955ZM2.0625 11.4392H12.375V13.5017H2.0625V11.4392Z" fill="#0AA288"/><path d="M30.8539 17.2204L27.7602 10.0016C27.6807 9.81618 27.5485 9.65812 27.38 9.54704C27.2116 9.43595 27.0142 9.37673 26.8125 9.37671H23.7187V7.31421C23.7187 7.0407 23.6101 6.7784 23.4167 6.58501C23.2233 6.39161 22.961 6.28296 22.6875 6.28296H6.18745V8.34546H21.6562V21.2938C21.1866 21.5671 20.7756 21.9304 20.4467 22.3629C20.1179 22.7954 19.8778 23.2886 19.7401 23.8142H13.2598C13.0088 22.8421 12.4118 21.9949 11.5809 21.4314C10.7499 20.8679 9.74198 20.6268 8.74598 20.7533C7.74998 20.8798 6.83432 21.3653 6.17062 22.1186C5.50692 22.8719 5.14075 23.8415 5.14075 24.8455C5.14075 25.8495 5.50692 26.819 6.17062 27.5723C6.83432 28.3257 7.74998 28.8111 8.74598 28.9376C9.74198 29.0641 10.7499 28.823 11.5809 28.2595C12.4118 27.696 13.0088 26.8488 13.2598 25.8767H19.7401C19.9645 26.7618 20.4775 27.5468 21.1981 28.1075C21.9187 28.6682 22.8057 28.9727 23.7187 28.9727C24.6317 28.9727 25.5187 28.6682 26.2393 28.1075C26.9599 27.5468 27.4729 26.7618 27.6973 25.8767H29.9062C30.1797 25.8767 30.442 25.7681 30.6354 25.5747C30.8288 25.3813 30.9375 25.119 30.9375 24.8455V17.6267C30.9374 17.487 30.909 17.3488 30.8539 17.2204ZM9.2812 26.908C8.87327 26.908 8.47451 26.787 8.13533 26.5604C7.79616 26.3337 7.5318 26.0116 7.3757 25.6347C7.21959 25.2579 7.17875 24.8432 7.25833 24.4431C7.33791 24.043 7.53434 23.6755 7.82279 23.3871C8.11124 23.0986 8.47874 22.9022 8.87882 22.8226C9.27891 22.743 9.69361 22.7839 10.0705 22.94C10.4474 23.0961 10.7695 23.3604 10.9961 23.6996C11.2227 24.0388 11.3437 24.4375 11.3437 24.8455C11.3437 25.3925 11.1264 25.9171 10.7396 26.3039C10.3528 26.6907 9.82821 26.908 9.2812 26.908ZM23.7187 11.4392H26.1318L28.3428 16.5955H23.7187V11.4392ZM23.7187 26.908C23.3108 26.908 22.912 26.787 22.5728 26.5604C22.2337 26.3337 21.9693 26.0116 21.8132 25.6347C21.6571 25.2579 21.6162 24.8432 21.6958 24.4431C21.7754 24.043 21.9718 23.6755 22.2603 23.3871C22.5487 23.0986 22.9162 22.9022 23.3163 22.8226C23.7164 22.743 24.1311 22.7839 24.508 22.94C24.8849 23.0961 25.207 23.3604 25.4336 23.6996C25.6602 24.0388 25.7812 24.4375 25.7812 24.8455C25.7812 25.3925 25.5639 25.9171 25.1771 26.3039C24.7903 26.6907 24.2657 26.908 23.7187 26.908ZM28.875 23.8142H27.6973C27.4701 22.9309 26.9562 22.1479 26.2362 21.588C25.5162 21.0281 24.6308 20.723 23.7187 20.7205V18.658H28.875V23.8142Z" fill="#0AA288"/></svg>');
       const shippingSvgDataUri = `data:image/svg+xml;charset=utf8,${shippingSvgEncoded}`;
 
-      freeGiftItems.push({ 
-          type: 'free-gift', 
+      freeGiftItems.push({
+          type: 'free-gift',
           src: shippingSvgDataUri,
           alt: 'Free Shipping',
           title: 'Free Shipping'
@@ -1331,23 +1373,24 @@ class BundleBuilder extends HTMLElement {
        const sdCardSvgEncoded = encodeURIComponent('<svg height="32px" width="32px" version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve"><g><path class="st0" style="fill:#0AA288;" d="M449.706,80.869l-70.807-70.807C372.453,3.616,363.711,0,354.592,0H86.593 C67.616,0,52.231,15.385,52.231,34.362V147.56h33.534v70.429H52.231V477.63c0,18.986,15.385,34.37,34.362,34.37h338.805 c18.986,0,34.37-15.385,34.37-34.37V105.177C459.769,96.057,456.151,87.315,449.706,80.869z M198.519,356.33 c-18.566,0-36.617-6.758-45.9-14.966c-0.705-0.64-1.05-1.764-0.18-2.731l13.319-13.999c0.704-0.804,1.754-0.804,2.632-0.156 c7.881,5.79,18.567,11.261,31.188,11.261c12.44,0,19.452-5.307,19.452-13.032c0-6.438-4.207-10.456-18.394-12.228l-6.315-0.804 c-24.176-3.059-37.675-13.515-37.675-32.82c0-20.117,16.476-33.468,42.235-33.468c15.77,0,30.483,4.347,40.471,11.424 c1.05,0.64,1.23,1.288,0.353,2.411l-10.694,14.647c-0.697,0.804-1.575,0.968-2.452,0.475c-9.112-5.462-17.87-8.365-27.678-8.365 c-10.522,0-15.951,4.986-15.951,11.908c0,6.274,4.904,10.301,18.575,12.072l6.307,0.804c24.529,3.051,37.502,13.351,37.502,33.14 C245.314,341.691,229.363,356.33,198.519,356.33z M356.913,329.948c-5.782,16.41-20.323,24.619-41.169,24.619h-44.334 c-1.05,0-1.755-0.647-1.755-1.607V246.766c0-0.968,0.706-1.608,1.755-1.608h44.334c20.846,0,35.387,8.21,41.169,24.611 c2.107,6.118,3.156,12.236,3.156,30.089C360.069,317.72,359.02,323.83,356.913,329.948z"/><path class="st0" style="fill:#0AA288;" d="M309.962,266.235h-13.49c-0.706,0-1.05,0.32-1.05,0.959v65.329c0,0.64,0.344,0.96,1.05,0.96h13.49 c11.916,0,19.1-3.215,22.077-12.064c1.222-3.214,1.927-7.398,1.927-21.56c0-14.155-0.705-18.337-1.927-21.552 C329.062,269.458,321.878,266.235,309.962,266.235z"/></g></svg>');
        const sdCardSvgDataUri = `data:image/svg+xml;charset=utf8,${sdCardSvgEncoded}`;
 
-      freeGiftItems.push({ 
-          type: 'free-gift', 
+      freeGiftItems.push({
+          type: 'free-gift',
           src: sdCardSvgDataUri,
           alt: 'Free 32GB Micro SD Card',
           title: 'Free 32GB SD Card'
       });
     }
 
+    // Group regular product items by product ID to show only one image per product
     const displayedProductIds = new Set();
     Object.values(this.selectedItems).forEach(item => {
       if (!item.isPlan && !item.isFreeRequired) {
-          if (!displayedProductIds.has(item.productId)) { 
-              regularProductItems.push({ 
-                  type: 'product', 
-                  src: item.imageUrl, 
+          if (!displayedProductIds.has(item.productId)) {
+              regularProductItems.push({
+                  type: 'product',
+                  src: item.imageUrl,
                   alt: item.title,
-                  productId: item.productId, 
+                  productId: item.productId, // Need productId for the remove button
                   title: item.title
               });
               displayedProductIds.add(item.productId);
@@ -1358,12 +1401,21 @@ class BundleBuilder extends HTMLElement {
     const finalItemsToShow = [...freeGiftItems, ...regularProductItems];
 
     finalItemsToShow.forEach(item => {
-      html += `
-        <div class="selected-product-item">
-          ${item.type === 'free-gift' ? '<span class="free-badge">FREE</span>' : ''}
-          <img src="${item.src || '//via.placeholder.com/60'}" alt="${item.alt || 'Selected product'}" width="58px" height="58px" loading="lazy">
-        </div>
-      `;
+        if (item.type === 'product') {
+            html += `
+            <div class="selected-product-item-wrapper">
+                <img src="${item.src || '//via.placeholder.com/60'}" alt="${item.alt || 'Selected product'}" width="58px" height="58px" loading="lazy">
+                <button class="remove-selected-product-btn" data-product-id="${item.productId}" aria-label="Remove ${item.alt || 'product'}">&times;</button>
+            </div>
+            `;
+        } else {
+            html += `
+                <div class="selected-product-item">
+                  ${item.type === 'free-gift' ? '<span class="free-badge">FREE</span>' : ''}
+                  <img src="${item.src || '//via.placeholder.com/60'}" alt="${item.alt || 'Selected product'}" width="58px" height="58px" loading="lazy">
+                </div>
+            `;
+        }
     });
 
     container.innerHTML = html;
