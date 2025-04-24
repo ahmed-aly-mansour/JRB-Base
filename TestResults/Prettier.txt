@@ -1,1 +1,4 @@
-Prettier checked 0 files. Check TestResults/Prettier.txt for details.
+[error] Invalid configuration for file "C:\Users\sb\Documents\EcomExperts\Clients\Base\sections\bundle-builder.liquid":
+[error] JSON Error in C:\Users\sb\Documents\EcomExperts\LintingRules\pipeline-rules\.prettierrc.json:
+[error] "undefined" is not valid JSON while parsing empty string
+Prettier checked 1 files. Check TestResults/Prettier.txt for details.
