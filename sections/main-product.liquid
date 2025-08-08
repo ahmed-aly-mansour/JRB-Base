@@ -775,7 +775,10 @@
                 </modal-opener>
                 {% render 'component-product-monogram-popup', block: block, section: section %}
               </div>
-          {%- endcase -%}
+          
+            {% when 'complementary' %}
+              helo
+            {%- endcase -%}
         {%- endfor -%}
       </div>
     </div>
