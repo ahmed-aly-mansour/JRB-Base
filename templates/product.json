@@ -148,7 +148,7 @@
         "complementary_g9fJYX": {
           "type": "complementary",
           "settings": {
-            "block_heading": "PAIR WITH",
+            "heading": "PAIR WITH",
             "make_collapsible_row": true,
             "icon": "price_tag",
             "product_list_limit": 2,
