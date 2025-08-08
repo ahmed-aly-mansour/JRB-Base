@@ -639,6 +639,9 @@
                       </ul>
                     {% elsif block_heading == 'HOW TO USE' and product.metafields.custom.how_to_use != blank %}
                       {{ product.metafields.custom.how_to_use }}
+                    {% elsif block_heading == 'INGREDIENTS' and product.metafields.custom.ingredients != blank %}
+                      <h2 class="ingredients_title">{{ product.metafields.custom.ingredients_title }}</h2>
+                      {{ product.metafields.custom.ingredients }}
                     {% else %}
                       {{ block.settings.content }}
                       {{ block.settings.page.content }}    
