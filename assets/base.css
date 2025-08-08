@@ -102,7 +102,7 @@ body {
 }
 
 .page-width {
-  max-width: var(--page-width);
+  max-width: 1600px;
   margin: 0 auto;
   padding: 0 1.5rem;
 }
@@ -2304,10 +2304,10 @@ input[type='checkbox'] {
 
 .announcement-bar__message {
   text-align: center;
-  padding: 1rem 0;
+  /* padding: 1rem 0; */
   margin: 0;
   letter-spacing: 0.1rem;
-  min-height: 3.8rem;
+  min-height: 35px;
 }
 
 .announcement-bar-slider--fade-in-next .announcement-bar__message,

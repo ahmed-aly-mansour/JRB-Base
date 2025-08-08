@@ -1,6 +1,8 @@
 {% comment %} /sections/featured-collections.liquid {% endcomment %}
-
+{{ 'swiper7.4.1.min.css' | asset_url | stylesheet_tag }}
 {{ 'section-featured-collections.css' | asset_url | stylesheet_tag }}
+<script src="{{ "swiper7.4.1.min.js" | asset_url }}" defer="defer" id="swiper-script"></script>
+<script src="{{ 'component-featured-collections-slider.js' | asset_url }}" defer="defer"></script>
 
 {%- liquid
   assign heading = section.settings.heading
@@ -13,8 +15,8 @@
 -%}
 
 {%- if collections_to_show > 0 -%}
-  <div class="featured-collections-section page-width">
-    <div class="featured-collections__header title-wrapper title-wrapper--no-top-margin" style="text-align: {{ heading_alignment }};">
+  <featured-collections data-section-id="{{ section.id }}" class="featured-collections-section" style="position: relative;">
+    <div class="featured-collections__header title-wrapper title-wrapper--no-top-margin page-width" style="text-align: {{ heading_alignment }};">
       {%- if heading != blank -%}
         <h2 class="featured-collections__heading title h2">{{ heading | escape }}</h2>
       {%- endif -%}
@@ -22,23 +24,28 @@
         <p class="featured-collections__subheading subtitle">{{ subheading | escape }}</p>
       {%- endif -%}
     </div>
+  
+  {% comment %} <div class="page-width"> {% endcomment %}
 
     {% comment %} Use the grid classes from base.css (flexbox based) {% endcomment %}
-    {%- assign grid_classes = 'grid grid--5-col-desktop grid--2-col-tablet-down' -%}
-    <div class="featured-collections__grid {{ grid_classes }}">
+    {%- assign grid_classes = '' -%}
+    <div class="featured-collections__grid {{ grid_classes }} swiper" id="featured-collections-{{ section.id }}">
+      <div class="swiper-wrapper">
       {%- for block in section.blocks -%}
         {%- assign collection = block.settings.collection -%}
         {%- assign custom_image = block.settings.custom_image -%}
-        {%- assign custom_title = block.settings.custom_title -%}
+        {%- assign custom_button_text = block.settings.custom_button_text -%}
         {%- assign collection_image = custom_image | default: collection.featured_image | default: collection.image -%}
-        {%- assign display_title = custom_title | default: collection.title -%}
+        {%- assign display_title = custom_button_text | default: collection.title -%}
 
-        <div class="featured-collections__card grid__item" {{ block.shopify_attributes }}>
-          <a
-            href="{{ collection.url | default: '#' }}"
-            class="collection-card__link {% if style == 'style2' %} collection-card__link--below{% endif %}"
-          >
-            <div class="collection-card__image-wrapper media media--portrait {% if collection_image == blank %} placeholder {% endif %}">
+        <div class="featured-collections__card grid__item swiper-slide" {{ block.shopify_attributes }}>
+          {% unless style == 'style3' %}
+            <a
+              href="{{ collection.url | default: '#' }}"
+              class="collection-card__link {% if style == 'style2' %} collection-card__link--below{% endif %} {% if style == 'style3' %} collection-card__link--btn-right{% endif %}"
+            >
+          {% endunless %}
+            <div class="media media--portrait {% if collection_image == blank %} placeholder {% endif %}">
               {%- if collection_image != blank -%}
                 <img
                   srcset="
@@ -62,24 +69,38 @@
             </div>
             {%- if style == 'style2' -%}
               <div class="collection-card__info collection-card__info--below">
-                <h3 class="collection-card__title h3" style="color: {{ text_color }}">{{ display_title | default: 'Collection Title' }}</h3>
+                <h3 class="collection-card__title h3" style="color: {{ text_color }}">SHOP{{ display_title | default: 'Collection Title' }}</h3>
                 {%- unless hide_shop_now -%}
                   <span class="collection-card__shop-now link underlined-link" style="color: {{ text_color }}">Shop Now</span>
                 {%- endunless -%}
               </div>
+            {% elsif style == "style3" %}
+              <div class="collection-card__info--btn-right">
+                {% if block.settings.custom_title1 or block.settings.custom_title2 %}
+                  <h3 class="collection-card__info__title" style="text-align: right; color: {{ block.settings.custom_title_color }};">{{block.settings.custom_title1}}<br>{{block.settings.custom_title2}}</h3>
+                {% endif %}
+                <a
+                    href="{{ collection.url | default: '#' }}"
+                   class="collection-card__title">{{ display_title | default: 'Collection Title' }}</a>
+              </div>
+                
             {%- else -%}
               <div class="collection-card__info">
-                <h3 class="collection-card__title h3" style="color: {{ text_color }}">{{ display_title | default: 'Collection Title' }}</h3>
+                <h3 class="collection-card__title h3" style="color: {{ text_color }}">SHOP{{ display_title | default: 'Collection Title' }}</h3>
                 {%- unless hide_shop_now -%}
                   <span class="collection-card__shop-now link underlined-link" style="color: {{ text_color }}">Shop Now</span>
                 {%- endunless -%}
               </div>
             {%- endif -%}
-          </a>
+            {% unless style == 'style3' %}
+              </a>
+            {% endunless %}
         </div>
       {%- endfor -%}
+      </div>
     </div>
-  </div>
+  {% comment %} </div> {% endcomment %}
+</featured-collections>
 {%- endif -%}
 
 {% schema %}
@@ -126,7 +147,8 @@
       "label": "Card Style",
       "options": [
         { "value": "style1", "label": "Style 1 (Text/Button above or overlay)" },
-        { "value": "style2", "label": "Style 2 (Text/Button below image)" }
+        { "value": "style2", "label": "Style 2 (Text/Button below image)" },
+        { "value": "style3", "label": "Style 3 (Button aligned right)" }
       ],
       "default": "style2"
     },
@@ -162,10 +184,27 @@
         },
         {
           "type": "text",
-          "id": "custom_title",
-          "label": "Custom Title (optional)",
+          "id": "custom_title1",
+          "label": "Custom Title first line (optional)",
           "info": "Overrides the collection title if set."
-        }
+        },
+        {
+          "type": "text",
+          "id": "custom_title2",
+          "label": "Custom Title second line (optional)",
+          "info": "Overrides the collection title if set."
+        },
+        {
+          "type": "color",
+          "id": "custom_title_color",
+          "label": "Custom Title color (optional)",
+          "default": "#ffffff"
+        },
+        {
+          "type": "text",
+          "id": "custom_button_text",
+          "label": "Custom Button Text (optional)"
+         }
       ]
     }
   ],

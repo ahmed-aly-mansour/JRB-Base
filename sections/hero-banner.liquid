@@ -7,6 +7,7 @@
   assign section_id = 'hero-banner-' | append: section.id
   assign background_type = section.settings.background_type
   assign image_background = section.settings.image_background
+  assign image_background_mobile = section.settings.image_background_mobile
   assign video_background_url = section.settings.video_background_url
   assign video_background_hosted = section.settings.video_background_hosted
 
@@ -38,10 +39,25 @@
     --hero-button-color: {{ button_color }};
     --hero-button-text-color: {{ button_text_color }};
     /* Add more variables here if needed for other settings */
+    --ratio-mobile: 0.7262411347517731;
+    {% if section.settings.hero_banner_size == 'large' %}
+      --ratio-desktop: 2.32;
+    {% elsif section.settings.hero_banner_size == 'small' %}
+      --ratio-desktop: 3.32;
+    {% endif %}
+  }
+
+  #{{ section_id }}{
+    aspect-ratio: var(--ratio-mobile);
+  }
+  
+  @media (min-width: 768px) {
+    #{{ section_id }}{
+      aspect-ratio: var(--ratio-desktop);
+    }
   }
 </style>
-
-<div id="{{ section_id }}" class="hero-banner hero-banner-section">
+<div id="{{ section_id }}" class="hero-banner hero-banner-section" >
   <div class="hero-banner__background">
     {% if background_type == 'video' %}
       {% if video_background_hosted != blank %}
@@ -75,7 +91,12 @@
         {{
           image_background
           | image_url: width: 2000
-          | image_tag: loading: 'lazy', widths: '400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000', class: ''
+          | image_tag: id: "image_background_pc", loading: 'lazy', widths: '400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000', class: ''
+        }}
+        {{
+          image_background_mobile
+          | image_url: width: 2000
+          | image_tag: id: "image_background_mobile", loading: 'lazy', widths: '400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000', class: ''
         }}
       {% else %}
         {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
@@ -84,13 +105,23 @@
     <div class="hero-banner__background-overlay"></div>
   </div>
 
-  <div class="hero-banner__content hero-banner__content--h-{{ content_alignment }} hero-banner__content--v-{{ vertical_alignment }}">
+  <div class="hero-banner__content hero-banner__content--h-{{ content_alignment }} hero-banner__content--v-{{ vertical_alignment }}"
+    {% if section.settings.mobile_vertical_alignment == "bottom"%}
+      style="margin-bottom: 0px"
+    {% elsif section.settings.mobile_vertical_alignment == "top"%}
+      style="margin-top: 0px"
+    {% endif %}
+  >
     {% if stars_text != blank %}
       <div class="hero-banner__stars"><span class="stars">★★★★★</span> {{ stars_text }}</div>
     {% endif %}
 
-    {% if heading != blank %}
-      <h2 class="hero-banner__heading">{{ heading | escape }}</h2>
+    {% if heading != blank  or section.settings.heading1 != blank%}
+      <h2 class="hero-banner__heading">
+        <span style="background-color: {{ section.settings.bg_color }}; box-shadow: .3em 0 0 {{section.settings.bg_color}}, -.3em 0 0 {{section.settings.bg_color}};">{{ heading | escape }}</span>
+        <br>
+        <span style="background-color: {{ section.settings.bg_color }}; box-shadow: .3em 0 0 {{section.settings.bg_color}}, -.3em 0 0 {{section.settings.bg_color}};">{{ section.settings.heading1 | escape}}</span>
+      </h2>
     {% endif %}
 
     {% if subheading != blank %}
@@ -98,6 +129,7 @@
     {% endif %}
 
     {% if button_text != blank and button_link != blank %}
+      
       <a href="{{ button_link }}" class="hero-banner__button">
         {{ button_text | escape }}
       </a>
@@ -118,6 +150,51 @@
   {% endif %}
 </div>
 
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const heroSection = document.querySelector(".hero-banner__content");
+    if (window.innerWidth <= 768 && heroSection) {
+      heroSection.classList.remove('hero-banner__content--v-center');
+      heroSection.classList.add('hero-banner__content--v-bottom');
+    }
+  });
+</script>
+
+<style>
+  #image_background_pc {
+    display: block;
+  }
+
+  #image_background_mobile {
+    display: none;
+  }
+
+  {% if image_background_mobile %}
+    @media (max-width: 768px) {
+      #image_background_pc {
+        display: none;
+      }
+  
+      #image_background_mobile {
+        display: block;
+      }
+    }
+  {% endif %}
+
+  #shopify-section-{{ section.id }} .hero-banner__button{
+    color: {{ section.settings.button_text_color }};
+    background-color: {{section.settings.button_color}};
+    border: 1px solid {{section.settings.button_color}};
+  }
+  #shopify-section-{{ section.id }} .hero-banner__button:hover{
+    color: {{ section.settings.button_color }};
+    background-color: transparent;
+  }
+
+  
+</style>
+
 {% schema %}
 {
   "name": "Hero Banner",
@@ -127,6 +204,16 @@
     {
       "type": "header",
       "content": "Background Settings"
+    },
+    {
+      "type": "select",
+      "id": "hero_banner_size",
+      "label": "Banner Size",
+      "options": [
+        { "value": "small", "label": "Small" },
+        { "value": "large", "label": "Large" }
+      ],
+      "default": "large"
     },
     {
       "type": "radio",
@@ -142,6 +229,11 @@
       "type": "image_picker",
       "id": "image_background",
       "label": "Image Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_background_mobile",
+      "label": "Mobile Image Background"
     },
     {
       "type": "video",
@@ -197,10 +289,38 @@
       "default": "bottom"
     },
     {
+      "type": "select",
+      "id": "mobile_content_alignment",
+      "label": "Mobile Horizontal Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "mobile_vertical_alignment",
+      "label": "Mobile Vertical Alignment",
+      "options": [
+        { "value": "top", "label": "Top" },
+        { "value": "center", "label": "Center" },
+        { "value": "bottom", "label": "Bottom" }
+      ],
+      "default": "bottom"
+    },
+    {
       "type": "color",
       "id": "text_color",
       "label": "Text Color",
       "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Title Background Color",
+      "default": "#FFFFFF00"
     },
     {
       "type": "text",
@@ -212,6 +332,12 @@
       "type": "text",
       "id": "heading",
       "label": "Heading",
+      "default": "END OF SEASON SALE"
+    },
+    {
+      "type": "text",
+      "id": "heading1",
+      "label": "Heading Second Line",
       "default": "END OF SEASON SALE"
     },
     {

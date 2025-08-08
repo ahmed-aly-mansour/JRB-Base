@@ -3,6 +3,8 @@
   assign body_font_italic = settings.type_body_font | font_modify: 'style', 'italic'
   assign body_font_bold_italic = body_font_bold | font_modify: 'style', 'italic'
   
+  assign primary_font_bold = settings.primary_family_font | font_modify: 'weight', 'bold'
+  assign secondary_font_bold = settings.secondary_family_font | font_modify: 'weight', 'bold'
   assign header_font_bold = settings.type_header_font | font_modify: 'weight', 'bold'
   assign header_font_italic = settings.type_header_font | font_modify: 'style', 'italic'
   assign header_font_bold_italic = header_font_bold | font_modify: 'style', 'italic'
@@ -49,6 +51,7 @@
   
   {% if settings.custom_heading_font_name == blank %}
     {{ settings.type_header_font | font_face: font_display: 'swap' }}
+    {{ primary_font_bold | font_face: font_display: 'swap'  }}
     {{ header_font_bold | font_face: font_display: 'swap' }}
     {{ header_font_italic | font_face: font_display: 'swap' }}
     {{ header_font_bold_italic | font_face: font_display: 'swap' }}
@@ -107,7 +110,7 @@
   }
 
   :root {
-    --font-body-family: {{ custom_body_font_family }};
+    --font-body-family: {{ settings.primary_family_font.family }};
     --font-body-style: {{ settings.type_body_font.style }};
     --font-body-weight: {{ settings.type_body_font.weight }};
     --font-body-weight-bold: {{ settings.type_body_font.weight | plus: 300 | at_most: 1000 }};
@@ -227,6 +230,28 @@
     --variant-pills-shadow-horizontal-offset: {{ settings.variant_pills_shadow_horizontal_offset }}px;
     --variant-pills-shadow-vertical-offset: {{ settings.variant_pills_shadow_vertical_offset }}px;
     --variant-pills-shadow-blur-radius: {{ settings.variant_pills_shadow_blur }}px;
+  }
+
+  /* CSS Used fontfaces */
+  @font-face{
+    font-family: RingsideWideWeb;
+    src: url({{ 'ringside-wide-book.static.woff2' | asset_url }}) format("woff2")
+  }
+
+  @font-face{
+    font-family: RingsideWideWebItalic;
+    font-style: italic;
+    src: url({{ 'ringside-wide-book-italic.static.woff2' | asset_url }}) format("woff2")
+  }
+
+  @font-face{
+    font-family: BaseMonoWideWeb;
+    src:url({{ 'base-mono-wide-thin.static.woff2' | asset_url }}) format("woff2")
+  }
+
+  @font-face{
+    font-family: GeogrotesqueCondBoldWeb;
+    src:url({{ 'geogrotesque-cond-bold.static.woff2' | asset_url }}) format("woff2")
   }
 
   *,

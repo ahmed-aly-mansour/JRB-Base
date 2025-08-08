@@ -5,7 +5,7 @@
     background: #fff;
     width: 100%;
     {% if section.settings.show_line_separator %}
-      border-bottom: 1px solid rgb(var(--color-foreground), 0.2);
+      border-bottom: 1px solid #ebebeb;
     {% endif %}
     z-index: 9;
     transition: top 150ms ease-out;
@@ -18,7 +18,12 @@
       top: calc(-1 * var(--header-height));
     }
   {% endif %}
-
+  {% if section.settings.sticky_header_type == 'always' %}
+    #shopify-section-{{ section.id }}.header-sticky {
+      position: fixed;
+      top: 0;
+    }  
+  {% endif %}
   #main-header {
     display: grid;
     grid-template-columns: {% if section.settings.logo_position == 'middle-center' or section.settings.logo_position == 'top-center' %}
@@ -26,17 +31,22 @@
     {% else %}
     auto 1fr auto
   {% endif %};
-    align-items: center;
-    gap: 0 3rem;
-    margin-inline: auto;
-    padding-top: {{ section.settings.padding_top }}px;
-    padding-bottom: {{ section.settings.padding_bottom }}px;
+  margin-inline: auto;
+  /*
+  gap: 0 3rem;
+  padding-top: {{ section.settings.padding_top }}px;
+  padding-bottom: {{ section.settings.padding_bottom }}px;
+  */
+  align-items: center;
+  height: 75px;
+  
   }
   #main-header .header-shop_link {
     text-decoration: none;
     word-break: break-word;
     color: rgb(var(--color-foreground));
     font-family: var(--font-heading-family);
+    width: 200px;
   }
   #main-header .header-shop_name {
     font-size: 24px;
@@ -61,7 +71,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 1rem;
+    gap: 3rem;
   }
   .header-menu-position-left ul {
     justify-content: flex-start;
@@ -93,7 +103,7 @@
     transform: scaleY(-1);
   }
   .header-logo {
-    width: auto;
+    {% comment %} width: auto; {% endcomment %}
     height: {{ settings.logo_height | append: 'px' }};
     transition: height 300ms ease;
   }
@@ -135,7 +145,8 @@
   .header-actions > * {
     display: flex;
     justify-content: flex-end;
-    gap: 1rem;
+    align-items: center;
+    gap: 25px;
     color: inherit;
     {% if section.settings.logo_position == 'top-left' or section.settings.logo_position == 'top-center' %}
       grid-area: 1 / 3;
@@ -144,16 +155,27 @@
 
   #header-actions_search {
     cursor: pointer;
+    display: inline-flex;
   }
+  @media screen and (max-width: 1024px){
+    #header-actions_search {
+      display: none;
+    }
+  }
+
+
   #header-search {
     position: absolute;
-    inset: 0;
+    top: 100%;
+    left: 0;
+    right: 0;
     color: rgb(var(--color-foreground));
     background: rgb(var(--color-background));
     display: none;
     justify-content: center;
     align-items: center;
     gap: 1rem;
+    padding: 18px 27px 18px 27px;
   }
 
   #header-search.active {
@@ -161,9 +183,12 @@
   }
   {%- if settings.predictive_search_enabled -%}
     #header-search predictive-search {
+      /*
       position: relative;
+      */
+
       display: flex;
-      width:min(750px, calc(100% - 3.5rem))
+      width: 100%;
     }
     #predictive-search-wrapper {
       position: absolute;
@@ -172,15 +197,22 @@
       background: rgb(var(--color-background));
       border: 1px solid rgba(var(--color-foreground),var(--popup-border-opacity));
       border-top: 0;
-      width: calc(100% - 2px);
+      width: 100%;
       max-height: 80vh;
       overflow-y: auto;
+    }
+
+    #predictive-search-results{
+      display: flex;
+      flex-direction: column-reverse;
     }
   {%- endif -%}
   #header-search form {
     position: relative;
+    /*
     border: 1px solid rgb(var(--color-foreground), 0.2);
-    width: min(750px, 100%);
+    */
+    width: 100%;
     height: 40px;
     display: flex;
     justify-content: space-between;
@@ -195,6 +227,7 @@
     background: transparent;
     outline: none;
     box-shadow: none;
+    border-bottom: 1px rgba(0,0,0, 1) solid;
   }
   /* clears the 'X' from Internet Explorer */
   #header-search form input[type='search']::-ms-clear,
@@ -245,15 +278,18 @@
     width: 20px;
     color: rgb(var(--color-foreground));
   }
+  .cart-item-count-mobile{
+    display: none;
+  }
 
-  @media (min-width: 768px) {
+  @media (min-width: 1024px) {
     {% unless section.settings.menu_type_desktop == 'drawer' %}
       #header-drawer {
         display: none;
       }
     {% endunless %}
   }
-  @media (max-width: 768px) {
+  @media (max-width: 1024px) {
     #main-header > nav,
     .header-actions_account,
     .header-actions_localization {
@@ -277,8 +313,13 @@
     #predictive-search-wrapper {
         border-top: 1px solid rgba(var(--color-foreground),var(--popup-border-opacity));
     }
+
+    .header-logo{
+      padding-inline: 20px;
+    }
+    
   }
-  @media (min-width: 769px) {
+  @media (min-width: 1024px) {
     .header-menu-position-center {
       display: grid;
     }
@@ -286,6 +327,39 @@
     .header-menu-position-center .header-actions
     {
       min-width: 160px;
+    }
+    .cart-item-count{
+      display:inline;
+    }
+  }
+  .cart-bag-word{
+    color: #000;
+    font-family: RingsideWideWeb, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 34px;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: color .4s;
+  }
+
+  @media (max-width: 768px){
+    .cart-item-count-mobile{
+      display: inline;
+      {% comment %} position: absolute;
+      top: -10%;
+      left: 32%; {% endcomment %}
+      color: white;
+      z-index: 11;
+      background: black;
+      padding: 2px 9px;
+      font-size: 11px;
+      border-radius: 100%;
+    }
+    
+    #header-cart-bubble > svg, .cart-bag-word, .cart-item-count{
+      display: none;
     }
   }
 
@@ -298,9 +372,24 @@
     background: {{ section.settings.cart_count_color }};
     color: #fff;
   }
-</style>
 
-{% capture header_search %}
+  @media screen and (min-width: 1280px){
+    #header-search {
+      position: fixed;
+      margin-top: 38px;
+      top: 0;
+      left: auto;
+      right: 145px;
+      width: 260px;
+      }
+    }
+
+    #main-header.page-width{
+      padding: 0 14px !important;
+    }
+  </style>
+
+  {% capture header_search %}
   <div id="header-actions_search" @click="searchOpen = !searchOpen; $nextTick(() => { if (searchOpen) $refs.searchInput.focus() })">
     {{ 'icon-search.svg' | inline_asset_content }}
   </div>
@@ -328,7 +417,8 @@
     {% if request.page_type == 'index' %}<h1 class="header-logo-container" style="margin: 0">{% endif %}
     <a href="{{ routes.root_url }}" class="header-shop_link" style="display: flex">
       {% if settings.logo != blank %}
-        {{ settings.logo | image_url: width: 900 | image_tag: class: 'header-logo' }}
+        {{ 'icon-logo.svg' | inline_asset_content }}
+        {% comment %} {{ settings.logo | image_url: width: 200 | image_tag: class: 'header-logo' }} {% endcomment %}
       {% else %}
         <span class="header-shop_name">{{ shop.name }}</span>
       {% endif %}
@@ -377,6 +467,7 @@
       {%- endfor -%}
 
       <a
+        style="gap: 3px;"
         id="header-cart-bubble"
         {%- if settings.cart_type == 'drawer' -%}
           @click.prevent="openCartDrawer"
@@ -384,8 +475,7 @@
           href="{{ routes.cart_url }}"
         {%- endif -%}
       >
-        {{ 'icon-cart.svg' | inline_asset_content }}
-        <div data-cart-count data-ajax-cart-bind="item_count">{{ cart.item_count }}</div>
+        {{ 'icon-cart.svg' | inline_asset_content }}<span class="cart-item-count-mobile">{{ cart.item_count }}</span> <span class="cart-bag-word"> Bag</span>{% if cart.item_count > 0 %}<span class="cart-item-count">: {{cart.item_count}}</span>{% endif %}
       </a>
     </div>
 
@@ -403,6 +493,7 @@
             x-ref="searchInput"
             x-show="searchOpen"
             @focus="$event.target.select()"
+            class="menu-drawer-search-input"
           >
           <button
             type="reset"
@@ -416,7 +507,7 @@
             {{- 'icon-close.svg' | inline_asset_content -}}
           </button>
           <button aria-label="Search">
-            {{- 'icon-search.svg' | inline_asset_content -}}
+            {{- 'icon-chevron-right.svg' | inline_asset_content -}}
           </button>
         </form>
       {%- endif -%}
@@ -425,6 +516,7 @@
       </button>
     </div>
   </header>
+  
 
   {%- if settings.cart_type == 'notification' -%}
     {%- render 'component-cart-notification',
@@ -434,7 +526,7 @@
   {%- endif -%}
 
   {%- if settings.cart_type == 'drawer' -%}
-    {%- render 'component-cart-drawer' -%}
+    {%- render 'component-cart-drawer', settings: section.settings -%}
   {%- endif -%}
 </div>
 
@@ -455,19 +547,27 @@
 
     if (currentScroll > 0) {
       header.classList.add('scrolled-header');
-    } else {
-      header.classList.remove('scrolled-header');
-    }
-
+    } 
+    {% unless section.settings.sticky_header_type == 'always' %}
+      else {
+        header.classList.remove('scrolled-header');
+      }
+    {% endunless %}
     if (currentScroll > lastScrollTop) {
       header.classList.add('header-sticky');
-    } else if (currentScroll < lastScrollTop) {
-      header.classList.remove('header-sticky');
-    }
-
-    if (currentScroll === 0) {
-      header.classList.remove('header-sticky');
-    }
+    } 
+    {% unless section.settings.sticky_header_type == 'always' %}
+      else if (currentScroll < lastScrollTop) {
+        header.classList.remove('header-sticky');
+      }
+    {% endunless %}
+      
+      if (currentScroll === 0) {
+        header.classList.remove('header-sticky');
+        header.style.top = '-35px'
+      }else{
+        header.style.top = '0'
+      }
 
     lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
   });
@@ -692,7 +792,14 @@
       "id": "cart_count_color",
       "label": "Cart count color",
       "default": "#2E2E2E"
-    }
+    },
+    {
+      "type": "number",
+      "id": "free_shipping_threshold",
+      "label": "Cart Free Shipping Threshold",
+    },
+    
+  
   ],
   "blocks": [
     {

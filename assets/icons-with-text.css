@@ -2,10 +2,16 @@
 .exclusie-icons-section {
   width: 100%;
   background: #fafafa;
-  padding: 50px 0px 50px 0px;
-  margin-bottom: 5rem;
+  padding: 72px;
+  /* margin-bottom: 5rem; */
+  background-color: #f5f2ec;
 }
 
+@media (max-width: 700px) {
+  .exclusie-icons-section{
+    padding: 48px 36px;
+  }
+}
 
 .exclusie-icons-list {
   display: flex;
@@ -34,20 +40,26 @@
 }
 
 .exclusie-icon-title {
-  font-size: 1.6rem;
+  font-family: BaseMonoWideWeb, Courier, Courier New, sans-serif;
+  font-size: 28px;
+  line-height: 32px;
   font-weight: 500;
   margin-bottom: 0px;
   margin-top: 0;
-  letter-spacing: 0;
-  text-transform: uppercase;
+  letter-spacing: 1.26px;
+  max-width: 1000px;
+  margin: 0 auto;
+  word-spacing: 9px;
 }
 
 .exclusie-icon-subtitle {
-  font-size: 1.4rem;
-  letter-spacing: 0;
-  font-weight: 400;
+  font-family: BaseMonoWideWeb, Courier, Courier New, sans-serif;
+  font-size: 16px;
+  letter-spacing: 1.61px;
   color: #222;
-  margin: 0;
+  /* margin: 0; */
+  margin-top: 22px;
+  text-transform: uppercase;
 }
 
 .exclusie-icon-divider {
@@ -86,12 +98,12 @@
     gap: 20px;
   }
   .exclusie-icon-title {
-    font-size: 1.8rem;
-    font-weight: 700;
+    font-size: 18px;
+    line-height: 22px;
   }
   .exclusie-icon-subtitle {
-    max-width: 70%; 
-    font-size: 1.4rem;
+    font-size: 14px;
+    margin-top: 22px;
   }
   .exclusie-icon-divider {
     width: 200px;
@@ -103,7 +115,7 @@
     align-self: center;
   }
   .exclusie-icon-item {
-    padding: 18px 0;
+    /* padding: 18px 0; */
     border-radius: 0;
     border: none;
   }
@@ -114,6 +126,6 @@
 @media screen and (max-width: 768px) {
   .exclusie-icons-section {
     background: #ffffff;
-    padding: 20px 0;
+    /* padding: 20px 0; */
   }
 }

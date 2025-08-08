@@ -3,7 +3,7 @@
     position: absolute;
     top: calc(100% + 1px);
     left: 0;
-    width: min(500px, 100%);
+    width: 100%;
     height: calc(100vh - var(--header-height));
     transform: translateX(-100%);
     z-index: -1;
@@ -56,7 +56,8 @@
   }
   .menu-drawer_action a {
     border: 0 !important;
-    justify-content: flex-end;
+    display: flex;
+    justify-content: center;
   }
   .menu-drawer_localization {
     display: flex;
@@ -75,6 +76,11 @@
     box-shadow: none;
     border: 1px solid rgb(var(--color-foreground), 0.2);
   }
+
+  .overflow-drawer{
+    overflow: hidden;
+  }
+  
 </style>
 <div
   id="header-drawer"
@@ -82,6 +88,7 @@
   @click.outside="drawerOpen = false"
 >
   <button
+    id="drawerToggle"
     class="header-drawer_icons"
     @click="drawerOpen = !drawerOpen"
     :class="{ 'drawer-open': drawerOpen }"
@@ -110,3 +117,12 @@
     </div>
   </div>
 </div>
+
+<script>
+  const toggleButton = document.getElementById('drawerToggle');
+  const body = document.body;
+
+  toggleButton.addEventListener('click', () => {
+    body.classList.toggle('overflow-drawer');
+  });
+</script>

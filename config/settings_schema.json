@@ -110,6 +110,18 @@
       },
       {
         "type": "font_picker",
+        "id": "primary_family_font",
+        "label": "Primary Font",
+        "default": "helvetica_n4"
+      },
+      {
+        "type": "font_picker",
+        "id": "secondary_family_font",
+        "label": "Secondary Font",
+        "default": "helvetica_n4"
+      },
+      {
+        "type": "font_picker",
         "id": "type_header_font",
         "default": "assistant_n4",
         "label": "t:settings_schema.typography.settings.type_header_font.label",
@@ -1442,6 +1454,17 @@
         "id": "currency_code_enabled",
         "label": "t:settings_schema.currency_format.settings.currency_code_enabled.label",
         "default": true
+      }
+    ]
+  },
+  {
+    "name": "Swatches",
+    "settings": [
+      {
+        "type": "textarea",
+        "id": "swatches",
+        "label": "Swatches",
+        "info": "Type swatches, one line each, in format [name==value]. Valid values are color HEX codes and absolute links for Shopify-hosted images (jpg/png)."
       }
     ]
   },

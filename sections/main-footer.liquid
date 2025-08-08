@@ -26,7 +26,7 @@
       <div class="footer__content-top page-width">
         <div class="footer__blocks-wrapper">
           {%- for block in section.blocks -%}
-            <div class="footer-block grid__item">
+            <div class="footer-block">
               {%- case block.type -%}
                 {%- when 'text' -%}
                   <h2 class="footer-block__heading inline-richtext">{{ block.settings.heading }}</h2>
@@ -43,9 +43,10 @@
                     </ul>
                   {%- endif -%}
                 {%- when 'social_icons' -%}
-                  <h2 class="footer-block__heading inline-richtext">Follow Us</h2>
+                  <h2 class="footer-block__heading inline-richtext">CONNECT</h2>
                   <div class="footer-block__details-content footer-block-social-icons">
-                    {%- render 'social-icons', class: 'footer__list-social' -%}
+                    {%- render 'social-icons', class: 'footer__list-social social-icons-mobile' -%}
+
                   </div>
                 {%- when 'brand_information' -%}
                   <div class="footer-block__brand-info">
@@ -75,6 +76,21 @@
                     {%- if block.settings.show_social and has_social_icons -%}
                       {%- render 'social-icons', class: 'footer__list-social' -%}
                     {%- endif -%}
+                    {% if section.settings.email_signup_enable %}
+                      <div class="email-signup-container">
+                        <form action="/contact#contact_form" method="post">
+                          <input type="hidden" name="form_type" value="cutomer">
+                          <input type="hidden" name="utf8" value="right">
+                          <div class="email-signup-input">
+                            <input type="email" name="contact[email]" id="email" placeholder="Email Address">
+                            <p>Sign Up for Free Shipping On Order Over $85 USD</p>
+                          </div>
+                          <div class="email-signup-button">
+                            <button type="submit">Submit</button>
+                          </div>
+                        </form>
+                      </div>
+                    {% endif %}
                   </div>
                 {%- when 'image' -%}
                   <div class="footer-block__details-content footer-block-image {{ block.settings.alignment }}">
@@ -111,7 +127,7 @@
             </div>
           {%- endfor -%}
         </div>
-        <div class="footer__payment-row">
+        {% comment %} <div class="footer__payment-row">
           <ul class="list list-payment" role="list">
             {%- for type in shop.enabled_payment_types -%}
               <li class="list-payment__item">
@@ -119,20 +135,20 @@
               </li>
             {%- endfor -%}
           </ul>
-        </div>
+        </div> {% endcomment %}
       </div>
     {%- endunless -%}
   {%- endif -%}
 
   <div
-    class="footer__content-bottom{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+    class="footer__content-bottom{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %} page-width"
     {% if settings.animations_reveal_on_scroll %}
       data-cascade
     {% endif %}
   >
-    <div class="footer__content-bottom-wrapper page-width">
+    {%- comment -%}
+    <div class="footer__content-bottom-wrapper">
       <div class="footer__column footer__localization isolate">
-        {%- comment -%}
           {%- if section.settings.enable_country_selector and localization.available_countries.size > 1 -%}
             <localization-form>
               {%- form 'localization', id: 'FooterCountryForm', class: 'localization-form' -%}
@@ -156,18 +172,18 @@
               {%- endform -%}
             </localization-form>
           {%- endif -%}
-        {%- endcomment -%}
-
-        {%- render 'component-localization-form',
-          enable_country_selector: section.settings.enable_country_selector,
-          enable_language_selector: section.settings.enable_language_selector
-        -%}
-      </div>
-      <div class="footer__column footer__column--info">
-        {%- if section.settings.payment_enable -%}
+          
+          {%- render 'component-localization-form',
+            enable_country_selector: section.settings.enable_country_selector,
+            enable_language_selector: section.settings.enable_language_selector
+            -%}
+          </div>
+          <div class="footer__column footer__column--info">
+            {%- if section.settings.payment_enable -%}
           <div class="footer__payment">
             <span class="visually-hidden">{{ 'sections.footer.payment' | t }}</span>
             <ul class="list list-payment" role="list">
+              jposjdf;ljksl;fds;lfjs;lfjsdl;fjs;l
               {%- for type in shop.enabled_payment_types -%}
                 <li class="list-payment__item">
                   {{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}
@@ -178,10 +194,16 @@
         {%- endif -%}
       </div>
     </div>
-    <div class="footer__content-bottom-wrapper page-width{% if section.settings.enable_country_selector == false and section.settings.enable_language_selector == false %} footer__content-bottom-wrapper--center{% endif %}">
+    {%- endcomment -%}
+    <div class="footer__content-bottom-wrapper {% if section.settings.enable_country_selector == false and section.settings.enable_language_selector == false %} footer__content-bottom-wrapper--center{% endif %}">
+      <div class="footer__disclaimer">
+        <small>Bobbi Brown left her namesake company in 2016 and is no longer affiliated or associated with the Bobbi Brown Cosmetics company or the Bobbi Brown branded products</small>
+      </div>
       <div class="footer__copyright caption">
-        <small class="copyright__content">&copy; {{ 'now' | date: '%Y' }}, {{ shop.name | link_to: routes.root_url -}}</small>
-        <small class="copyright__content">{{ powered_by_link }}</small>
+        <p>
+          <small class="copyright__content">&copy; {{ 'now' | date: '%Y' }}, {{ shop.name | link_to: routes.root_url -}}</small>
+          {% comment %} <small class="copyright__content">{{ powered_by_link }}</small> {% endcomment %}
+        </p>
         {%- if section.settings.show_policy -%}
           <ul class="policies list-unstyled">
             {%- for policy in shop.policies -%}
@@ -251,6 +273,7 @@
       "type": "text",
       "name": "t:sections.footer.blocks.text.name",
       "settings": [
+
         {
           "type": "inline_richtext",
           "id": "heading",
@@ -328,6 +351,12 @@
       "type": "header",
       "content": "t:sections.footer.settings.header__1.content",
       "info": "t:sections.footer.settings.header__1.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "email_signup_enable",
+      "default": true,
+      "label": "Show email Signup"
     },
     {
       "type": "checkbox",

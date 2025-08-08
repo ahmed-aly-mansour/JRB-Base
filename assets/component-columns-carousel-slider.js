@@ -1,9 +1,4 @@
-import Swiper from 'swiper';
-import { Grid, Navigation } from 'swiper/modules';
-
-Swiper.use([Grid, Navigation]);
-
-class FeaturedProducts extends HTMLElement {
+class ColumnsCarousel extends HTMLElement {
   constructor() {
     super();
     this.swiper = null;
@@ -28,34 +23,46 @@ class FeaturedProducts extends HTMLElement {
 
   init() {
     if (window.Swiper && this.sectionId) {
-      const selector = `#featured-products-${this.sectionId}`;
+      const selector = `#columns-carousel-${this.sectionId}`;
       const swiperEl = document.querySelector(selector);
 
       // Prevent duplicate swiper initialization
       if (!swiperEl || swiperEl.classList.contains('swiper-initialized')) return;
 
-      this.swiper = new Swiper(swiperEl, {
-        slidesPerView: 2,
-        grid: {
-          rows: 2,
+      this.swiper = new Swiper(selector, {
+        slidesPerView: 1,
+        autoHeight: false,
+        breakpoints: {
+          200: {
+            slidesPerView: 1,
+            centeredSlides: true,
+            loop: true,
+            watchOverflow: false
+          },
+          700: {
+            slidesPerView: 4,
+            loop: false,
+            watchOverflow: false,
+            navigation: false
+          }
         },
-        autoHeight: true,
-        // breakpoints: {
-        //   300: {
-        //     slidesPerView: 2,
-        //     grid: {
-        //       rows: 2,
-        //     },
-        //   },
-        //   700: {
-        //     slidesPerView: 4,
-        //     grid: {
-        //       rows: 1,
-        //     },
-        //   },
-        // },
         loop: false,
-        watchOverflow: false,
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        },
+        pagination: {
+          el: '.swiper-pagination',
+          clickable: false,
+          type: 'fraction',
+          renderFraction: function (currentClass, totalClass) {
+            return `
+              <span class="${currentClass}" style="margin-right:2px;"></span>
+              <span style="margin: 0; padding: 0;">/</span>
+              <span class="${totalClass}" style="margin-left:2px;"></span>
+            `;
+          }
+        }
       });
     }
   }
@@ -81,6 +88,6 @@ class FeaturedProducts extends HTMLElement {
   }
 }
 
-if (!customElements.get('featured-products')) {
-  customElements.define('featured-products', FeaturedProducts);
+if (!customElements.get('columns-carousel')) {
+  customElements.define('columns-carousel', ColumnsCarousel);
 }

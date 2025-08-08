@@ -44,10 +44,19 @@
     <a
       href="{{ card_product.url }}"
       class="card-media"
-      style="--media-ratio: {{ 1 | divided_by: ratio | times: 100 }}%;"
+      style="--media-ratio: 100%; text-decoration:none;"
     >
-      <div class="card-media-child{% if card_product.featured_image == blank %} card-media-no-image{% endif %}">
+      <product-card-image data-section-id="{{ section.id }}" class="product-card-image-section" style="position: relative; width: 100%; height: 100%">
+
+      <div class="product-card__image-wrapper card-media-child{% if card_product.featured_image == blank %} card-media-no-image{% endif %} swiper" id="product-card-image-{{ section.id }}">
+        <div class="swiper-wrapper">
         {% if card_product.featured_image != blank %}
+          {% assign first_image_class = "" %}
+
+          {% if card_product.images.size > 1 %}
+            {% assign first_image_class = "product-first-image" %}
+          {% endif %}
+          <div class="swiper-slide {{ first_image_class }}">
           {{
             card_product.featured_image
             | image_url: width: card_product.featured_image.width
@@ -55,16 +64,65 @@
               width: card_product.featured_image.width,
               height: card_product.featured_image.height,
               alt: card_product.featured_media.alt,
-              data-product-image: card_product.id
+              data-product-image: card_product.id,
+              class: first_image_class
             | escape
           }}
+        </div>
+
+          {% if card_product.images.size > 1 %}
+            {% for image in card_product.images limit:1 offset:1 %}
+              {% assign second_image = image %}
+              <div class="swiper-slide product-second-image">
+              {{
+                second_image
+                | image_url: width: second_image.width
+                | image_tag:
+                  width: second_image.width,
+                  height: second_image.height,
+                  alt: second_image.alt,
+                  data-product-image: card_product.id,
+                  class: "product-second-image"
+                | escape
+              }}
+            </div>
+            {% endfor %}
+          {% endif %}
         {% else %}
           {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
         {% endif %}
+       </div>
+
+       <!-- If we need pagination -->
+       <div class="swiper-pagination"></div>
+
+       <!-- If we need navigation buttons -->
+       <div class="swiper-button-prev"></div>
+       <div class="swiper-button-next"></div>
+
+       <!-- If we need scrollbar -->
+       <div class="swiper-scrollbar"></div>
+
       </div>
       <div class="card-badge-wrapper {{ settings.badge_position }}">
+
+        {% if card_product.metafields.custom.quality_badge_image %}
+          <div  class="product__card-award"
+                style="background-image: url('{{ card_product.metafields.custom.quality_badge_image | image_url }}')">
+          </div>
+        {% endif %}
+
         <div class="card__badge {{ settings.badge_position }}">
-          {%- if card_product.available == false -%}
+          {% for tag in card_product.tags %}
+            {% assign flag_word = tag | slice: 0, 5 %}
+            {% if flag_word  == 'flag_' %}
+              {% assign remainder_length = tag.size | minus: 5 %}
+              {% assign flag_value = tag | slice: 5, remainder_length %}
+              <span class="product-card__badge">{{ flag_value }}</span>
+            {% endif %}
+          {% endfor %}
+            
+          {% comment %} {%- if card_product.available == false -%}
             <span
               class="badge badge--bottom-left color-{{ settings.sold_out_badge_color_scheme }}"
             >
@@ -76,9 +134,10 @@
             >
               {{- 'products.product.on_sale' | t -}}
             </span>
-          {%- endif -%}
+          {%- endif -%} {% endcomment %}
         </div>
       </div>
+      </product-card-image>
     </a>
     <div class="card-information">
       <h2 class="card-heading">
@@ -87,7 +146,22 @@
       {% if show_vendor %}
         <span class="card-vendor">{{ card_product.vendor }}</span>
       {% endif %}
-      <div class="card-pricing">
+
+      <div class="product__card_stars-button-container">
+        <div class="product-card__reviews product-card__reviews--{{ review_content_alignment }}">
+          <span class="visually-hidden">Rating:</span>
+          <span class="product-card__stars">{% render 'component-product-reviews-stars', rate: 4.3, stars_color: "black", stars_size: "15px" %}</span>
+          {% comment %} <a href="#reviews" class="product-card__review-link">
+          </a> {% endcomment %}
+          <span class="product-card__review-count">10 Reviews</span>
+        </div>
+
+        <button type="button" class="product__card-button desktop-hidden">
+          <div class="product__card-button--text">shop now</div>
+          <div class="product__card-button--price">{{ card_product.price | money_without_trailing_zeros }}</div>
+        </button>
+        
+        {% comment %} <div class="card-pricing">
         {% render 'component-product-price', product: card_product, show_compare_at_price: true %}
       </div>
       {% if enable_swatches %}
@@ -233,7 +307,8 @@
             </ajax-cart-product-form>
           {%- endif -%}
         </div>
-      {% endif %}
+      {% endif %} {% endcomment %}
+    </div>
     </div>
   </div>
 </product-card>

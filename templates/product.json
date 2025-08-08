@@ -7,7 +7,7 @@
  * made to this file may be overwritten.
  * ------------------------------------------------------------
  */
- {
+{
   "sections": {
     "main-product": {
       "type": "main-product",
@@ -34,6 +34,22 @@
             "review_text_size": 16
           }
         },
+        "variant_picker_NWh8q7": {
+          "type": "variant_picker",
+          "settings": {
+            "show_picker_title": false,
+            "show_variant_types": true,
+            "picker_type": "button",
+            "swatch_shape": "circle"
+          }
+        },
+        "buy_buttons_JPDYXc": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": true,
+            "show_gift_card_recipient": true
+          }
+        },
         "price_4XTzqR": {
           "type": "price",
           "settings": {
@@ -45,6 +61,7 @@
         },
         "inventory_aTTemW": {
           "type": "inventory",
+          "disabled": true,
           "settings": {
             "text_style": "body",
             "inventory_threshold": 3,
@@ -54,13 +71,6 @@
             "inventory_font_size_mobile": 18
           }
         },
-        "variant_picker_NWh8q7": {
-          "type": "variant_picker",
-          "settings": {
-            "picker_type": "button",
-            "swatch_shape": "circle"
-          }
-        },
         "bulk_quantity_selector_fmhXMY": {
           "type": "bulk_quantity_selector",
           "disabled": true,
@@ -68,6 +78,7 @@
         },
         "quantity_selector_cwaLFj": {
           "type": "quantity_selector",
+          "disabled": true,
           "settings": {}
         },
         "subscription_AbipnR": {
@@ -78,15 +89,9 @@
         },
         "share_ybFkAW": {
           "type": "share",
+          "disabled": true,
           "settings": {
             "share_label": "Share"
-          }
-        },
-        "buy_buttons_JPDYXc": {
-          "type": "buy_buttons",
-          "settings": {
-            "show_dynamic_checkout": true,
-            "show_gift_card_recipient": true
           }
         },
         "description_RxGjaP": {
@@ -103,7 +108,6 @@
           "type": "collapsible_tab",
           "settings": {
             "heading": "DESCRIPTION",
-            "custom_image": "shopify://shop_images/si_info-line.png",
             "image_width": 16,
             "image_height": 16,
             "content": "<p><em>This is a demonstration store. You can purchase products like this from </em><a href=\"http://babyandco.us/\" target=\"_blank\"><em>Baby & Company</em></a></p><p>The Emanuela Jacket is a quilted comfort with warmth and style offerings. Side angled pockets at front. Zip closure at center front. By Malene Birger. Color Olive. 100% Polyamide, Trimming Polyester. <em>Ashley is wearing a Size 32.</em></p>",
@@ -114,7 +118,6 @@
           "type": "collapsible_tab",
           "settings": {
             "heading": "SHIPPING",
-            "custom_image": "shopify://shop_images/la_shipping-fast.png",
             "image_width": 16,
             "image_height": 16,
             "content": "",
@@ -125,7 +128,6 @@
           "type": "collapsible_tab",
           "settings": {
             "heading": "RETURN",
-            "custom_image": "shopify://shop_images/mage_clock.png",
             "image_width": 16,
             "image_height": 16,
             "content": "",
@@ -136,14 +138,14 @@
       "block_order": [
         "title_bpmXVj",
         "rating_8zP444",
+        "variant_picker_NWh8q7",
+        "buy_buttons_JPDYXc",
         "price_4XTzqR",
         "inventory_aTTemW",
-        "variant_picker_NWh8q7",
         "bulk_quantity_selector_fmhXMY",
         "quantity_selector_cwaLFj",
         "subscription_AbipnR",
         "share_ybFkAW",
-        "buy_buttons_JPDYXc",
         "description_RxGjaP",
         "collapsible_tab_M4JRLF",
         "collapsible_tab_VJTXqb",
@@ -157,6 +159,7 @@
         "constrain_to_viewport": true,
         "media_fit": "cover",
         "media_position": "left",
+        "desktop_thumbnails_position": "left",
         "image_zoom": "hover",
         "enable_video_looping": true,
         "padding_top": 36,
@@ -212,20 +215,13 @@
           "settings": {
             "product": ""
           }
-        },
-        "product_card_DKk7Xp": {
-          "type": "product_card",
-          "settings": {
-            "product": ""
-          }
         }
       },
       "block_order": [
         "product_card_fxtEb6",
         "product_card_Fk76Di",
         "product_card_VYE4nK",
-        "product_card_ibLg6k",
-        "product_card_DKk7Xp"
+        "product_card_ibLg6k"
       ],
       "name": "Featured Products",
       "settings": {

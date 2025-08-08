@@ -12,6 +12,7 @@
 
 {% case media.media_type %}
   {% when 'image' %}
+    {% assign image_style1 = 'max-height: ' | append: image_max_height %}
     {{
       media
       | image_url: width: media.width
@@ -21,7 +22,8 @@
         loading: 'eager',
         alt: media.alt,
         data-media-id: media.id,
-        class: 'image-magnify-hover'
+        class: 'image-magnify-hover',
+        style: image_style1
     }}
 
   {% when 'external_video' %}

@@ -8,14 +8,15 @@
       aria-controls="predictive-search-results"
       aria-haspopup="listbox"
       aria-autocomplete="list"
-      placeholder="{% if search.terms != blank %}{{ search.terms | escape }}{% else %}Search{% endif %}"
+      placeholder="{% if search.terms != blank %}{{ search.terms | escape }}{% else %}Enter Search{% endif %}"
       x-model="searchTerm"
       x-ref="searchInput"
       @focus="$event.target.select()"
+      class="menu-drawer-search-input"
     >
     <input name="options[prefix]" type="hidden" value="last">
 
-    <button
+    {% comment %} <button
       type="reset"
       class="reset__button"
       aria-label="Clear search term"
@@ -25,9 +26,9 @@
       x-cloak
     >
       {{- 'icon-close.svg' | inline_asset_content -}}
-    </button>
+    </button> {% endcomment %}
     <button aria-label="Search">
-      {{- 'icon-search.svg' | inline_asset_content -}}
+      {{- 'icon-chevron-right.svg' | inline_asset_content -}}
     </button>
   </form>
   <div id="predictive-search-wrapper" tabindex="-1">

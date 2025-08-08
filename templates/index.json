@@ -7,22 +7,28 @@
  * made to this file may be overwritten.
  * ------------------------------------------------------------
  */
- {
+{
   "sections": {
     "hero_banner_1": {
       "type": "hero-banner",
       "settings": {
+        "hero_banner_size": "large",
         "background_type": "image",
-        "image_background": "shopify://shop_images/nobg.png",
+        "image_background": "shopify://shop_images/MBPalette_HomePage_Desktop_v2.webp",
+        "image_background_mobile": "shopify://shop_images/MBPalette_HomePage_Mobile_v2_eabde501-7c0e-4982-af37-bd4b7eedce1d.webp",
         "video_background_url": "",
         "overlay_color": "#d9d9d9",
         "overlay_opacity": 30,
-        "content_alignment": "center",
+        "content_alignment": "left",
         "vertical_alignment": "center",
+        "mobile_content_alignment": "left",
+        "mobile_vertical_alignment": "bottom",
         "text_color": "#000000",
+        "bg_color": "#ffffff",
         "stars_text": "",
-        "heading": "Main Banner Title Here",
-        "subheading": "Sub Header Here",
+        "heading": "New: Miracle Balm",
+        "heading1": "Palettes Are Here",
+        "subheading": "The best seller is back — explore limited-edition trios of new & exclusive shades.",
         "button_text": "Shop Now",
         "button_link": "shopify://collections/cam-plans",
         "button_color": "#000000",
@@ -31,100 +37,36 @@
         "endorsement_name": ""
       }
     },
-    "featured_collections_example": {
-      "type": "featured-collections",
-      "blocks": {
-        "block_1": {
-          "type": "collection_card",
-          "settings": {
-            "collection": "",
-            "custom_title": ""
-          }
-        },
-        "block_2": {
-          "type": "collection_card",
-          "settings": {
-            "collection": "",
-            "custom_title": ""
-          }
-        },
-        "block_3": {
-          "type": "collection_card",
-          "settings": {
-            "collection": "",
-            "custom_title": ""
-          }
-        },
-        "block_4": {
-          "type": "collection_card",
-          "disabled": true,
-          "settings": {
-            "collection": "",
-            "custom_title": ""
-          }
-        },
-        "block_5": {
-          "type": "collection_card",
-          "disabled": true,
-          "settings": {
-            "collection": "",
-            "custom_title": ""
-          }
-        }
-      },
-      "block_order": [
-        "block_1",
-        "block_2",
-        "block_3",
-        "block_4",
-        "block_5"
-      ],
-      "settings": {
-        "heading": "EXPLORE OUR CATEGORIES",
-        "subheading": "",
-        "heading_alignment": "center",
-        "style": "style2",
-        "text_color": "#000000",
-        "hide_shop_now": true
-      }
-    },
     "featured_products_example": {
       "type": "featured-products",
       "blocks": {
         "block_1": {
           "type": "product_card",
           "settings": {
-            "product": ""
+            "product": "miracle-balm-palette-2025",
+            "hover_product_image": "shopify://shop_images/pdp_cheeky_4.webp"
           }
         },
         "block_2": {
           "type": "product_card",
           "settings": {
-            "product": ""
+            "product": "everyday-sunscreen",
+            "hover_product_image": "shopify://shop_images/SPF_hover_pdp.webp"
           }
         },
         "product_card_bpd4Xd": {
           "type": "product_card",
           "settings": {
-            "product": ""
+            "product": "miracle-balm",
+            "hover_product_image": "shopify://shop_images/MiracleBalm_PinkyBronze_4.webp",
+            "award_product_image": "shopify://shop_images/BestofBeauty_2022_1_1_150x_f5684d3c-b768-447c-9ff4-d242272fe643.avif"
           }
         },
         "product_card_tP6QmJ": {
           "type": "product_card",
           "settings": {
-            "product": ""
-          }
-        },
-        "product_card_RUFfmj": {
-          "type": "product_card",
-          "settings": {
-            "product": ""
-          }
-        },
-        "product_card_QizrFh": {
-          "type": "product_card",
-          "settings": {
-            "product": ""
+            "product": "just-enough-tinted-moisturizer",
+            "hover_product_image": "shopify://shop_images/JETM_alabaster_4.webp"
           }
         }
       },
@@ -132,17 +74,15 @@
         "block_1",
         "block_2",
         "product_card_bpd4Xd",
-        "product_card_tP6QmJ",
-        "product_card_RUFfmj",
-        "product_card_QizrFh"
+        "product_card_tP6QmJ"
       ],
       "settings": {
-        "heading": "Best Sellers",
+        "heading": "Featured Products",
         "subheading": "",
-        "view_all_text": "View All",
+        "view_all_text": "See All",
         "view_all_url": "shopify://products/acb-top-in-chipped-brick",
-        "heading_alignment": "center",
-        "show_view_all_as_button": true,
+        "heading_alignment": "left",
+        "show_view_all_as_button": false,
         "button_background_color": "#2e2e2e",
         "button_text_color": "#ffffff",
         "product_content_alignment": "center",
@@ -151,126 +91,111 @@
         "stars_color": "#000000"
       }
     },
-    "exclusive_section_NfqBik": {
-      "type": "sales-banner",
-      "name": "Sales Banner",
-      "settings": {
-        "background_image": "shopify://shop_images/Image_of_Glutathione_Plus_Lozenge_1.png",
-        "background_image_mobile": "shopify://shop_images/Frame_1261153144.png",
-        "title": "This store is exclusive to Carvana<br> employees &amp; select customers",
-        "subtitle": "Please log in to access your account.",
-        "button_text": "Login to your account",
-        "title_mobile": "This store is exclusive to Carvana employees &amp; select customers",
-        "subtitle_mobile": "Please log in to access your account.",
-        "button_text_mobile": "Login to your account",
-        "title_color": "#183558",
-        "title_color_mobile": "#183558",
-        "subtitle_color": "#183558",
-        "subtitle_color_mobile": "#183558",
-        "button_color": "#ffffff",
-        "button_color_mobile": "#ffffff",
-        "button_bg_color": "#00aed9",
-        "button_bg_color_mobile": "#00aed9"
-      }
-    },
-    "custom_testimonials_7UWRGN": {
-      "type": "custom-testimonials",
+    "icon_bar_XhA8jF": {
+      "type": "icon-bar",
       "blocks": {
-        "testimonial_9g4YBd": {
-          "type": "testimonial",
+        "icon_block_W8wKCe": {
+          "type": "icon_block",
           "settings": {
-            "title": "Review Title",
-            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut posuere feugiat sapien, nec laoreet justo facilisis et.",
-            "author": "NAME",
-            "stars": 5,
-            "quote_icon_img": "shopify://shop_images/quotation-mark_32371_1.png",
-            "quote_icon_img_width": 27
+            "icon": "shopify://shop_images/vogue-logo-whote_x26_18f97c43-ad26-4ee6-93f8-511d8b88162c.webp",
+            "text": ""
           }
         },
-        "testimonial_e6iktR": {
-          "type": "testimonial",
+        "icon_block_7VtXGA": {
+          "type": "icon_block",
           "settings": {
-            "title": "Review Title",
-            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut posuere feugiat sapien, nec laoreet justo facilisis et.",
-            "author": "NAME",
-            "stars": 5,
-            "quote_icon_img": "shopify://shop_images/quotation-mark_32371_1.png",
-            "quote_icon_img_width": 27
+            "icon": "shopify://shop_images/wsj-3x_x26_5c8598df-7b8f-4dff-9bcd-0bc278ae56b8.webp",
+            "text": ""
           }
         },
-        "testimonial_tT4WHg": {
-          "type": "testimonial",
+        "icon_block_7T8reN": {
+          "type": "icon_block",
           "settings": {
-            "title": "Review Title",
-            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut posuere feugiat sapien, nec laoreet justo facilisis et.",
-            "author": "NAME",
-            "stars": 5,
-            "quote_icon_img": "shopify://shop_images/quotation-mark_32371_1.png",
-            "quote_icon_img_width": 27
+            "icon": "shopify://shop_images/FC_Logo_2018_amgwhf_x26_819a0bb8-c4a9-4dbc-b7d3-7943f48cd391.webp",
+            "text": ""
           }
         },
-        "testimonial_Jbbhk3": {
-          "type": "testimonial",
+        "icon_block_zmJHJY": {
+          "type": "icon_block",
           "settings": {
-            "title": "Review Title",
-            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut posuere feugiat sapien, nec laoreet justo facilisis et.",
-            "author": "NAME",
-            "stars": 5,
-            "quote_icon_img": "shopify://shop_images/quotation-mark_32371_1.png",
-            "quote_icon_img_width": 27
+            "icon": "shopify://shop_images/Allure_logo.svg_x26_2cea13d6-14b6-4b2d-ada3-7cffc3640f50.webp",
+            "text": ""
           }
         }
       },
       "block_order": [
-        "testimonial_9g4YBd",
-        "testimonial_e6iktR",
-        "testimonial_tT4WHg",
-        "testimonial_Jbbhk3"
+        "icon_block_W8wKCe",
+        "icon_block_7VtXGA",
+        "icon_block_7T8reN",
+        "icon_block_zmJHJY"
       ],
-      "name": "Custom Testimonials",
+      "name": "Icon Bar",
       "settings": {
-        "heading": "WHAT OTHER ARE SAYING",
-        "heading_color": "#000000",
-        "heading_align": "center",
-        "content_align": "left",
-        "bg_color": "#ffffff",
-        "padding_top": 15,
-        "padding_bottom": 30
+        "background_color": "#000000",
+        "text_color": "#ffffff"
       }
     },
-    "exclusie_faq_g9G4yC": {
-      "type": "faq",
+    "featured_collections_example": {
+      "type": "featured-collections",
       "blocks": {
-        "faq_rhXyyY": {
-          "type": "faq",
+        "block_1": {
+          "type": "collection_card",
           "settings": {
-            "question": "How does your process work?",
-            "answer": "Answer goes here."
+            "collection": "face",
+            "custom_image": "shopify://shop_images/PDP_face_2_x1000_bf28d70c-2134-4549-97d7-967a83748702.webp",
+            "custom_title1": "",
+            "custom_title2": "",
+            "custom_title_color": "#ffffff",
+            "custom_button_text": "SHOP FACE"
           }
         },
-        "faq_kEpRGR": {
-          "type": "faq",
+        "block_2": {
+          "type": "collection_card",
           "settings": {
-            "question": "How does your process work?",
-            "answer": "Answer goes here."
+            "collection": "skin-care",
+            "custom_image": "shopify://shop_images/PDP_skin_4_1_x1000_c272ce81-216b-4c6a-8c3f-336628e0c814.webp",
+            "custom_title1": "",
+            "custom_title2": "",
+            "custom_title_color": "#ffffff",
+            "custom_button_text": "SHOP SKIN"
           }
         },
-        "faq_7N4DJx": {
-          "type": "faq",
+        "block_4": {
+          "type": "collection_card",
           "settings": {
-            "question": "How does your process work?",
-            "answer": "Answer goes here."
+            "collection": "eyes",
+            "custom_image": "shopify://shop_images/PDP_eyes_3_1_x1000_0396d803-297a-456f-98c1-4b046a1aed54.webp",
+            "custom_title1": "",
+            "custom_title2": "",
+            "custom_title_color": "#ffffff",
+            "custom_button_text": "SHOP EYES"
+          }
+        },
+        "block_3": {
+          "type": "collection_card",
+          "settings": {
+            "collection": "lips",
+            "custom_image": "shopify://shop_images/PDP_Lips_1_1_x1000_e873da94-df53-40e8-94ac-124b1643b6ff.webp",
+            "custom_title1": "",
+            "custom_title2": "",
+            "custom_title_color": "#ffffff",
+            "custom_button_text": "SHOP LIPS"
           }
         }
       },
       "block_order": [
-        "faq_rhXyyY",
-        "faq_kEpRGR",
-        "faq_7N4DJx"
+        "block_1",
+        "block_2",
+        "block_4",
+        "block_3"
       ],
-      "name": "FAQ",
       "settings": {
-        "heading": "PROGRAM FAQS"
+        "heading": "SHOP BY COLLECTION",
+        "subheading": "",
+        "heading_alignment": "left",
+        "style": "style3",
+        "text_color": "#000000",
+        "hide_shop_now": true
       }
     },
     "exclusie_icons_with_text_K6q6tD": {
@@ -279,143 +204,184 @@
         "icon_text_7yeU4h": {
           "type": "icon_text",
           "settings": {
-            "icon_image": "shopify://shop_images/worldwide_15808138_2_6ffd423c-be08-47d7-9504-560026b77612.png",
             "icon_svg": "",
             "icon_color": "#000000",
-            "title": "FREE SHIPPING",
+            "title": "Clean, strategic, high-grade formulations that work on every skin type and tone—and that are as simple to use as they are to master. Jones Road is a lifetime of beauty knowledge, distilled.",
             "title_color": "#000000",
-            "subtitle": "Free shipping over $150 USD",
-            "subtitle_color": "#4d4d4d"
-          }
-        },
-        "icon_text_4wWPPL": {
-          "type": "icon_text",
-          "settings": {
-            "icon_image": "shopify://shop_images/package_5272184_1_24242416-331e-4a54-8468-69b9e9a53663.png",
-            "icon_svg": "",
-            "icon_color": "#000000",
-            "title": "28 DAY FREE RETURNS",
-            "title_color": "#000000",
-            "subtitle": "Free Returns: Link to See conditions for Free Returns",
-            "subtitle_color": "#4d4d4d"
-          }
-        },
-        "icon_text_nGXTQV": {
-          "type": "icon_text",
-          "settings": {
-            "icon_image": "shopify://shop_images/credit-card_492927_1_15362030-2954-4b51-9a80-17564898b217.png",
-            "icon_svg": "",
-            "icon_color": "#000000",
-            "title": "PAYMENT OPTIONS",
-            "title_color": "#000000",
-            "subtitle": "We accept all credit Cards: Klarna, PayPal, Shop Pay Installments by Affirm, etc.",
-            "subtitle_color": "#4d4d4d"
-          }
-        },
-        "icon_text_XmRJK4": {
-          "type": "icon_text",
-          "settings": {
-            "icon_image": "shopify://shop_images/question_10821051_1_0212845e-9b9e-48b4-9718-c5085516d232.png",
-            "icon_svg": "",
-            "icon_color": "#000000",
-            "title": "HERE FOR YOU",
-            "title_color": "#000000",
-            "subtitle": "customerservice@dummy.com (000) 000-0000",
-            "subtitle_color": "#4d4d4d"
+            "subtitle": "— Bobbi Brown, founder",
+            "subtitle_color": "#000000"
           }
         }
       },
       "block_order": [
-        "icon_text_7yeU4h",
-        "icon_text_4wWPPL",
-        "icon_text_nGXTQV",
-        "icon_text_XmRJK4"
+        "icon_text_7yeU4h"
       ],
       "name": "Exclusie Icons With Text",
       "settings": {}
     },
-    "style_gallery_gki89j": {
-      "type": "style-gallery",
+    "hero_banner_NxhDbf": {
+      "type": "hero-banner",
+      "name": "Hero Banner",
+      "settings": {
+        "hero_banner_size": "large",
+        "background_type": "image",
+        "image_background": "shopify://shop_images/Group_1123_2_x780_8e70d3c6-7816-4c4a-8eef-a5bf9b729916.webp",
+        "image_background_mobile": "shopify://shop_images/Desktop_1600x_1fb8bc9c-0855-4414-9c6e-0e3377e82202.webp",
+        "video_background_url": "",
+        "overlay_color": "#000000",
+        "overlay_opacity": 30,
+        "content_alignment": "left",
+        "vertical_alignment": "center",
+        "mobile_content_alignment": "left",
+        "mobile_vertical_alignment": "top",
+        "text_color": "#ffffff",
+        "bg_color": "rgba(0,0,0,0)",
+        "stars_text": "",
+        "heading": "Everyday Sunscreen —",
+        "heading1": "Your New Non-Negotiable",
+        "subheading": "A lightweight, smooth, and makeup-friendly mineral sunscreen is finally here.",
+        "button_text": "SHOP NOW",
+        "button_link": "shopify://collections/shop-all",
+        "button_color": "#ffffff",
+        "button_text_color": "#000000",
+        "show_endorsement": false,
+        "endorsement_name": "TJ Oshie"
+      }
+    },
+    "columns_carousel_qTf4PY": {
+      "type": "columns-carousel",
       "blocks": {
-        "gallery_image_NNFrNQ": {
-          "type": "gallery_image",
-          "settings": {}
+        "column_card_EmWWTr": {
+          "type": "column-card",
+          "settings": {
+            "card_image": "shopify://shop_images/PRODUCT-ROW-PDP-01_230x_bc18502e-7161-4296-aef1-3f445048d2d4.avif",
+            "card_title": "Better Beauty",
+            "card_description": "The world doesn't need more beauty products. It needs better beauty products.",
+            "learn_more_button": true,
+            "learn_more_button_link": "shopify://pages/about-us",
+            "learn_more_button_text": "Learn More"
+          }
         },
-        "gallery_image_3B7CP4": {
-          "type": "gallery_image",
-          "settings": {}
+        "column_card_WcwbVh": {
+          "type": "column-card",
+          "settings": {
+            "card_image": "shopify://shop_images/PRODUCT-ROW-PDP-02_230x_f6c9aa73-d3c8-48be-b8d7-f986f72688ac.avif",
+            "card_title": "Clean Slate",
+            "card_description": "No phthalates, sulfates, petrolatum, PEGs, EDTA, or BPA. Because clean beauty is a no brainer.",
+            "learn_more_button": true,
+            "learn_more_button_link": "shopify://pages/about-us",
+            "learn_more_button_text": "Learn More"
+          }
         },
-        "gallery_image_CBqAhC": {
-          "type": "gallery_image",
-          "settings": {}
+        "column_card_3HyqBx": {
+          "type": "column-card",
+          "settings": {
+            "card_image": "shopify://shop_images/value-props-1_230x_0c21f992-e54f-41ff-af15-f999ebbe203b.avif",
+            "card_title": "High Performance",
+            "card_description": "The makeup equivalent of a swiss army knife. Easy, cool, multi-purpose products.",
+            "learn_more_button": true,
+            "learn_more_button_link": "shopify://pages/about-us",
+            "learn_more_button_text": "Learn More"
+          }
         },
-        "gallery_image_9mDYYB": {
-          "type": "gallery_image",
-          "settings": {}
-        },
-        "gallery_image_QTqtcB": {
-          "type": "gallery_image",
-          "settings": {}
-        },
-        "gallery_image_xMiH67": {
-          "type": "gallery_image",
-          "settings": {}
-        },
-        "gallery_image_KTznrj": {
-          "type": "gallery_image",
-          "settings": {}
+        "column_card_jtaVpt": {
+          "type": "column-card",
+          "settings": {
+            "card_image": "shopify://shop_images/PRODUCT-ROW-PDP-04_230x_a4f1a9a6-5273-4b2c-8ad3-133a053b666e.avif",
+            "card_title": "From Bobbi",
+            "card_description": "It began with the need to create formulas for her own kit.",
+            "learn_more_button": true,
+            "learn_more_button_link": "shopify://pages/about-us",
+            "learn_more_button_text": "Learn More"
+          }
         }
       },
       "block_order": [
-        "gallery_image_NNFrNQ",
-        "gallery_image_3B7CP4",
-        "gallery_image_CBqAhC",
-        "gallery_image_9mDYYB",
-        "gallery_image_QTqtcB",
-        "gallery_image_xMiH67",
-        "gallery_image_KTznrj"
+        "column_card_EmWWTr",
+        "column_card_WcwbVh",
+        "column_card_3HyqBx",
+        "column_card_jtaVpt"
       ],
-      "name": "Style Gallery",
+      "name": "Columns Carousel",
       "settings": {
-        "heading": "STYLE GALLERY",
-        "heading_color": "#000000",
-        "heading_align": "center",
-        "bg_color": "#ffffff",
-        "padding_top": 100,
-        "padding_bottom": 0
+        "heading": "",
+        "subheading": "",
+        "carousel_bg_color": "#f8f8f8"
       }
     },
-    "newsletter_signup_GGiDB7": {
-      "type": "newsletter-signup",
-      "name": "Newsletter Signup Form",
+    "featured_collections_FApyDc": {
+      "type": "featured-collections",
+      "blocks": {
+        "collection_card_J9hijD": {
+          "type": "collection_card",
+          "settings": {
+            "collection": "",
+            "custom_image": "shopify://shop_images/JonesRoad_Eyeshadow_SmokeyGrey_04_Olesia_GTL_x1000_8c8c4423-0efb-4c91-bd77-bcf0050133a2.webp",
+            "custom_title1": "Olesia’s Chic,",
+            "custom_title2": "Effortless Look",
+            "custom_title_color": "#ffffff",
+            "custom_button_text": "GET THE LOOK"
+          }
+        },
+        "collection_card_8dpdxq": {
+          "type": "collection_card",
+          "settings": {
+            "collection": "",
+            "custom_image": "shopify://shop_images/Deja_x1000_9066d5de-110f-4421-babf-77b5f840d8dd.webp",
+            "custom_title1": "Deja's Simple",
+            "custom_title2": "Smokey Eye",
+            "custom_title_color": "#ffffff",
+            "custom_button_text": "GET THE LOOK"
+          }
+        },
+        "collection_card_7Gwewi": {
+          "type": "collection_card",
+          "settings": {
+            "collection": "",
+            "custom_image": "shopify://shop_images/JonesRoad_GetTheLook_Mollye_GTL_x1000_bd5ed64c-98a6-4b29-9e1c-b7de2be2326b.webp",
+            "custom_title1": "Mollye's Monochromatic",
+            "custom_title2": "Look",
+            "custom_title_color": "#ffffff",
+            "custom_button_text": "GET THE LOOK"
+          }
+        },
+        "collection_card_NRNJQy": {
+          "type": "collection_card",
+          "settings": {
+            "collection": "",
+            "custom_image": "shopify://shop_images/justbobbi_AdelinaSoftFocusSparkle_x1000_c468e7da-9e03-453f-9dde-3b90e1bbb61b.webp",
+            "custom_title1": "Adelina’s Soft",
+            "custom_title2": "Sophistication",
+            "custom_title_color": "#ffffff",
+            "custom_button_text": "GET THE LOOK"
+          }
+        }
+      },
+      "block_order": [
+        "collection_card_J9hijD",
+        "collection_card_8dpdxq",
+        "collection_card_7Gwewi",
+        "collection_card_NRNJQy"
+      ],
+      "name": "Featured Collections",
       "settings": {
-        "heading": "SIGN UP FOR THE LATEST DROPS",
-        "description": "Subscribe to get special offers, free giveaways, and once in a lifetime deals.",
-        "email_placeholder": "Email",
-        "button_text": "SIGN UP",
-        "bg_color": "#ffffff",
+        "heading": "Get The Look",
+        "subheading": "",
+        "heading_alignment": "left",
+        "style": "style3",
         "text_color": "#000000",
-        "desc_size": 20,
-        "section_padding": 32,
-        "button_bg": "#222222",
-        "button_color": "#ffffff",
-        "button_size": 16,
-        "heading_align": "center",
-        "desc_align": "center",
-        "email_align": "left",
-        "button_align": "center"
+        "hide_shop_now": false
       }
     }
   },
   "order": [
     "hero_banner_1",
-    "featured_collections_example",
     "featured_products_example",
-    "exclusive_section_NfqBik",
-    "custom_testimonials_7UWRGN",
-    "exclusie_faq_g9G4yC",
+    "icon_bar_XhA8jF",
+    "featured_collections_example",
     "exclusie_icons_with_text_K6q6tD",
-    "style_gallery_gki89j",
-    "newsletter_signup_GGiDB7"
+    "hero_banner_NxhDbf",
+    "columns_carousel_qTf4PY",
+    "featured_collections_FApyDc"
   ]
 }

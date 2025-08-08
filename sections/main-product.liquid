@@ -16,20 +16,20 @@
       padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
     }
 
-    .option__label {
+    /* .option__label {
       color: {{ section.settings.variant_label_color }};
       font-size: {{ section.settings.variant_label_font_size }}px;
       font-weight: {{ section.settings.variant_label_font_weight }};
-    }
+    } */
 
     {% for block in section.blocks %}
       {% case block.type %}
         {% when 'title' %}
-          .product__title h1 {
+          /* .product__title h1 {
             color: {{ block.settings.title_color }};
             font-size: {{ block.settings.title_font_size_mobile | default: block.settings.title_font_size }}px;
             font-weight: {{ block.settings.title_font_weight }};
-          }
+          } */
         {% when 'description' %}
           .product__description {
             color: {{ block.settings.description_color }};
@@ -59,10 +59,10 @@
       
       {% for block in section.blocks %}
         {% case block.type %}
-          {% when 'title' %}
-            .product__title h1 {
+           {% when 'title' %}
+            /*.product__title h1 {
               font-size: {{ block.settings.title_font_size }}px;
-            }
+            } */
           {% when 'price' %}
             .price-item {
               font-size: {{ block.settings.price_font_size }}px;
@@ -81,14 +81,15 @@
 
   {% assign selected_variant = product.selected_or_first_available_variant %}
 
-  <div class="page-width">
+  <div class="">
     <div class="product flex product--{{ section.settings.media_size }} product--{{ section.settings.media_position }} {% if section.settings.constrain_to_viewport %}constrain-height{% endif %}">
       <div class="product__media-wrapper flex__item media-{{ section.settings.media_fit }}">
         {% render 'component-product-media-gallery',
           product_media: product.media,
           selected_variant: selected_variant,
           video_looping: section.settings.enable_video_looping,
-          is_zoom: section.settings.image_zoom
+          is_zoom: section.settings.image_zoom,
+          thumbnails_position: section.settings.desktop_thumbnails_position
         %}
       </div>
       <div class="product__info-wrapper flex__item {% if section.settings.enable_sticky_info %}product__info-sticky {% endif %}">
@@ -116,17 +117,13 @@
                   {%- assign filled_stars = block.settings.filled_stars | default: 4 -%}
                   {%- assign total_stars = block.settings.total_stars | default: 5 -%}
                   {%- assign empty_stars = total_stars | minus: filled_stars -%}
-                  
+                  {% assign r = filled_stars | times: 5.0 | divided_by: total_stars %} 
+
                   <span style="color: {{ block.settings.star_color | default: '#000' }}; font-size: {{ block.settings.star_size | default: 22 }}px;">
-                    {%- for i in (1..filled_stars) -%}
-                      &#9733;
-                    {%- endfor -%}
-                    {%- for i in (1..empty_stars) -%}
-                      &#9734;
-                    {%- endfor -%}
+                    {% render 'component-product-reviews-stars', rate: r, stars_color: block.settings.star_color | default: '#000', stars_size: block.settings.star_size | default: 22 | append: "px;" %}
                   </span>
-                  <span class="review-count" style="color: {{ block.settings.review_text_color | default: '#888' }}; font-size: {{ block.settings.review_text_size | default: 16 }}px; margin-left: 8px;">
-                    {{ block.settings.review_count | default: '124' }} {{ block.settings.review_text | default: 'Reviews' }}
+                  <span class="review-count">
+                    ({{ block.settings.review_count | default: '124' }} {{ block.settings.review_text | default: 'Reviews' }})
                   </span>
                 </div>
               </div>
@@ -234,7 +231,43 @@
                           {%- assign downcased_option_name = option.name | downcase -%}
                           {%- unless has_bulk_selector and downcased_option_name contains 'size' -%}
                             <fieldset class="product-form__input">
-                              <legend class="option__label">{{ option.name }}</legend>
+                              
+                              {% assign variant_picker_block = section.blocks | where: 'type', 'variant_picker' | first %}
+                              {% if variant_picker_block.settings.show_picker_title %}
+                                <legend class="option__label" style="margin-bottom: 15px;">
+                                  {{option.name}} :
+                                </legend>
+                              {% endif %}
+                              <div class="product-form__tabs">
+
+
+                                {% if variant_picker_block.settings.show_variant_types %}
+                                  <legend class="option__label">
+                                    ALL
+                                  </legend>
+                                
+                                  {%- assign shown_variant_types = '' -%}
+                                  {%- for variant in product.variants -%}
+                                    {%- assign current_type = variant.metafields.custom.variant_type | default: '' -%}
+                                    {%- assign padded_type = '|' | append: current_type | append: '|' -%}
+                                
+                                    {%- unless shown_variant_types contains padded_type -%}
+                                      <legend class="option__label">
+                                        {{ current_type }}
+                                      </legend>
+                                
+                                      {%- assign shown_variant_types = shown_variant_types | append: padded_type -%}
+                                    {%- endunless -%}
+                                  {%- endfor -%}
+                                
+                                {% endif %}
+                                
+                           </div>
+                           
+
+                            <div class="variant-options-container">
+
+
                               {%- for value in option.values -%}
                                 <input
                                   type="radio"
@@ -248,14 +281,46 @@
                                   {% endif %}
                                   data-product-url="{{ value.product_url }}"
                                   data-option-value-id="{{ value.id }}"
+                                  data-variant-type="{{ value.variant.metafields.custom.variant_type }}"
+                                  data-variant-title="{{ value.variant.title | escape }}"
+                                  data-variant-description="{{ value.variant.metafields.custom.variant_description | escape }}"
                                 >
-                                <label
-                                  class="pill-label {% unless value.available %}pill-disabled{% endunless %}"
-                                  for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 -}}"
+                                  <label
+                                    class="pill-label {% if value.metafields.custom.is_new %}is-new{% endif %} {% unless value.available %}pill-disabled{% endunless %}"
+                                    for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 -}}"
+                                    data-product-url="{{ value.product_url }}"
+                                    data-variant-type="{{ value.variant.metafields.custom.variant_type }}"
                                 >
-                                  {{ value }}
+                                  {{ settings.swatches }}
+                                  {% assign swatch_lines = settings.swatches | split: newline %}
+                                  {% for line in swatch_lines %}
+                                    {% if line contains '==' %}
+                                      {% assign swatch_data = line | split: '==' %}
+                                      {% if swatch_data[0] == value %}
+                                        <span 
+                                          class="color-swatch-icon"
+                                          style="border-radius: 100%; display: inline-block; width: 24px; height: 24px; background-color: {{ swatch_data[1] }};"
+                                        >
+                                        </span>
+                                      {% endif %}
+                                    {% endif %}
+                                  {% endfor %}
+                                  
+                                  {% if value.variant.metafields.custom.swatch_color != blank %}
+                                    <span 
+                                      class="color-swatch-icon"
+                                      style="border-radius: 100%; display: inline-block; width: 24px; height: 24px; background-color: {{ value.variant.metafields.custom.swatch_color }};"
+                                    >
+                                    </span>
+                                  {% endif %}
                                 </label>
                               {%- endfor -%}
+                            </div>
+
+                            <div class="variant-description-container">
+                              <span class="name">{{ option.values[0].variant.title }}</span>
+                              <span class="description">{{ option.values[0].variant.metafields.custom.variant_description }}</span>
+                            </div>
                             </fieldset>
                           {%- endunless -%}
                         {%- endfor -%}
@@ -979,6 +1044,18 @@
       "name": "t:sections.main-product.blocks.variant_picker.name",
       "limit": 1,
       "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_picker_title",
+          "label": "Show Variant Title",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "show_variant_types",
+          "label": "Show Variant Types",
+          "default": true
+        },
         {
           "type": "select",
           "id": "picker_type",
@@ -2266,6 +2343,23 @@
     },
     {
       "type": "select",
+      "id": "desktop_thumbnails_position",
+      "options": [
+        {
+          "value": "left",
+          "label": "left"
+        },
+        {
+          "value": "bottom",
+          "label": "bottom"
+        }
+      ],
+      "default": "bottom",
+      "label": "Desktop Gallery Position",
+      "info": "t:sections.main-product.settings.media_position.info"
+    },
+    {
+      "type": "select",
       "id": "image_zoom",
       "options": [
         {
@@ -2354,6 +2448,12 @@
         }
       ],
       "default": "300"
+    },
+    {
+      "type": "text",
+      "id": "custom_setting",
+      "label": "Custom Setting",
+      "default": "Default value"
     }
   ]
 }

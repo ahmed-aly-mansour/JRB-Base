@@ -11,6 +11,52 @@
   "sections": {
     "main-collection": {
       "type": "main-collection",
+      "blocks": {
+        "collection_item_TTKqgN": {
+          "type": "collection_item",
+          "settings": {
+            "collection": "face"
+          }
+        },
+        "collection_item_U6Dfnh": {
+          "type": "collection_item",
+          "settings": {
+            "collection": "eyes"
+          }
+        },
+        "collection_item_nbLTGF": {
+          "type": "collection_item",
+          "settings": {
+            "collection": "lips"
+          }
+        },
+        "collection_item_gVnkzN": {
+          "type": "collection_item",
+          "settings": {
+            "collection": "skin-care"
+          }
+        },
+        "collection_item_E74W3k": {
+          "type": "collection_item",
+          "settings": {
+            "collection": "fragrance"
+          }
+        },
+        "collection_item_T943c8": {
+          "type": "collection_item",
+          "settings": {
+            "collection": "apparel"
+          }
+        }
+      },
+      "block_order": [
+        "collection_item_TTKqgN",
+        "collection_item_U6Dfnh",
+        "collection_item_nbLTGF",
+        "collection_item_gVnkzN",
+        "collection_item_E74W3k",
+        "collection_item_T943c8"
+      ],
       "settings": {
         "products_per_page": 20,
         "columns_desktop": 4,
@@ -22,8 +68,11 @@
         "enable_swatches": true,
         "swatch_type": "color",
         "swatch_trigger": "Color",
+        "button_text_color": "#838383",
+        "button_border_color": "#838383",
+        "button_background_color": "#ffffff",
         "enable_filtering": true,
-        "filter_type": "vertical",
+        "filter_type": "drawer",
         "collapse_filters": true,
         "enable_sorting": true,
         "columns_mobile": "2",

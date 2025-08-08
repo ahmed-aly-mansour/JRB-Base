@@ -15,6 +15,7 @@ if (!customElements.get('collection-info')) {
         this.debounceOnChange = debounce((event) => this.onChangeHandler(event), 800);
         this.addEventListener('change', this.debounceOnChange.bind(this));
         this.addEventListener('click', this.onClickHandler.bind(this));
+        this.addEventListener('click', this.onSortOptionClick.bind(this));
       }
 
       onClickHandler = (event) => {
@@ -22,6 +23,17 @@ if (!customElements.get('collection-info')) {
           event.preventDefault();
           const searchParams = new URLSearchParams(event.target.dataset.renderSectionUrl.split('?')[1]).toString();
           this.fetchSection(searchParams);
+        }
+      };
+
+      onSortOptionClick = (event) => {
+        if (event.target.matches('.custom-sort__option')) {
+          setTimeout(() => {
+            const hiddenInput = this.querySelector('input[name="sort_by"]');
+            if (hiddenInput) {
+              this.onChangeHandler({ target: hiddenInput });
+            }
+          }, 100);
         }
       };
 

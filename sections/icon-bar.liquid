@@ -14,7 +14,7 @@
       <div class="icon-bar-item" {{ block.shopify_attributes }}>
         {%- if block.settings.icon != blank -%}
           <div class="icon-bar-icon">
-            {{ block.settings.icon | image_url: width: 60 | image_tag: loading: 'lazy', widths: '30, 60', height: 30, width: 30 }}
+            {{ block.settings.icon | image_url: height: 26 | image_tag: loading: 'lazy', height: 26 }}
           </div>
         {%- endif -%}
         {%- if block.settings.text != blank -%}
@@ -30,14 +30,16 @@
 
 <style>
   .icon-bar-section {
-    padding: 20px 0;
+    padding: 20px 85px;
+    height: 112px;
+    display: flex;
   }
 
   .icon-bar-container {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    gap: 15px; /* Adjust gap as needed */
+    width: 100%;
   }
 
   .icon-bar-item {
@@ -48,12 +50,21 @@
     flex: 1; /* Allow items to grow but base on content */
     justify-content: center; /* Center content within the item */
     min-width: 0; /* Prevent flex items from overflowing */
+    width: 25%
+  }
+  .icon-bar-icon {
+    display: flex;
+    height: 100%;
+    object-fit: contain;
+    width: 100%;
+    max-height: 26px;
   }
 
   .icon-bar-icon img {
-    max-height: 50px; /* Control icon size */
-    width: auto;
-    display: block;
+    height: 100%;
+    object-fit: contain;
+    width: 100%;
+    max-height: 26px;
   }
 
   .icon-bar-text {
@@ -71,11 +82,14 @@
 
   /* Responsive adjustments */
   @media (max-width: 768px) {
+    .icon-bar-section {
+      padding: 27px 0;
+      height: 90px;
+    }
+
     .icon-bar-container {
-      justify-content: flex-start; /* Align to start for scrolling */
       overflow-x: auto; /* Enable horizontal scrolling */
-      padding-bottom: 10px; /* Optional: space for scrollbar */
-      -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+     -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
       scrollbar-width: none; /* Hide scrollbar Firefox */
     }
     /* Hide scrollbar for Chrome/Safari/Edge */

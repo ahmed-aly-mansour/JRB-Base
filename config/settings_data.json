@@ -7,8 +7,9 @@
  * made to this file may be overwritten.
  * ------------------------------------------------------------
  */
- {
+{
   "current": {
+    "logo": "shopify://shop_images/icon-logo.svg",
     "logo_height": 60,
     "type_header_font": "mono",
     "custom_heading_font_name": "Proxima Nova",
@@ -31,8 +32,6 @@
     "buttons_shadow_horizontal_offset": 0,
     "buttons_shadow_vertical_offset": 4,
     "buttons_shadow_blur": 5,
-    "button_text_color": "#838383",
-    "button_border_color": "#838383",
     "variant_pills_border_thickness": 1,
     "variant_pills_border_opacity": 55,
     "variant_pills_radius": 40,
@@ -111,18 +110,18 @@
     "badge_corner_radius": 40,
     "sale_badge_color_scheme": "scheme-5",
     "sold_out_badge_color_scheme": "scheme-3",
-    "brand_headline": "About Our Store",
-    "brand_description": "<p>Discover the benefits of our products through accurate descriptions based on scientific research and expert knowledge.</p>",
+    "brand_headline": "",
+    "brand_description": "<p>Stay up to date about product launches, makeup tips, and all things Jones Road</p>",
     "brand_image_width": 100,
     "social_facebook_link": "xxx",
     "social_instagram_link": "xxx",
-    "social_youtube_link": "xxx",
-    "social_tiktok_link": "xxx",
+    "social_youtube_link": "",
+    "social_tiktok_link": "",
     "social_twitter_link": "xxx",
-    "social_snapchat_link": "xxx",
+    "social_snapchat_link": "",
     "social_pinterest_link": "xxx",
-    "social_tumblr_link": "xxx",
-    "social_vimeo_link": "xxx",
+    "social_tumblr_link": "",
+    "social_vimeo_link": "",
     "predictive_search_enabled": true,
     "predictive_search_show_vendor": true,
     "predictive_search_show_price": true,
@@ -132,6 +131,8 @@
     "show_cart_note": true,
     "cart_drawer_collection": "frontpage",
     "cart_color_scheme": "scheme-1",
+    "button_text_color": "#838383",
+    "button_border_color": "#838383",
     "sections": {
       "header": {
         "type": "header",
@@ -164,37 +165,46 @@
           "link_list_j64d79": {
             "type": "link_list",
             "settings": {
-              "heading": "Customer Service",
-              "menu": "customer-account-main-menu"
+              "heading": "HELP",
+              "menu": "help"
             }
           },
           "link_list_tRGQXg": {
             "type": "link_list",
             "settings": {
-              "heading": "Quick links",
-              "menu": "footer"
+              "heading": "ABOUT",
+              "menu": "about"
             }
           },
           "social_icons_H6RVrc": {
             "type": "social_icons",
             "settings": {}
+          },
+          "link_list_XbdUAq": {
+            "type": "link_list",
+            "settings": {
+              "heading": "STORES",
+              "menu": "stores"
+            }
           }
         },
         "block_order": [
           "brand_information_6yLG3J",
           "link_list_j64d79",
           "link_list_tRGQXg",
-          "social_icons_H6RVrc"
+          "social_icons_H6RVrc",
+          "link_list_XbdUAq"
         ],
         "settings": {
           "color_scheme": "",
-          "newsletter_enable": true,
+          "email_signup_enable": true,
+          "newsletter_enable": false,
           "newsletter_heading": "Subscribe to our emails",
           "enable_follow_on_shop": true,
           "show_social": true,
           "enable_country_selector": true,
           "enable_language_selector": true,
-          "payment_enable": true,
+          "payment_enable": false,
           "show_policy": true,
           "margin_top": 64,
           "padding_top": 36,

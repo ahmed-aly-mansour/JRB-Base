@@ -8,6 +8,14 @@
   assign text_color = section.settings.text_color
 -%}
 
+<style>
+  @media screen and (max-width: 1024px){
+    .announcement-bar{
+      display: none;    
+    }
+  }
+</style>
+
 {% if section.settings.show_announcement and section.blocks.size > 0 %}
   <div 
     class="announcement-bar"
@@ -35,40 +43,38 @@
     @focusout="startAutoScroll()"
   >
     <div class="page-width announcement-bar__content">
-      {% if section.blocks.size > 1 %}
+      {% comment %} {% if section.blocks.size > 1 %}
         <button 
           @click="idx = idx === 0 ? total - 1 : idx - 1" 
           aria-label="Previous" 
           class="announcement-bar__arrow announcement-bar__arrow--prev"
           x-show="total > 1"
         >&larr;</button>
-      {% endif %}
+      {% endif %} {% endcomment %}
       <div class="announcement-bar__message">
         {% for block in section.blocks %}
           <div 
             x-show="idx === {{ forloop.index0 }}" 
             x-transition:fade.300ms
             {% unless forloop.first %}style="display:none"{% endunless %}
-            :class="idx === {{ forloop.index0 }} ? 'fade-in' : ''"
+            :class="idx === {{ forloop.index0 }} ? 'slide-up' : ''"
           >
-            {{ block.settings.text }}
             {% if block.settings.link_text and block.settings.link_url %}
-              <a href="{{ block.settings.link_url }}" class="announcement-bar__link" style="color: {{ text_color }};">
-                {{ block.settings.link_text }}
-              </a>
+              <a href="{{ block.settings.link_url }}" class="announcement-bar__link">{{ block.settings.link_text }}</a>
             {% endif %}
+            <span>&nbsp;{{ block.settings.text }}</span>
             {{ block.settings.emoji }}
           </div>
         {% endfor %}
       </div>
-      {% if section.blocks.size > 1 %}
+      {% comment %} {% if section.blocks.size > 1 %}
         <button 
           @click="idx = idx === total - 1 ? 0 : idx + 1" 
           aria-label="Next" 
           class="announcement-bar__arrow announcement-bar__arrow--next"
           x-show="total > 1"
         >&rarr;</button>
-      {% endif %}
+      {% endif %} {% endcomment %}
     </div>
   </div>
 {% endif %}
@@ -80,7 +86,7 @@
   }
 
   .announcement-bar__content {
-    display: flex;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
     gap: 1em;
@@ -106,8 +112,9 @@
   }
   .announcement-bar__message {
     margin: 0;
-    font-size: 14px;
-    font-weight: 500;
+    font-family: BaseMonoWideWeb,Courier,Courier New,sans-serif;
+    font-size: 13px;
+    {% comment %} font-weight: 500; {% endcomment %}
     line-height: 1.2;
     white-space: normal;
     display: flex;
@@ -118,12 +125,16 @@
   .announcement-bar__link {
     text-decoration: underline;
     text-underline-offset: 0.2em;
+    display: inline;
+    color: {{ text_color }};
   }
   .announcement-bar__link:hover {
-    text-decoration-thickness: 2px;
+    color: #f50a99;
+  }
+  .announcement-bar .page-width {
+    max-width: 1200px;
   }
   .page-width {
-    max-width: 1200px;
     margin: 0 auto;
     padding: 0 15px;
   }
@@ -134,6 +145,21 @@
   @keyframes fadeInAnim {
     from { opacity: 0; }
     to { opacity: 1; }
+  }
+
+  .slide-up {
+    animation: slideUpAnim 0.9s ease-out;
+  }
+  
+  @keyframes slideUpAnim {
+    from {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 </style>
 

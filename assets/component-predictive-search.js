@@ -34,7 +34,7 @@ class PredictiveSearch extends HTMLElement {
   }
 
   getSearchResults(searchTerm) {
-    fetch(`/search/suggest?q=${encodeURIComponent(searchTerm)}&section_id=predictive-results`, {
+    fetch(`/search/suggest?q=${encodeURIComponent(searchTerm)}&section_id=predictive-results&resources[type]=product&resources[limit]=3`, {
       signal: this.abortController.signal,
     })
       .then(response => {

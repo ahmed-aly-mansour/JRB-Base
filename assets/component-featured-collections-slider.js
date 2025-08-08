@@ -1,9 +1,4 @@
-import Swiper from 'swiper';
-import { Grid, Navigation } from 'swiper/modules';
-
-Swiper.use([Grid, Navigation]);
-
-class FeaturedProducts extends HTMLElement {
+class FeaturedCollections extends HTMLElement {
   constructor() {
     super();
     this.swiper = null;
@@ -28,33 +23,27 @@ class FeaturedProducts extends HTMLElement {
 
   init() {
     if (window.Swiper && this.sectionId) {
-      const selector = `#featured-products-${this.sectionId}`;
+      const selector = `#featured-collections-${this.sectionId}`;
       const swiperEl = document.querySelector(selector);
 
       // Prevent duplicate swiper initialization
       if (!swiperEl || swiperEl.classList.contains('swiper-initialized')) return;
 
-      this.swiper = new Swiper(swiperEl, {
-        slidesPerView: 2,
-        grid: {
-          rows: 2,
+      this.swiper = new Swiper(selector, {
+        slidesPerView: 1,
+        autoHeight: false,
+        breakpoints: {
+          450: {
+            slidesPerView: 2,
+            centeredSlides: true,
+            loop: true,
+          },
+          700: {
+            slidesPerView: 4,
+            loop: false,
+          }
         },
-        autoHeight: true,
-        // breakpoints: {
-        //   300: {
-        //     slidesPerView: 2,
-        //     grid: {
-        //       rows: 2,
-        //     },
-        //   },
-        //   700: {
-        //     slidesPerView: 4,
-        //     grid: {
-        //       rows: 1,
-        //     },
-        //   },
-        // },
-        loop: false,
+        loop: true,
         watchOverflow: false,
       });
     }
@@ -81,6 +70,6 @@ class FeaturedProducts extends HTMLElement {
   }
 }
 
-if (!customElements.get('featured-products')) {
-  customElements.define('featured-products', FeaturedProducts);
+if (!customElements.get('featured-collections')) {
+  customElements.define('featured-collections', FeaturedCollections);
 }

@@ -1,0 +1,48 @@
+{% assign rating = rate %}
+{% assign full_stars = rating | floor %}
+{% assign remainder = rating | minus: full_stars %}
+{% assign has_half_star = false %}
+{% if remainder > 0 %}
+  {% assign has_half_star = true %}
+{% endif %}
+
+{% assign empty_stars = 5 | minus: full_stars %}
+{% if has_half_star %}
+  {% assign empty_stars = empty_stars | minus: 1 %}
+{% endif %}
+
+<div style="display: inline-flex; gap: 1px;">
+  {%- for i in (1..full_stars) -%}
+    <!-- Full Star -->
+    <svg width="{{stars_size}}" height="{{stars_size}}" viewBox="0 0 24 24">
+      <path fill="{{ stars_color | default: '#FFD700' }}" d="M12 17.27L18.18 21l-1.64-7.03
+        L22 9.24l-7.19-.61L12 2 9.19 8.63
+        2 9.24l5.46 4.73L5.82 21z"/>
+    </svg>
+  {%- endfor -%}
+
+  {% if has_half_star %}
+    {% assign percent = remainder | times: 100 %}
+    <!-- Partial Star -->
+    <svg width="{{stars_size}}" height="{{stars_size}}" viewBox="0 0 24 24">
+      <defs>
+        <linearGradient id="partialStarGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="{{ percent }}%" stop-color="{{ stars_color | default: '#FFD700' }}"/>
+          <stop offset="{{ percent }}%" stop-color="lightgray"/>
+        </linearGradient>
+      </defs>
+      <path fill="url(#partialStarGradient)" d="M12 17.27L18.18 21l-1.64-7.03
+        L22 9.24l-7.19-.61L12 2 9.19 8.63
+        2 9.24l5.46 4.73L5.82 21z"/>
+    </svg>
+  {% endif %}
+
+  {% for i in (1..empty_stars) %}
+    <!-- Empty Star -->
+    <svg width="{{stars_size}}" height="{{stars_size}}" viewBox="0 0 24 24">
+      <path fill="lightgray" d="M12 17.27L18.18 21l-1.64-7.03
+        L22 9.24l-7.19-.61L12 2 9.19 8.63
+        2 9.24l5.46 4.73L5.82 21z"/>
+    </svg>
+  {% endfor %}
+</div>

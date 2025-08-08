@@ -2,8 +2,38 @@
 <script src="{{ 'swiper7.4.1.min.js' | asset_url }}" defer="defer"></script>
 {{ 'component-product-media-gallery.css' | asset_url | stylesheet_tag }}
 
-<media-gallery data-section-id="{{ section.id }}">
-  <div class="swiper main-gallery">
+{% liquid
+
+  if thumbnails_position == 'bottom'
+    assign margin_top = '16px'
+    assign display_type = 'unset'
+    assign flex_direction = 'unset'
+    assign width = 'unset'
+    assign gap = "unset"
+    assign padding_left = "unset"
+    assign img_max_height = "75h"
+    assign overflow = "hidden"
+    
+    else
+    assign margin_top = '0'
+    assign display_type = 'flex'
+    assign flex_direction = 'row-reverse'
+    assign width = 'fit-content'
+    assign gap = "18px"
+    assign padding_left = "36px"
+    assign img_max_height = "unset"
+    assign overflow = "unset"
+    
+  endif
+%}
+
+
+<media-gallery data-section-id="{{ section.id }}" style=" display: {{ display_type }}; flex-direction: {{ flex_direction }}; gap: {{ gap }}; padding-left: {{ padding_left }}">
+  <div class="swiper main-gallery" 
+    {% if thumbnails_position == 'left' %}
+      style="height: 100%;position: sticky; top: 100px"
+    {% endif %}
+  >
     <div class="swiper-wrapper">
       {% assign media_index = 0 %}
       {% if selected_variant.featured_image != null %}
@@ -27,7 +57,7 @@
                 &nbsp;
               </div>
             {%- endif -%}
-            {% render 'component-product-media', media: selected_variant.featured_media, loop: video_looping %}
+            {% render 'component-product-media', media: selected_variant.featured_media, loop: video_looping , image_max_height: img_max_height%}
           </div>
         </div>
         {% assign media_index = media_index | plus: 1 %}
@@ -54,7 +84,7 @@
                   &nbsp;
                 </div>
               {%- endif -%}
-              {% render 'component-product-media', media: media, loop: video_looping %}
+              {% render 'component-product-media', media: media, loop: video_looping, image_max_height: img_max_height %}
             </div>
           </div>
           {% assign media_index = media_index | plus: 1 %}
@@ -76,22 +106,22 @@
   </div>
 
   <!-- Thumbnails Swiper -->
-  <div class="swiper thumbs-gallery" style="margin-top: 16px;">
-    <div class="swiper-wrapper">
+  <div class="swiper thumbs-gallery" style="margin-top: {{margin_top}}; width: {{ width }}; overflow: {{ overflow }}" thumb_direction="{% if thumbnails_position == 'bottom'%}horizontal{% else %}vertical{% endif %}">
+    <div class="swiper-wrapper" style="width: {{ width }}">
       {% assign thumb_index = 0 %}
       {% if selected_variant.featured_image != null %}
-        <div class="swiper-slide thumb-slide" data-media-index="{{ thumb_index }}" data-swiper-slide-index="{{ thumb_index }}">
-          <div class="product-media-thumb">
-            <img src="{{ selected_variant.featured_media | img_url: '100x100' }}" alt="Thumbnail" width="100" height="100" style="width: 100px; height: 100px; object-fit: cover;" />
+        <div class="swiper-slide thumb-slide" data-media-index="{{ thumb_index }}" data-swiper-slide-index="{{ thumb_index }}" style="width: {{ width }}">
+          <div class="product-media-thumb" style="width: {{ width }}">
+            <img src="{{ selected_variant.featured_media | img_url: '100x100' }}" alt="Thumbnail" width="100" height="100" style="width: 7.212vw; height: 7.212vw; object-fit: cover;" />
           </div>
         </div>
         {% assign thumb_index = thumb_index | plus: 1 %}
       {% endif %}
       {% for media in product_media %}
         {% unless selected_variant.featured_media.id == media.id %}
-          <div class="swiper-slide thumb-slide" data-media-index="{{ thumb_index }}" data-swiper-slide-index="{{ thumb_index }}">
-            <div class="product-media-thumb">
-              <img src="{{ media | img_url: '100x100' }}" alt="Thumbnail" width="100" height="100" style="width: 100px; height: 100px; object-fit: cover;" />
+          <div class="swiper-slide thumb-slide" data-media-index="{{ thumb_index }}" data-swiper-slide-index="{{ thumb_index }}" style="width: {{ width }}">
+            <div class="product-media-thumb" style="width: {{ width }}">
+              <img src="{{ media | img_url: '100x100' }}" alt="Thumbnail" width="100" height="100" style="width: 7.212vw; height: 7.212vw; object-fit: cover;" />
             </div>
           </div>
           {% assign thumb_index = thumb_index | plus: 1 %}

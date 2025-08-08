@@ -3,56 +3,193 @@
     #main-header .nav-dropdown,
     #main-header .nav-dropdown_child {
       position: absolute;
-      top: 100%;
-      gap: 0;
+      top: 75%;
+      gap: 10px;
       align-items: stretch;
       flex-direction: column;
       margin-top: 1px;
       overflow: hidden;
+      box-sizing: border-box;
+      padding: 30px 10px;
     }
     #main-header .nav-dropdown {
+      /*
       box-shadow: rgba(0, 0, 0, 0.1) 0 1px 3px 0, rgba(0, 0, 0, 0.06) 0 1px 2px 0;
+      */
+      border-top: 1px rgba(72, 74, 72, 0.1) solid;
     }
+
     #main-header .nav-dropdown_child {
       position: static;
     }
     #main-header .nav-dropdown a,
     #main-header .nav-dropdown .menu-toggle {
       display: flex;
-      min-width: 20ch;
+      min-width: 25ch;
       width: 100%;
       font-size: 15px;
       line-height: 1.5;
-      padding: 12px 18px;
-      border-bottom: 1px solid rgb(var(--color-foreground), 0.2);
+      padding: 0px 18px;
+      {% comment %} border-bottom: 1px solid rgb(var(--color-foreground), 0.2); {% endcomment %}
+    }
+
+    .header__menu-item{
+      display: flex;
+      align-items: center;
+      justify-content: start;
+      gap: 1rem;
     }
   </style>
 {% endunless %}
+
+<style>
+    a.main-menu-link{
+      padding-bottom: 10px;
+    }
+   .main-menu-link:hover{
+    border-bottom: 1px rgba(72, 74, 72, 0.5) solid;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .main-menu-link, .header__menu-item{
+    font-family: RingsideWideWeb, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 34px;
+  }
+
+  .menu-drawer-search{
+    display: flex;
+    width: 100%;
+    align-items: end;
+    justify-content: start;
+    padding: 15px;
+  }
+  
+  .menu-drawer-search form{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 1rem;
+  }
+
+  .menu-drawer-search-input{
+    flex: 1;
+    height: 30px;
+    border: none;
+    outline: none;
+    font-size: medium;
+    border-bottom: 1px rgba(72, 74, 72, 1) solid;
+    padding: 0px 10px;
+    color: rgba(72, 74, 72, 1);
+    box-sizing: border-box;
+  }
+
+  .menu-drawer-search-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .search-list-item {
+    display: none;
+  }
+
+  .menu-tag-new{
+    background-color: black;
+    padding: 5px;
+    color: white;
+    text-decoration: none;
+    font-size: 8px;
+    font-weight:bold;
+  }
+  
+
+  @media screen and (max-width: 1024px) {
+    .search-list-item {
+      display: flex;
+    }
+    #menu-drawer a{
+      font-size: 16px;
+      letter-spacing: .4px;
+    }
+    #menu-drawer{
+      background-color: #f6f2eb;
+    }
+  }
+</style>
+
 <ul
   {% if nav_style == 'drawer' %}
     class="menu-drawer_navigation"
   {% endif %}
 >
+  <li class="search-list-item" style="background-color: white;">
+    <div class="menu-drawer-search">
+      <form action="{{ routes.search_url }}" method="get" role="search">
+        {{ 'icon-search.svg' | inline_asset_content }}
+        <input type="text"
+          placeholder="Search for Miracle Balm, What The Foundation"
+          name="q"
+          value="{{ search.terms | escape }}"
+          class="menu-drawer-search-input"
+        />
+        
+        <button type="submit" class="menu-drawer-search-button">
+          {{ 'icon-chevron-right.svg' | inline_asset_content }}
+        </button>
+        
+      </form>
+
+    </div>
+  </li>
   {% for link in section.settings.menu.links %}
-    <li x-data="{ menuOpen: false, activeSubMenu: null }" @click.outside="menuOpen = false; activeSubMenu = null">
+    <li 
+      {% unless nav_style == 'drawer' %}
+        x-data="{ menuOpen: false, activeSubMenu: null }" @mouseleave="menuOpen = false; activeSubMenu = null"
+      {% endunless %}
+    >
       {% if link.links != blank %}
         <button
-          @click="menuOpen = !menuOpen"
-          :class="{ 'menu-open': menuOpen }"
-          class="menu-toggle"
+          {% unless nav_style == 'drawer' %}            
+            @mouseenter="menuOpen = !menuOpen"
+            :class="{ 'menu-open': menuOpen }"
+            class="menu-toggle main-menu-link"
+          {% else %}
+            class="menu-toggle menu-open"
+          {% endunless %}
+          
         >
+          
+          <a href="{{ link.url }}" 
+            {% if nav_style == 'drawer' %}            
+              style="padding: 0px; border:none;"
+          {% endif %}
+          >
           {{- link.title | escape -}}
-          {{- 'icon-caret.svg' | inline_asset_content -}}
+        </a>
+          {% comment %} {{- 'icon-caret.svg' | inline_asset_content -}} {% endcomment %}
         </button>
         <ul
-          x-show="menuOpen"
           class="nav-{{ nav_style }} color-{{ section.settings.menu_color_scheme }} gradient"
-          x-transition
           role="list"
-          x-cloak
+          
+          {% unless nav_style == 'drawer' %}
+            x-show="menuOpen"
+            x-transition
+            x-cloak
+          {% endunless %}
         >
           {%- for childlink in link.links -%}
-            <li>
+
+            <li
+              {% if nav_style == 'drawer' %}
+                style="background-color: #f6f2eb;"
+              {% endif %}
+            >
               {% if childlink.links == blank %}
                 <a
                   href="{{ childlink.url }}"
@@ -61,12 +198,22 @@
                     aria-current="page"
                   {% endif %}
                 >
+                  {% assign childlink_collection_url = childlink.url | escape | split: '/' | last %}
+                  {% assign new_tag = collections[childlink_collection_url].metafields.custom.new_tag %}
+                  
                   {{ childlink.title | escape }}
+                  {% if new_tag == "NEW" %}
+                    <span class="menu-tag-new" style="text-decoration: none;">
+                      NEW
+                    </span>
+                  {% endif %}      
                 </a>
               {% else %}
                 <button
-                  @click="activeSubMenu = (activeSubMenu === '{{ childlink.title | escape }}' ? null : '{{ childlink.title | escape }}')"
-                  :class="{ 'menu-open': activeSubMenu === '{{ childlink.title | escape }}' }"
+                  {% unless nav_style == 'drawer' %}                    
+                    @click="activeSubMenu = (activeSubMenu === '{{ childlink.title | escape }}' ? null : '{{ childlink.title | escape }}')"
+                    :class="{ 'menu-open': activeSubMenu === '{{ childlink.title | escape }}' }"
+                  {% endunless %}
                   class="menu-toggle"
                 >
                   {{- childlink.title | escape -}}
@@ -99,6 +246,7 @@
         </ul>
       {% else %}
         <a
+          class="main-menu-link"
           href="{{ link.url }}"
           {% if link.current %}
             aria-current="page"

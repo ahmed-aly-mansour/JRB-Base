@@ -17,40 +17,59 @@
       </div>
       <div class="cart-empty">
         <div class="cart__empty-content">
-          <h2 class="cart__empty-text">{{ 'sections.cart.empty' | t }}</h2>
-          <a href="{{ routes.all_products_collection_url }}" class="button">
-            {{ 'general.continue_shopping' | t }}
-          </a>
-
-          {%- if shop.customer_accounts_enabled and customer == null -%}
-            <p class="cart__login-title h3">{{ 'sections.cart.login.title' | t }}</p>
-            <p class="cart__login-paragraph">
-              {{ 'sections.cart.login.paragraph_html' | t: link: routes.account_login_url }}
-            </p>
-          {%- endif -%}
-        </div>
-
-        {%- if settings.cart_drawer_collection != blank -%}
-          <div class="cart-collection">
-            {% assign card_collection = settings.cart_drawer_collection %}
-            <a href="">
-              {{ card_collection.featured_image | image_url: width: 1500 | image_tag }}
-              <div class="cart-collection__title">
-                {{ card_collection.title }}
-                {% comment %} {{- 'icon-arrow.svg' | inline_asset_content -}} {% endcomment %}
-              </div>
+          <p class="cart__empty-text">Your bag is empty (for now).</p>
+          <div class="cart-empty-btns">
+            <a href="{{ collections['shop-all'].url }}" class="btn-style-2">
+              Shop all Products
+            </a>
+            <a href="{{ collections['kits'].url }}" class="btn-style-2">
+              Shop Kits
+            </a>
+            <a href="{{ pages['quiz-landig'].url }}" class="btn-style-2">
+              Find your Shade
             </a>
           </div>
-        {%- endif -%}
+          
+            <a href="{{ collections['shop-all'].url }}" class="btn-style-1">
+              start shopping
+            </a>
+        </div>
+
+        
       </div>
 
     {%- else -%}
       <div class="cart-header">
-        <h2>Your cart ({{ cart.item_count }})</h2>
+        <h2>YOUR BAG: {{ cart.item_count }}</h2>
         <div class="cart-drawer__close" @click="cartOpen = !cartOpen">
           {{- 'icon-close.svg' | inline_asset_content -}}
         </div>
       </div>
+      
+      {% if settings.free_shipping_threshold > 0 %}
+        {% assign shipping_threshold = settings.free_shipping_threshold %}
+        {% assign cart_subtotal_dollars = cart.items_subtotal_price | divided_by: 100.0 %}
+        {% assign ratio = cart_subtotal_dollars | divided_by: shipping_threshold | times: 100 %}
+        <div class="free-shipping-container">
+          <div class="">
+            {% if cart_subtotal_dollars < shipping_threshold  %}
+            <p class="free-shipping-text">
+              You are <strong>&nbsp;{{shipping_threshold | minus: cart_subtotal_dollars | times: 100 | money}}&nbsp;</strong> away from <strong>&nbsp;Free Shipping</strong>. 
+            </p>
+
+            {% else %}
+              <p class="free-shipping-text">
+                You have unlocked <strong>&nbsp;Free Shipping</strong>.
+              </p>
+
+            {% endif %}
+          </div>
+          <div class="progress-bar-back">
+            <div class="progress-bar-front" style="width: min({{ ratio }}%, 100%);display: block;"></div>
+          </div>
+        </div>
+
+      {% endif %}
 
       <div class="cart-items" data-ajax-cart-section-scroll>
         {% for line_item in cart.items %}
@@ -67,16 +86,19 @@
 
             <div class="cart-item__details">
               <div class="cart-item__heading">
-                <a href="{{ line_item.url }}">
-                  {{ line_item.title | escape }}
-                </a>
 
-                <small class="cart-item__price">
-                  {% if line_item.original_price > line_item.final_price %}
-                    <s>{{ line_item.original_price | money }}</s>
-                  {% endif %}
-                  <span>{{ line_item.final_price | money }}</span>
-                </small>
+                <div class="cart-item-header-with-price">
+                  <a href="{{ line_item.url }}">
+                    {{ line_item.title | escape }}
+                  </a>
+  
+                  <small class="cart-item__price">
+                    {% if line_item.original_price > line_item.final_price %}
+                      <s>{{ line_item.original_price | money }}</s>
+                    {% endif %}
+                    <span>{{ line_item.final_price | money }}</span>
+                  </small>
+                </div>
 
                 {%- if line_item.product.has_only_default_variant == false
                   or line_item.properties.size != 0
@@ -214,10 +236,10 @@
               </ul>
             {% endif %}
 
-            <div class="cart-total">
-              <span class="cart-total__label">Estimated total</span> <span class="cart-total__price">{{ cart.total_price | money }}</span>
+             <div class="cart-total">
+              <span class="cart-total__label">SUBTOTAL</span> <span class="cart-total__price">{{ cart.total_price | money }}</span>
             </div>
-            <small class="cart-total__small">Taxes, discounts and shipping calculated at checkout.</small>
+            {% comment %}<small class="cart-total__small">Taxes, discounts and shipping calculated at checkout.</small> {% endcomment %}
           </div>
 
           {% form 'cart', cart, id: 'my-ajax-cart-form' %}
