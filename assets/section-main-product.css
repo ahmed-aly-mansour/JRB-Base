@@ -57,7 +57,7 @@ product-info {
 .product__media-wrapper.media-cover .swiper-slide video,
 .product__media-wrapper.media-cover .swiper-slide iframe {
   object-fit: cover;
-  object-position: top;
+  object-position: center;
 }
 
 .product__media-wrapper.media-contain .swiper-slide img,
@@ -276,21 +276,55 @@ button.share-button__button {
 }
 .product-form__buttons button {
   width: 100%;
-  background: transparent;
   border: none;
+  /* background: transparent;
   outline: var(--inputs-border-width) solid rgba(var(--color-foreground), var(--inputs-border-opacity));
-  padding: 12.5px 10px;
+  color: var(--color-secondary-button); 
+  */
+  padding: 0;
   cursor: pointer;
   font-size: 18px;
   justify-content: center;
   letter-spacing: 1px;
-  color: var(--color-secondary-button);
   position: relative;
   font-weight: 600;
 }
 
-.product-form__buttons button:hover {
-  outline: 2px solid rgba(var(--color-foreground));
+.product-form__button:not(:disabled):hover {
+  background: #fff;
+  border-color: #d0d0d0;
+  color: #000;
+}
+.product-form__button:not(:disabled):hover .product-form__button-price {
+  border-color: #000;
+}
+
+.product-form__button {
+  display: flex !important;
+  align-items: center;
+  background: #000;
+  border: 1px solid #000 !important;
+  border-radius: 3px;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: BaseMonoWideWeb, Courier, Courier New, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  height: 40px;
+  letter-spacing: 1.02px;
+  padding: 0 36px;
+  text-align: center;
+  text-transform: uppercase;
+  transition: all .4s cubic-bezier(.39,.575,.565,1);
+}
+
+@media screen and (max-width: 700px) {
+  .product-form__button {
+      margin-top: 20px;
+  }
 }
 
 .shopify-payment-button__button {
@@ -329,10 +363,12 @@ shopify-buy-it-now-button .shopify-payment-button__button {
 .product__info-wrapper .product__accordion {
   margin-top: 25px;
   margin-bottom: 0;
-  border-top: 1px solid rgba(var(--color-foreground), 0.08);
+  /* border-top: 1px solid rgba(var(--color-foreground), 0.08); */
   border-bottom: 1px solid rgba(var(--color-foreground), 0.08);
 }
-
+.product__info-wrapper .product__accordion:last-child {
+  border-bottom: none;
+}
 .product__accordion summary {
   display: flex;
   align-items: center;
@@ -376,10 +412,31 @@ shopify-buy-it-now-button .shopify-payment-button__button {
   position: relative;
   right: 15px;
 }
-
-.product__accordion details[open] > summary .icon-caret {
-  transform: rotate(180deg);
+.icon-plus,
+.icon-minus {
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
+
+.icon-plus {
+  opacity: 1;
+  /* transform: rotate(0deg); */
+}
+
+.icon-minus {
+  opacity: 0;
+  position: absolute; /* so it sits over the plus */
+}
+
+.product__accordion details[open] > summary .icon-plus {
+  opacity: 0;
+  /* transform: rotate(-90deg); */
+}
+
+.product__accordion details[open] > summary .icon-minus {
+  opacity: 1;
+  /* transform: rotate(0deg); */
+}
+
 
 .product__accordion .accordion__content {
   margin-bottom: 15px;
@@ -678,6 +735,11 @@ shopify-buy-it-now-button .shopify-payment-button__button {
   }
 }
 
+.stars{
+  display: flex;
+  align-items: center;
+}
+
 .review-count {
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -751,4 +813,22 @@ shopify-buy-it-now-button .shopify-payment-button__button {
   font-size: 14px;
   color: #757575;
   
+}
+
+.product-form__button-text{
+  flex-grow: 1;
+}
+
+.product-form__button-price{
+  border-left: 1px solid #fff;
+  flex-grow: 0;
+  font-family: RingsideWideWeb, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  padding: 0 10px;
+  height: 100%;
+  box-sizing: border-box;
+  transition: color .4s cubic-bezier(.39,.575,.565,1), border-left-color .4s cubic-bezier(.39,.575,.565,1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

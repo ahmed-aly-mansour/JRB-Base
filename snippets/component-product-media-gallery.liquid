@@ -28,12 +28,9 @@
 %}
 
 
-<media-gallery data-section-id="{{ section.id }}" style=" display: {{ display_type }}; flex-direction: {{ flex_direction }}; gap: {{ gap }}; padding-left: {{ padding_left }}">
-  <div class="swiper main-gallery" 
-    {% if thumbnails_position == 'left' %}
-      style="height: 100%;position: sticky; top: 100px"
-    {% endif %}
-  >
+<media-gallery data-section-id="{{ section.id }}" 
+  style=" display: {{ display_type }}; flex-direction: {{ flex_direction }}; gap: {{ gap }}; padding-left: {{ padding_left }}; {% if thumbnails_position == 'left' %}height: max(600px, 50%);position: sticky; top: 100px;{% endif %}">
+  <div class="swiper main-gallery" >
     <div class="swiper-wrapper">
       {% assign media_index = 0 %}
       {% if selected_variant.featured_image != null %}
@@ -130,5 +127,20 @@
     </div>
   </div>
 
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const info_div = document.querySelector('.product__info-wrapper');
+      const thumbs_gallery = document.querySelector(`[data-section-id="{{ section.id }}"] .thumbs-gallery`);
+
+      if (info_div && thumbs_gallery) {
+        setTimeout(() => {
+          const height = info_div.offsetHeight;
+          thumbs_gallery.style.overflow = 'hidden';
+          
+          thumbs_gallery.style.height = Math.min(600, height) + 'px';
+        }, 100);
+      }
+    });
+  </script>
  
 </media-gallery>
