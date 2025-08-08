@@ -396,14 +396,22 @@ shopify-buy-it-now-button .shopify-payment-button__button {
 }
 
 .product__accordion .accordion__title {
+  font-family: GeogrotesqueCondBoldWeb, Arial Black, Impact, sans-serif;
   display: flex;
   align-items: center;
   max-width: calc(100% - 96px);
   min-height: 16px;
   margin: 0;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 500;
   color: rgb(var(--color-foreground));
+}
+
+@media (min-width: 768px) {
+  .product__accordion .accordion__title {
+   font-size: 20px;
+   letter-spacing: .5px;
+  }
 }
 
 .product__accordion svg.icon.icon-caret {
@@ -444,6 +452,22 @@ shopify-buy-it-now-button .shopify-payment-button__button {
   overflow-x: auto;
   padding: 0 10px;
   line-height: calc(1 + 0.6 / 1);
+}
+
+.product__accordion .accordion__content {
+  font-family: RingsideWideWeb, Helvetica, Arial, sans-serif;
+  color: #000;
+  font-size: 14px;
+  line-height: 21px;
+  letter-spacing: .4px;
+}
+
+@media screen and (min-width: 1024px) {
+  .product__accordion .accordion__content {
+      font-size: 15px;
+      line-height: 23px;
+      padding-right: 5px;
+  }
 }
 
 .accordion__content > *:first-child {
@@ -831,4 +855,32 @@ shopify-buy-it-now-button .shopify-payment-button__button {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+
+.product__description-shades i {
+  width: 16px;
+  height: 16px;
+  display: block;
+  margin-left: 1px;
+  border-radius: 50%;
+  outline: rgb(38, 38, 38) solid 1px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(255, 255, 255);
+  border-image: initial;
+  flex: 0 0 16px;
+  margin-block: 4px;
+}
+
+.product__description-shades {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+  gap: 15px;
+  color: rgb(100, 100, 100);
+  font-size: 13px;
+  line-height: 24px;
 }
