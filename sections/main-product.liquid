@@ -605,7 +605,7 @@
                     <span class="icon icon-caret icon-plus">{{ 'icon-plus.svg' | inline_asset_content}}</span>
                     <span class="icon icon-caret icon-minus">{{ 'icon-minus.svg' | inline_asset_content}}</span>
                   </summary>
-                  <div class="accordion__content">
+                  <div x-data="{ open: false }" class="accordion__content">
                     {% if block_heading == 'PRODUCT DESCRIPTION' and product.description != blank %}
                       {{ product.description }}
                     {% elsif block_heading == 'SHADE DESCRIPTION' and product.variants_count > 0 %}
@@ -639,9 +639,21 @@
                       </ul>
                     {% elsif block_heading == 'HOW TO USE' and product.metafields.custom.how_to_use != blank %}
                       {{ product.metafields.custom.how_to_use }}
+                      {% if product.metafields.custom.bobbis_tip %}
+                        <div class="bobbis-note">
+                          <h3 class="bobbis-note-header">Bobbi's Tip</h3>
+                          <p class="bobbis-note-paragraph">{{ product.metafields.custom.bobbis_tip }}</p>
+                        </div>
+                      {% endif %}
                     {% elsif block_heading == 'INGREDIENTS' and product.metafields.custom.ingredients != blank %}
                       <h2 class="ingredients_title">{{ product.metafields.custom.ingredients_title }}</h2>
-                      {{ product.metafields.custom.ingredients }}
+                      <p class="ingredients-paragraph">{{ product.metafields.custom.ingredients }}</p>
+
+                      <button @click="open = true" class="ingredients-list-btn">See Full Ingredient List</button>
+                      <div x-show="open" class="ingredients-list-modal">
+                        <span @click="open = false" class="ingrients-list-modal-close">{{ 'icon-close.svg' | inline_asset_content}}</span>
+                      </div>
+                      <div class="ingredients-list-modal-overlay"></div>
                     {% else %}
                       {{ block.settings.content }}
                       {{ block.settings.page.content }}    

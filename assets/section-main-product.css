@@ -450,7 +450,6 @@ shopify-buy-it-now-button .shopify-payment-button__button {
   margin-bottom: 15px;
   word-break: break-word;
   overflow-x: auto;
-  padding: 0 10px;
   line-height: calc(1 + 0.6 / 1);
 }
 
@@ -883,4 +882,69 @@ shopify-buy-it-now-button .shopify-payment-button__button {
   color: rgb(100, 100, 100);
   font-size: 13px;
   line-height: 24px;
+}
+
+
+
+.bobbis-note {
+  background: #f5f2ec;
+  padding: 15px 12px;
+  margin-top: 15px !important;
+}
+
+@media (min-width: 1024px) {
+  .bobbis-note {
+      padding: 25px;
+  }
+}
+
+.bobbis-note h3 {
+  font-family: GeogrotesqueCondBoldWeb, Arial Black, Impact, sans-serif;
+  text-transform: uppercase;
+  font-size: 14px;
+  line-height: 1;
+  margin: 0;
+  margin-bottom: 8px;
+  font-weight: 400;
+}
+
+.bobbis-note p {
+  font-family: BaseMonoWideWeb, Courier, Courier New, sans-serif;
+  font-size: 12px !important;
+  line-height: 18px !important;
+  letter-spacing: .79px;
+  font-style: italic;
+  letter-spacing: .4px;
+  padding-right: 5px;
+  color: #000;
+}
+
+.ingredients_title {
+  font-family: FontSpringArticulateDemibold, sans-serif;
+  font-size: 16px;
+  margin-bottom: 15px !important;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.ingredients-list-btn {
+  -webkit-appearance: none;
+  appearance: none;
+  font-size: 15px;
+  line-height: 26px;
+  letter-spacing: .4px;
+  font-family: RingsideWideWeb, Helvetica, Arial, sans-serif;
+  display: block;
+  border: none;
+  border-bottom: 1px solid;
+  margin-bottom: 5px;
+  cursor: pointer;
+  background: none;
+  padding: 0;
+}
+
+.ingredients-paragraph{
+  margin-bottom: 15px;
 }
