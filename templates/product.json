@@ -50,6 +50,20 @@
             "show_gift_card_recipient": true
           }
         },
+        "product_promise_UpemBK": {
+          "type": "product_promise",
+          "settings": {
+            "product_promise_icon": "shopify://shop_images/icon-shipping.svg",
+            "product_promise_text": "Free shipping on US orders over $85"
+          }
+        },
+        "product_promise_NhYRFe": {
+          "type": "product_promise",
+          "settings": {
+            "product_promise_icon": "shopify://shop_images/icon-return.svg",
+            "product_promise_text": "Free & Easy Returns"
+          }
+        },
         "price_4XTzqR": {
           "type": "price",
           "disabled": true,
@@ -164,6 +178,8 @@
         "rating_8zP444",
         "variant_picker_NWh8q7",
         "buy_buttons_JPDYXc",
+        "product_promise_UpemBK",
+        "product_promise_NhYRFe",
         "price_4XTzqR",
         "inventory_aTTemW",
         "bulk_quantity_selector_fmhXMY",
