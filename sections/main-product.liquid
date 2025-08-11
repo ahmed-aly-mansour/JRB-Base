@@ -858,8 +858,52 @@
                     <span class="icon icon-caret icon-minus">{{ 'icon-minus.svg' | inline_asset_content}}</span>
                   </summary>
                   <div class="accordion__content">
-                    {{ block.settings.content }}
-                    {{ block.settings.page.content }}
+                    <div class="upsell-product-container">
+                      {% for upsell_product in product.metafields.custom.upsell_products.value %}
+                        <div class="upsell-product-info">
+                          <div class="upsell-product-info-img">
+                            <a href="{{ upsell_product.url }}">
+                              {{ upsell_product.featured_image | image_url: width: 150, height: 150 | image_tag }}
+                            </a>
+                          </div>
+                          <div class="upsell-product-info-content">
+                            <a href="{{ upsell_product.url }}" class="upsell-product-info-content__title">{{ upsell_product.title }}</a>
+                            
+                            <div class="stars">
+                                {%- assign filled_stars = block.settings.filled_stars | default: 4 -%}
+                                {%- assign total_stars = block.settings.total_stars | default: 5 -%}
+                                {% assign r = filled_stars | times: 5.0 | divided_by: total_stars %} 
+              
+                                <span style="color: #000; font-size: 18px;">
+                                  {% render 'component-product-reviews-stars', rate: r, stars_color: '#000', stars_size: "18px" %}
+                                </span>
+                                <span class="review-count">
+                                  ({{ block.settings.review_count | default: '124' }} {{ block.settings.review_text | default: 'Reviews' }})
+                                </span>
+                              </div>
+
+                            {% assign upsell_variant = upsell_product.selected_or_first_available_variant %}
+                            {% if upsell_variant and upsell_variant.available %}
+                              <ajax-cart-product-form style="width: 100%">
+                                {% form 'product', upsell_product %}
+                                  <input type="hidden" name="id" value="{{ upsell_variant.id }}">
+                                  <button type="submit" name="add" class="product-form__button upsell-product-info-btn">
+                                    <span class="product-form__button-text">
+                                      Add to bag
+                                    </span>
+                                    <span class="product-form__button-price">
+                                      {{ upsell_product.selected_or_first_available_variant.price | money_without_trailing_zeros }}
+                                    </span>
+                                  </button>
+                                {% endform %}
+                              </ajax-cart-product-form>
+                            {% else %}
+                              <button disabled class="upsell-product-info-btn">Sold out</button>
+                            {% endif %}
+                          </div>
+                        </div>
+                      {% endfor %}
+                    </div>
                   </div>
                 </details>
               </div>
