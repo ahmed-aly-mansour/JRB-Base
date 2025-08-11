@@ -223,7 +223,7 @@ if (!customElements.get('product-info')) {
     };
 
     updateVariantInputs(variantId) {
-      this.querySelectorAll(`#product-form-${this.dataset.section}, #product-form-installment-${this.dataset.section}`).forEach(
+      this.querySelectorAll(`#product-form-${this.dataset.section}, #product-form-installment-${this.dataset.section}, #product-form-t-${this.dataset.section}`).forEach(
         (productForm) => {
           const input = productForm.querySelector('input[name="id"]');
           input.value = variantId ?? '';
@@ -251,6 +251,7 @@ if (!customElements.get('product-info')) {
             this.updateURL(variant?.id);
             this.updateVariantInputs(variant?.id);
             this.updateSourceFromDestination(html, `add-to-cart-container-${this.dataset.section}`);
+            this.updateSourceFromDestination(html, `add-to-cart-container-t-${this.dataset.section}`);
             // Update the Add to Cart button price dynamically
             const addToCartTotal = this.querySelector(`#add-to-cart-container-${this.dataset.section} .add-to-cart-total`);
             if (addToCartTotal && variant && typeof variant.price === 'number') {

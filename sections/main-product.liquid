@@ -82,6 +82,187 @@
   {% assign selected_variant = product.selected_or_first_available_variant %}
 
   <div class="">
+    <product-sticky>
+      <div class="product__sticky">
+        <div class="product_sticky-left">
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {% when 'title' %}
+                <div class="product__title" >
+                  <h1>{{ product.title }}</h1>
+                </div>
+              {% when 'rating' %}
+                <div class="product__rating" {{ block.shopify_attributes }}>
+                  {%- comment -%} Example star rating UI, replace with app or metafield integration as needed {%- endcomment -%}
+                  <div class="stars">
+                    {%- assign filled_stars = block.settings.filled_stars | default: 4 -%}
+                    {%- assign total_stars = block.settings.total_stars | default: 5 -%}
+                    {%- assign empty_stars = total_stars | minus: filled_stars -%}
+                    {% assign r = filled_stars | times: 5.0 | divided_by: total_stars %} 
+
+                    <span style="color: {{ block.settings.star_color | default: '#000' }}; font-size: {{ block.settings.star_size | default: 22 }}px; display: flex;">
+                      {% render 'component-product-reviews-stars', rate: r, stars_color: block.settings.star_color | default: '#000', stars_size: block.settings.star_size | default: 22 | append: "px;" %}
+                    </span>
+                    <span class="review-count">
+                      ({{ block.settings.review_count | default: '124' }} {{ block.settings.review_text | default: 'Reviews' }})
+                    </span>
+                  </div>
+                </div>
+
+              {% else %}
+            {%- endcase -%}
+          {%- endfor -%}
+        </div>
+        <div class="product_sticky-right">
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+            {% comment %} {% when 'variant_picker' %}
+              {%- assign has_bulk_selector = false -%}
+                {%- for block in section.blocks -%}
+                  {%- if block.type == 'bulk_quantity_selector' -%}
+                    {%- assign has_bulk_selector = true -%}
+                    {%- break -%}
+                  {%- endif -%}
+                {%- endfor -%}
+                
+                <div class="product__variants" {{ block.shopify_attributes }}>
+                  {% unless product.has_only_default_variant %}
+                {%- assign product_form_id = 'product-form-' | append: section.id -%}
+
+                    <variant-selector id="variant-selector-t-{{ section.id }}" data-picker-type="{{ block.settings.picker_type }}">
+                        <div class="variant-block__dropdown">
+                          {% for option in product.options_with_values %}
+                            {%- assign downcased_option_name = option.name | downcase -%}
+                            {%- unless has_bulk_selector and downcased_option_name contains 'size' -%}
+                              <fieldset class="product-form__input">
+                                <select
+                                  name="options[{{ option.name | escape }}]"
+                                  id="Option-t-{{ section.id }}-{{ forloop.index0 }}"
+                                  form="{{ product_form_id }}"
+                                >
+                                  {% for value in option.values %}
+                                    {%- capture input_id -%}
+                                      t-{{ section.id }}-{{ option.position }}-{{ forloop.index0 -}}
+                                    {%- endcapture -%}
+                                    <option
+                                      id="{{ input_id }}"
+                                      value="{{ value | escape }}"
+                                      data-option-value-id="{{ value.id }}"
+                                      data-product-url="{{ value.product_url }}"
+                                      {% if value.selected %}
+                                        selected="selected"
+                                      {% endif %}
+                                    >
+                                      {{ value }}
+
+                                      {% if value.variant.metafields.custom.swatch_color == blank %}
+                                        {% assign swatch_lines = settings.swatches | split: ',' %}
+                                        {% for line in swatch_lines %}
+      
+                                          {% if line contains '==' %}
+                                            {% assign swatch_data = line | split: '==' %}
+                                            {% assign swatch_name =  swatch_data[0] | strip%}
+                                            {% if swatch_name == value %}
+                                              <span 
+                                                class="color-swatch-icon"
+                                                style="border-radius: 100%; display: inline-block; width: 24px; height: 24px; background-color: {{ swatch_data[1] }};"
+                                              >
+                                              </span>
+                                            {% endif %}
+                                          {% endif %}
+                                        {% endfor %}
+                                        
+                                      {% else%}
+                                          <span 
+                                            class="color-swatch-icon"
+                                            style="border-radius: 100%; display: inline-block; width: 24px; height: 24px; background-color: {{ value.variant.metafields.custom.swatch_color }};"
+                                          >
+                                          </span>
+                                      {% endif %}
+
+                                    </option>
+                                  {% endfor %}
+                                </select>
+                              </fieldset>
+                            {%- endunless -%}
+                          {% endfor %}
+                        </div>
+                      <script type="application/json" data-selected-variant>
+                        {{ selected_variant | json }}
+                      </script>
+                    </variant-selector>
+                  {% endunless %}
+                </div>
+            {% endcomment %}
+              {% when 'buy_buttons' %}
+                <div class="product-form__buttons" {{ block.shopify_attributes }}>
+                  {%- assign product_form_id = 'product-form-t-' | append: section.id -%}
+                  <ajax-cart-product-form>
+                    {% form 'product', product, id: product_form_id, novalidate: 'novalidate' %}
+                      <div data-ajax-cart-errors="form"></div>
+                      <input type="hidden" name="id" value="{{ selected_variant.id }}">
+                      <div id="add-to-cart-container-t-{{ section.id }}">
+                        <button
+                          id="AddToCart-t-{{ section.id }}"
+                          type="submit"
+                          name="add"
+                          class="product-form__button {% if block.settings.show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %}"
+                          {% if selected_variant == null or selected_variant.available == false %}
+                            disabled
+                          {% endif %}
+                        >
+                          {% if selected_variant == null %}
+                            <span class="product-form__button-text">
+                              Unavailable
+                            </span>
+                          {% elsif selected_variant.available == false %}
+                            <span class="product-form__button-text">
+                              Sold out
+                            </span>
+                          {% else %}
+                            {% if section.settings.hide_add_to_cart_total %}
+                              <span class="product-form__button-text">
+                                Add to cart
+                              </span>
+                            {% else %}
+                              <span class="add-to-cart-total" style="font-weight: 600;">
+                                {% if selected_variant %}
+                                  TOTAL {{ selected_variant.price | money }}
+                                {% endif %}
+                              </span>
+                              -
+                              <span class="add-to-cart-label">
+                                {% if selected_variant == null %}
+                                  Unavailable
+                                {% elsif selected_variant.available == false %}
+                                  Sold out
+                                {% else %}
+                                  Add to cart
+                                {% endif %}
+                              </span>
+                            {% endif %}
+                          {% endif %}
+                          <span class="loading__spinner hidden">
+                            {{ 'icon-loader.svg' | inline_asset_content }}
+                          </span>
+
+                          <span class="product-form__button-price">
+                            {{ product.selected_or_first_available_variant.price | money_without_trailing_zeros }}
+                          </span>
+                        </button>
+                      </div>
+                      {%- if block.settings.show_dynamic_checkout -%}
+                        {{ form | payment_button }}
+                      {%- endif -%}
+                    {% endform %}
+                  </ajax-cart-product-form>
+                </div>
+            {% else %}
+            {%- endcase -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </product-sticky>
     <div class="product flex product--{{ section.settings.media_size }} product--{{ section.settings.media_position }} {% if section.settings.constrain_to_viewport %}constrain-height{% endif %}">
       <div class="product__media-wrapper flex__item media-{{ section.settings.media_fit }}">
         {% render 'component-product-media-gallery',
@@ -119,7 +300,7 @@
                   {%- assign empty_stars = total_stars | minus: filled_stars -%}
                   {% assign r = filled_stars | times: 5.0 | divided_by: total_stars %} 
 
-                  <span style="color: {{ block.settings.star_color | default: '#000' }}; font-size: {{ block.settings.star_size | default: 22 }}px;">
+                  <span style="color: {{ block.settings.star_color | default: '#000' }}; font-size: {{ block.settings.star_size | default: 22 }}px; display: flex;">
                     {% render 'component-product-reviews-stars', rate: r, stars_color: block.settings.star_color | default: '#000', stars_size: block.settings.star_size | default: 22 | append: "px;" %}
                   </span>
                   <span class="review-count">
@@ -874,7 +1055,7 @@
                                 {%- assign total_stars = block.settings.total_stars | default: 5 -%}
                                 {% assign r = filled_stars | times: 5.0 | divided_by: total_stars %} 
               
-                                <span style="color: #000; font-size: 18px;">
+                                <span style="color: #000; font-size: 18px; display: flex;">
                                   {% render 'component-product-reviews-stars', rate: r, stars_color: '#000', stars_size: "18px" %}
                                 </span>
                                 <span class="review-count">
@@ -935,6 +1116,40 @@
   {%- if section.settings.image_zoom == 'hover' -%}
     <script src="{{ 'component-product-media-magnify.js' | asset_url }}" defer="defer"></script>
   {%- endif -%}
+
+  <script>
+    class ProductSticky extends HTMLElement {
+      constructor() {
+        super();
+        this.stickyElement = document.querySelector('.product__sticky');
+        this.triggerElement = document.getElementById('AddToCart-{{ section.id }}');
+        
+        if (this.stickyElement && this.triggerElement) {
+          this.init();
+        }
+      }
+
+      init() {
+        this.stickyElement.style.transform = 'translateY(-76px)';
+        this.stickyElement.style.transition = 'transform 0.3s ease';
+        
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              this.stickyElement.style.transform = 'translateY(-76px)';
+            } else {
+              this.stickyElement.style.transform = 'translateY(76px)';
+            }
+          });
+        }, { threshold: 0 });
+
+        observer.observe(this.triggerElement);
+         
+      }
+    }
+
+    customElements.define('product-sticky', ProductSticky);
+  </script>
 </product-info>
 
 {% schema %}
