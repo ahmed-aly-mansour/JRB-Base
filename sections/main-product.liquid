@@ -907,6 +907,12 @@
                   </div>
                 </details>
               </div>
+            
+            {%- when 'product_promise' -%}
+              <p class="product-promise">
+                {{ block.settings.product_promise_icon | image_url: width: 23 | image_tag}}
+                {{ block.settings.product_promise_text }}
+              </p>
             {%- endcase -%}
         {%- endfor -%}
       </div>
@@ -939,6 +945,22 @@
   "blocks": [
     {
       "type": "@app"
+    },
+    {
+      "type": "product_promise",
+      "name": "Product Promises",
+      "settings": [
+        {
+          "type" : "image_picker",
+          "id" : "product_promise_icon",
+          "label" : "Icon image"
+        },
+        {
+          "type" : "text",
+          "id" : "product_promise_text",
+          "label" : "Text"
+        }
+      ]
     },
     {
       "type": "bulk_quantity_selector",
