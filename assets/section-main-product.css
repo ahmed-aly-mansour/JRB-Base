@@ -948,3 +948,112 @@ shopify-buy-it-now-button .shopify-payment-button__button {
 .ingredients-paragraph{
   margin-bottom: 15px;
 }
+
+.ingredients-list-modal-overlay {
+  background: #0003;
+  height: 100%;
+  left: 0;
+  position: fixed;
+  top: 0;
+  transition: opacity .4s;
+  width: 100%;
+  z-index: 20;
+}
+
+.ingredients-list-modal-content  {
+  background: #fff;
+  border: solid 1px #ebebeb;
+  box-sizing: border-box;
+  color: #000;
+  left: 0;
+  margin: 0 auto;
+  max-width: 375px;
+  padding: 32px 16px 28px;
+  position: fixed;
+  right: 0;
+  text-align: center;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: opacity .4s;
+  width: 80%;
+  z-index: 21;
+}
+
+
+.ingredients-list-modal-content {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  max-height: 100dvh;
+  max-width: 642px;
+  padding: 25px 22px 22px;
+  width: 100%;
+  z-index: 21;
+}
+
+@media screen and (min-width: 1024px) {
+  .ingredients-list-modal-content {
+      height: auto;
+      max-height: 479px;
+      max-width: 642px;
+      padding: 31px 46px 46px;
+      width: 100%;
+  }
+}
+
+
+.ingrients-list-modal-close{
+  height: 60px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 60px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ingredients-list-modal-title {
+  box-sizing: border-box;
+  display: block;
+  font-size: 18px;
+  font-family: GeogrotesqueCondBoldWeb, Arial Black, Impact, sans-serif;
+  font-weight: 700;
+  letter-spacing: 1px;
+  line-height: 22px;
+  max-width: initial;
+  padding: 0 0 20px;
+  text-align: left;
+  text-transform: uppercase;
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
+
+@media screen and (min-width: 1024px) {
+  .ingredients-list-modal-title {
+      font-size: 15px;
+      padding: 0 0 23px;
+  }
+}
+
+
+
+.ingredients-list-modal-details {
+  font-family: RingsideWideWeb, Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  height: auto;
+  letter-spacing: .57px;
+  line-height: 24px;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 0;
+  text-align: left;
+}
+
+@media screen and (min-width: 1024px) {
+    .ingredients-list-modal-details{
+        font-size: 14px;
+        letter-spacing: .54px;
+    }
+}

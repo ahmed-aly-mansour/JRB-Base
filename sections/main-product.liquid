@@ -648,12 +648,18 @@
                     {% elsif block_heading == 'INGREDIENTS' and product.metafields.custom.ingredients != blank %}
                       <h2 class="ingredients_title">{{ product.metafields.custom.ingredients_title }}</h2>
                       <p class="ingredients-paragraph">{{ product.metafields.custom.ingredients }}</p>
-
-                      <button @click="open = true" class="ingredients-list-btn">See Full Ingredient List</button>
-                      <div x-show="open" class="ingredients-list-modal">
-                        <span @click="open = false" class="ingrients-list-modal-close">{{ 'icon-close.svg' | inline_asset_content}}</span>
-                      </div>
-                      <div class="ingredients-list-modal-overlay"></div>
+                      {% if product.metafields.custom.ingredients_details %}
+                        <button @click="open = true" class="ingredients-list-btn">See Full Ingredient List</button>
+                        <div x-show="open" class="ingredients-list-modal">
+                          <div class="ingredients-list-modal-content">
+                            <span @click="open = false" class="ingrients-list-modal-close">{{ 'icon-close.svg' | inline_asset_content}}</span>
+                            <h3 class="ingredients-list-modal-title">ingredients</h3>
+  
+                            <div class="ingredients-list-modal-details">{{ product.metafields.custom.ingredients_details }}</div>
+                          </div>
+                          <div class="ingredients-list-modal-overlay" style="display: flex;"></div>
+                        </div>
+                      {% endif %}
                     {% else %}
                       {{ block.settings.content }}
                       {{ block.settings.page.content }}    
