@@ -116,7 +116,7 @@
         <div class="product_sticky-right">
           {%- for block in section.blocks -%}
             {%- case block.type -%}
-            {% comment %} {% when 'variant_picker' %}
+            {% when 'variant_picker' %}
               {%- assign has_bulk_selector = false -%}
                 {%- for block in section.blocks -%}
                   {%- if block.type == 'bulk_quantity_selector' -%}
@@ -129,71 +129,116 @@
                   {% unless product.has_only_default_variant %}
                 {%- assign product_form_id = 'product-form-' | append: section.id -%}
 
-                    <variant-selector id="variant-selector-t-{{ section.id }}" data-picker-type="{{ block.settings.picker_type }}">
-                        <div class="variant-block__dropdown">
+                    <variant-selector id="variant-selector-t-{{ section.id }}" data-picker-type="dropdown">
+                        <div x-data="{variantOpen : false}" class="variant-block__dropdown">
                           {% for option in product.options_with_values %}
                             {%- assign downcased_option_name = option.name | downcase -%}
                             {%- unless has_bulk_selector and downcased_option_name contains 'size' -%}
-                              <fieldset class="product-form__input">
-                                <select
-                                  name="options[{{ option.name | escape }}]"
-                                  id="Option-t-{{ section.id }}-{{ forloop.index0 }}"
-                                  form="{{ product_form_id }}"
-                                >
+                              
+                              <fieldset :class="{ 'open': variantOpen }" @click="variantOpen = true" @click.outside="variantOpen = false" class="product-form__input product-form__input--custom">
+                                <ul class="custom-variant-list" role="listbox" aria-label="Choose {{ option.name }}">
+                                  {% comment %} for rendering selected variant at the top {% endcomment %}
                                   {% for value in option.values %}
-                                    {%- capture input_id -%}
-                                      t-{{ section.id }}-{{ option.position }}-{{ forloop.index0 -}}
-                                    {%- endcapture -%}
-                                    <option
+                                    {% if value.selected %}
+                                      {% capture input_id %}
+                                        t-{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}
+                                      {% endcapture %}
+                                
+                                      <li
+                                        id="{{ input_id }}"
+                                        role="option"
+                                        tabindex="0"
+                                        class="custom-variant-item{% if value.selected %} is-selected{% endif %}"
+                                        data-option-value-id="{{ value.id }}"
+                                        data-product-url="{{ value.product_url }}"
+                                        aria-selected="{% if value.selected %}true{% else %}false{% endif %}"
+                                      >
+                                        <span class="custom-variant-label">{{ value }}</span>
+                                
+                                        {% comment %} SWATCH COLOR LOGIC {% endcomment %}
+                                        {% if value.variant.metafields.custom.swatch_color == blank %}
+                                          {% assign swatch_lines = settings.swatches | split: ',' %}
+                                          {% for line in swatch_lines %}
+                                            {% if line contains '==' %}
+                                              {% assign swatch_data = line | split: '==' %}
+                                              {% assign swatch_name = swatch_data[0] | strip %}
+                                              {% if swatch_name == value %}
+                                                <span 
+                                                  class="color-swatch-icon"
+                                                  style="border-radius: 100%; display: inline-block; width: 24px; height: 24px; background-color: {{ swatch_data[1] }};"
+                                                ></span>
+                                              {% endif %}
+                                            {% endif %}
+                                          {% endfor %}
+                                        {% else %}
+                                          <span 
+                                            class="color-swatch-icon"
+                                            style="border-radius: 100%; display: inline-block; width: 24px; height: 24px; background-color: {{ value.variant.metafields.custom.swatch_color }};"
+                                          ></span>
+                                        {% endif %}
+                                      </li>
+                                    {% endif %}
+                                    
+                                  {% endfor %}
+                                  
+                                  {% comment %} for rendering remaining unselected items {% endcomment %}
+                                  {% for value in option.values %}
+                                    {% unless value.selected %}
+
+                                    {% capture input_id %}
+                                      t-{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}
+                                    {% endcapture %}
+                              
+                                    <li
                                       id="{{ input_id }}"
-                                      value="{{ value | escape }}"
+                                      role="option"
+                                      tabindex="0"
+                                      class="custom-variant-item{% if value.selected %} is-selected{% endif %}"
                                       data-option-value-id="{{ value.id }}"
                                       data-product-url="{{ value.product_url }}"
-                                      {% if value.selected %}
-                                        selected="selected"
-                                      {% endif %}
+                                      aria-selected="{% if value.selected %}true{% else %}false{% endif %}"
                                     >
-                                      {{ value }}
-
+                                      <span class="custom-variant-label">{{ value }}</span>
+                              
+                                      {% comment %} SWATCH COLOR LOGIC {% endcomment %}
                                       {% if value.variant.metafields.custom.swatch_color == blank %}
                                         {% assign swatch_lines = settings.swatches | split: ',' %}
                                         {% for line in swatch_lines %}
-      
                                           {% if line contains '==' %}
                                             {% assign swatch_data = line | split: '==' %}
-                                            {% assign swatch_name =  swatch_data[0] | strip%}
+                                            {% assign swatch_name = swatch_data[0] | strip %}
                                             {% if swatch_name == value %}
                                               <span 
                                                 class="color-swatch-icon"
                                                 style="border-radius: 100%; display: inline-block; width: 24px; height: 24px; background-color: {{ swatch_data[1] }};"
-                                              >
-                                              </span>
+                                              ></span>
                                             {% endif %}
                                           {% endif %}
                                         {% endfor %}
-                                        
-                                      {% else%}
-                                          <span 
-                                            class="color-swatch-icon"
-                                            style="border-radius: 100%; display: inline-block; width: 24px; height: 24px; background-color: {{ value.variant.metafields.custom.swatch_color }};"
-                                          >
-                                          </span>
+                                      {% else %}
+                                        <span 
+                                          class="color-swatch-icon"
+                                          style="border-radius: 100%; display: inline-block; width: 24px; height: 24px; background-color: {{ value.variant.metafields.custom.swatch_color }};"
+                                        ></span>
                                       {% endif %}
-
-                                    </option>
+                                    </li>
+                                    {% endunless %}
                                   {% endfor %}
-                                </select>
+                                  <span class="variant-icon" :class="{ 'open': variantOpen }" @click="variantOpen = !variantOpen">
+                                    {{ 'icon-chevron-down.svg' | inline_asset_content }}
+                                  </span>
+                                </ul>
                               </fieldset>
+
                             {%- endunless -%}
                           {% endfor %}
                         </div>
-                      <script type="application/json" data-selected-variant>
+                      {% comment %} <script type="application/json" data-selected-variant>
                         {{ selected_variant | json }}
-                      </script>
+                      </script> {% endcomment %}
                     </variant-selector>
                   {% endunless %}
                 </div>
-            {% endcomment %}
               {% when 'buy_buttons' %}
                 <div class="product-form__buttons" {{ block.shopify_attributes }}>
                   {%- assign product_form_id = 'product-form-t-' | append: section.id -%}

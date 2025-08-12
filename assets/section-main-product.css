@@ -1227,3 +1227,85 @@ shopify-buy-it-now-button .shopify-payment-button__button {
 .product_sticky-right .product-form__button-text, .product_sticky-right  .product-form__button-price{
   font-size: 16px;
 }
+.custom-variant-trigger{
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  width: 250px;
+  cursor: pointer;
+  padding: 0 20px;
+  height: 44px;
+}
+
+.product_sticky-right .variant-block__dropdown{
+  position: relative;
+  width: 250px;
+  height: 44px;
+}
+.custom-variant-trigger .custom-variant-label, .product_sticky-right .product-form__input ul li .custom-variant-label{
+  display: inline-block;
+  font-family: BaseMonoWideWeb, Courier, Courier New, sans-serif;
+  font-size: 14px;
+  font-weight: 325;
+  line-height: 23px;
+  letter-spacing: .46px;
+  vertical-align: top;
+  min-width: 130px;
+}
+.product_sticky-right .product-form__input{
+  width: 250px;
+  max-height: 44px;
+  margin: 0;
+  position: absolute;
+  overflow-y: hidden;
+  top: 0;
+  right: 0;
+}
+
+.product_sticky-right .product-form__input.open{
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.product_sticky-right .product-form__input ul{
+  position: relative;
+  list-style: none;
+  width: 100%;
+  background-color: #fff;
+  padding: 0;
+  margin: 0;
+  padding: 10px 20px;
+  transition: height .3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.product_sticky-right .product-form__input ul li{
+  display: flex;
+  justify-content: end;
+  height: 44px;
+  width: 100%;
+  cursor: pointer;
+}
+.variant-icon {
+  position: absolute;
+  top: 10px;
+  left: 15%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center center;
+  transition: transform 0.3s ease;
+  z-index: 9;
+}
+
+.variant-icon.open {
+  transform: rotate(180deg);
+}
+
+.is-selected .color-swatch-icon{
+  border: 1px solid #000;
+  border-radius: 20px;
+}
