@@ -87,6 +87,31 @@
           {% assign media_index = media_index | plus: 1 %}
         {% endunless %}
       {% endfor %}
+
+        <div
+          class="swiper-slide"
+          data-media-id="{{ product.media.last.id }}"
+          data-media-index="{{ media_index }}"
+        >
+          {%- if is_zoom == 'hover' -%}
+            <div class="loading__spinner hidden">
+              {{ 'icon-loading-spinner.svg' | inline_asset_content }}
+            </div>
+          {%- endif -%}
+          <div class="product-media">
+            {%- if is_zoom != 'none' -%}
+              <div
+                class="light-box-zoom-trigger {% if is_zoom == 'hover' %}hover-zoom-enabled{% endif %}"
+                data-media-id="{{ product.media.last.id }}"
+                data-modal="#ProductModal-{{ section.id }}"
+              >
+                &nbsp;
+              </div>
+            {%- endif -%}
+            {% render 'component-product-media', media: product.media.last, loop: video_looping , image_max_height: img_max_height%}
+          </div>
+        </div>
+        {% assign media_index = media_index | plus: 1 %}
     </div>
     <div class="swiper-pagination">&nbsp;</div>
     <div class="swiper-button-prev">&nbsp;</div>
@@ -124,6 +149,12 @@
           {% assign thumb_index = thumb_index | plus: 1 %}
         {% endunless %}
       {% endfor %}
+
+      <div class="swiper-slide thumb-slide" data-media-index="{{ thumb_index }}" data-swiper-slide-index="{{ thumb_index }}" style="width: {{ width }}">
+        <div class="product-media-thumb" style="width: {{ width }}">
+          <img src="{{ product.media.last | img_url: '100x100' }}" alt="Thumbnail" width="100" height="100" style="width: 7.212vw; height: 7.212vw; object-fit: cover;" />
+        </div>
+      </div>
     </div>
   </div>
 

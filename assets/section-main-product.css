@@ -557,10 +557,6 @@ shopify-buy-it-now-button .shopify-payment-button__button {
     flex-direction: column;
   }
 
-  .product--left .product__info-wrapper {
-    padding-left: 40px;
-  }
-
   .product__info-wrapper{
     padding-top: 54px;
   }
@@ -1308,4 +1304,28 @@ shopify-buy-it-now-button .shopify-payment-button__button {
 .is-selected .color-swatch-icon{
   border: 1px solid #000;
   border-radius: 20px;
+}
+
+.product__rating{
+  margin: 10px 0px;
+}
+
+@media (min-width: 1024px) {
+  .product--left .product__info-wrapper {
+    padding-left: 40px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .upsell-product-info-content .stars svg{
+    width: 14px;
+    height: 14px;
+  }
+  .upsell-product-info-img{
+    width: 124px;
+  }
+  .product__info-wrapper {
+    padding-top: 0px;
+    padding-left: 20px;
+  }
 }

@@ -222,6 +222,21 @@ if (!customElements.get('product-info')) {
       }
     }
 
+    updateMediaGallery(html, variant) {
+      const newGallery = html.querySelector(`#product-media-gallery-${this.dataset.section}`);
+      const currentGallery = this.querySelector(`#product-media-gallery-${this.dataset.section}`);
+      
+      if (newGallery && currentGallery) {
+        currentGallery.innerHTML = newGallery.innerHTML;
+        // Re-initialize Swiper after gallery update
+        setTimeout(() => {
+          if (typeof Swiper !== 'undefined') {
+            this.initSwiper();
+          }
+        }, 100);
+      }
+    }
+
     updateBulkQuantityTotal() {
       const bulkSelector = this.querySelector('bulk-product-atc');
       if (!bulkSelector) return;
@@ -295,6 +310,7 @@ if (!customElements.get('product-info')) {
             productInfo.updateURL(variant?.id);
           } else {
             this.updateMedia(variant?.featured_media?.id);
+            this.updateMediaGallery(html, variant);
             this.updateURL(variant?.id);
             this.updateVariantInputs(variant?.id);
             this.updateSourceFromDestination(html, `add-to-cart-container-${this.dataset.section}`);

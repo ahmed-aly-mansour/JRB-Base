@@ -309,16 +309,24 @@
       </div>
     </product-sticky>
     <div class="product flex product--{{ section.settings.media_size }} product--{{ section.settings.media_position }} {% if section.settings.constrain_to_viewport %}constrain-height{% endif %}">
-      <div class="product__media-wrapper flex__item media-{{ section.settings.media_fit }}">
-        {% render 'component-product-media-gallery',
-          product_media: product.media,
-          selected_variant: selected_variant,
-          video_looping: section.settings.enable_video_looping,
-          is_zoom: section.settings.image_zoom,
-          thumbnails_position: section.settings.desktop_thumbnails_position
-        %}
+      <div class="product__media-wrapper flex__item media-{{ section.settings.media_fit }}" style="max-width: 57%;">
+        
+        <div id="product-media-gallery-{{ section.id }}">
+          {%- if selected_variant.metafields.custom.carousels_media != blank -%}
+            {% assign variant_media = selected_variant.metafields.custom.carousels_media.value %}
+          {%- else -%}
+            {% assign variant_media = product.media %}
+          {%- endif -%}
+          {% render 'component-product-media-gallery',
+            product_media: variant_media,
+            selected_variant: selected_variant,
+            video_looping: section.settings.enable_video_looping,
+            is_zoom: section.settings.image_zoom,
+            thumbnails_position: section.settings.desktop_thumbnails_position
+          %}
+        </div>
       </div>
-      <div class="product__info-wrapper flex__item {% if section.settings.enable_sticky_info %}product__info-sticky {% endif %}">
+      <div class="product__info-wrapper flex__item {% if section.settings.enable_sticky_info %}product__info-sticky {% endif %}" style="max-width: 40%;">
         {%- assign product_form_id = 'product-form-' | append: section.id -%}
 
         {%- for block in section.blocks -%}
@@ -1104,7 +1112,7 @@
                                   {% render 'component-product-reviews-stars', rate: r, stars_color: '#000', stars_size: "18px" %}
                                 </span>
                                 <span class="review-count">
-                                  ({{ block.settings.review_count | default: '124' }} {{ block.settings.review_text | default: 'Reviews' }})
+                                  ({{ block.settings.review_count | default: '124' }} {{ block.settings.review_text | default: '' }})
                                 </span>
                               </div>
 
@@ -1117,7 +1125,7 @@
                                     <span class="product-form__button-text">
                                       Add to bag
                                     </span>
-                                    <span class="product-form__button-price">
+                                    <span class="product-form__button-price" style="padding-right: 0">
                                       {{ upsell_product.selected_or_first_available_variant.price | money_without_trailing_zeros }}
                                     </span>
                                   </button>
