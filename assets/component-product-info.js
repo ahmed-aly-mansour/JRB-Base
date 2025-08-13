@@ -7,9 +7,35 @@ if (!customElements.get('product-info')) {
     }
 
     setupEventListeners() {
+      let lastHoveredLabel = null;
+
       this.variantSelector.forEach(selector => {
         selector.addEventListener('change', this.onVariantChange.bind(this));
+
+        selector.addEventListener('mouseover', e => {
+          const label = e.target.closest('label');
+          if (!label) return;
+
+          // If we're still on the same label, do nothing
+          if (lastHoveredLabel === label) return;
+          lastHoveredLabel = label;
+
+          const input = selector.querySelector(`#${label.getAttribute('for')}`);
+          if (input && input.type === 'radio') {
+            if (!input.checked) { // avoid dispatching if it's already checked
+              input.checked = true;
+              console.log("it happened");
+              input.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+          }
+        });
+
+        // Reset when leaving the selector entirely
+        selector.addEventListener('mouseleave', () => {
+          lastHoveredLabel = null;
+        });
       });
+
       if(this.quantitySelector){
         this.quantitySelector.addEventListener('change', this.onQuantitySelectorEvent.bind(this));
         this.quantitySelector.querySelector('button[name="plus"]').addEventListener('click', this.onQuantitySelectorEvent.bind(this));
@@ -335,7 +361,6 @@ if (!customElements.get('product-info')) {
             this.initColorSwatchTabs();
             // Re-attach custom variant item listeners
             this.attachCustomVariantListeners();
-
 
             // Update variant description
             this.updateVariantDescription(variant?.title ,variant?.metafields);
