@@ -28,9 +28,14 @@
 
   {% when 'external_video' %}
     {{ media | external_video_tag }}
-
+    
   {% when 'video' %}
-    {{ media | media_tag: image_size: '2048x', autoplay: true, loop: loop, controls: true, preload: 'none', data-media-id: media.id }}
+    {% if styles %}
+      {% assign dimensions = 'width: 7.212vw; height: 7.212vw;' %}
+    {% else %}
+      {% assign dimensions = '' %}
+    {% endif %}
+    {{ media | media_tag: image_size: '2024x', autoplay: true, loop: loop, controls: v_controls, preload: 'none', data-media-id: media.id, style: dimensions }}
 
   {% when 'model' %}
     {{ media | model_viewer_tag }}
